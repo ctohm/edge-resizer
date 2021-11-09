@@ -1,0 +1,41 @@
+name = "edge-resizer"
+route = "cdn.example.app/thumbnails/*"
+account_id = "<YOUR ACCOUNT>"
+zone_id = "<YOUT_ZONE_ID>"
+type = "javascript"
+api_token = "<CF TOKEN>"
+
+[vars]
+  WORKER_ENV = "production"
+  PNG_QUALITY = 80
+  JPG_QUALITY = 90
+  
+
+[dev]
+  port = 8989
+  ip = "127.0.0.1"
+  local_protocol = "http"
+
+[miniflare]
+  upstream = "https://cdn.example.app"
+  cache_persist = true
+  env_path = ".env"
+  wrangler_env = "dev"
+  port = 8989
+
+[env]
+
+  [env.dev]
+    workers_dev = true
+
+    [env.dev.vars]
+      WORKER_ENV = "development"
+      PNG_QUALITY = 80
+      JPG_QUALITY = 90
+
+
+[build]
+  command = "yarn build "
+
+  [build.upload]
+    format = "service-worker"
