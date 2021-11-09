@@ -119,11 +119,12 @@ But their verification system didn't take those parameters in consideration. So 
 ## TODO
 
 - [ ] tests
+- [x] fix a handful of embarassing bugs after announcing what-i-built
 - [ ] use vary to deliver WEBP, then AVIF to everyone except iOS
 - [ ] figure out a way to receive device pixel ratio and deliver retina images
 - [ ] other transformations
 - [ ] get absorbed by Cloudflare
 - [ ] don't get absorbed but have massive adoption
   - [ ] lots of issues 
-  - [ ] anxiety
+  - [x] anxiety
   - [ ] abandon project

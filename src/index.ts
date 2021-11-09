@@ -52,6 +52,7 @@ const router = ThrowableRouter<RequestWithParams>({
             url.port = '443'
             return fetch(url.toString(), req)
           }
+          req.params.origin = url.origin
           const transformSegment = url.pathname.split('/')[1]
           req.params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>
 
@@ -66,6 +67,7 @@ const router = ThrowableRouter<RequestWithParams>({
             }
 
           }
+
           req.params.protocol = req.params.protocol || 'https'
           console.log({ params: req.params })
           return thirdParty(req, env, ctx)

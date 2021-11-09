@@ -4,15 +4,11 @@ import { EnvWithBindings } from './index';
 import { Context } from './index';
 
 async function computeCachedResponse(imageRequest: Request, env: EnvWithBindings, ctx: Context) {
+    let cacheEntry = imageRequest.headers.get('X-cacheEntry')
     const cache = caches.default;
-    let response = await cache.match(imageRequest),
-        resizedUrlStr = imageRequest.url
-    if (response) {
-        //debug({ cacheHit: true, ctx });
 
-        return response;
-    }
-    let maxAge = 86400
+    let resizedUrlStr = imageRequest.url
+    let maxAge = 31536000
     if (imageRequest.headers.has('max-age')) {
         maxAge = Number(imageRequest.headers.get('max-age'))
     }
@@ -21,7 +17,7 @@ async function computeCachedResponse(imageRequest: Request, env: EnvWithBindings
 
         //image: { format: 'avif' },
     };
-    response = await fetch(resizedUrlStr, { cf });
+    let response = await fetch(resizedUrlStr, { cf });
 
     const contentType = response.headers.get('Content-Type') || '';
     // console.log({ cacheMiss: response, event, contentType });
@@ -36,13 +32,16 @@ async function computeCachedResponse(imageRequest: Request, env: EnvWithBindings
         response.headers.append('Accept-CH', 'Width');
         response.headers.set('Vary', 'Viewport-Width, Width, Accept');
         response.headers.set('Requested-CF', JSON.stringify(cf));
+        response.headers.delete('cf-cache-status');
         response.headers.set('Cache-Control', 'public, max-age=31536000');
         response.headers.set('X-Cached-On', String(Date.now()));
+        response.headers.set('last-modified', new Date(Date.now() - 180000).toUTCString());
         if (sourceUrl) response.headers.set('X-sourceUrl', sourceUrl);
         response.headers.set('X-resizedUrl', resizedUrlStr);
-
         //response.headers.set('Content-Disposition', `inline; filename=image.webp`);
-        ctx.waitUntil(cache.put(imageRequest, response.clone()));
+        let cacheRequest = cacheEntry ? new Request(cacheEntry) : imageRequest
+        response.headers.set('link', `<${cacheRequest.url}>; rel="canonical"`)
+        ctx.waitUntil(cache.put(cacheRequest, response.clone()));
         return response;
     } else {
         return error(response.status, new Error(response.statusText))
@@ -60,7 +59,7 @@ export const thirdParty = async (
     env: EnvWithBindings,
     ctx: Context
 ): Promise<Response> => {
-    const { transforms, protocol = 'https', domain, pathname } = request.params
+    const { transforms, protocol = 'https', domain, pathname, origin } = request.params
 
     let url = new URL(request.url)
 
@@ -92,7 +91,7 @@ export const thirdParty = async (
     for (let [paramName, paramValue] of Object.entries(defaultSearchParams)) {
         weservUrl.searchParams.set(paramName, paramValue);
     }
-    weservUrl.searchParams.set('url', `ssl:${urlParam}`);
+
     console.log(weservUrl.toString())
     if (accepts.includes('webp')) {
         output = 'webp';
@@ -108,6 +107,19 @@ export const thirdParty = async (
     if (!weservUrl.searchParams.has('q')) {
         weservUrl.searchParams.set('q', String(quality));
     }
+    let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
+
+    let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
+    console.log({ cacheEntry })
+    const cache = caches.default;
+    let response = await cache.match(new Request(cacheEntry))
+    if (response) {
+        //debug({ cacheHit: true, ctx });
+        return response;
+
+
+    }
+    weservUrl.searchParams.set('url', `ssl:${urlParam}`);
     let renamedFilename = fileName.replace(`${extension}`, `${output}`);
     weservUrl.searchParams.set('filename', renamedFilename);
 
@@ -129,7 +141,8 @@ export const thirdParty = async (
                 "accept-language": accept_language,
                 "user-agent": user_agent,
                 "cache-control": cache_control,
-                "X-sourceUrl": `${protocol}://${request}`,
+                "X-sourceUrl": request.url,
+                "X-cacheEntry": cacheEntry
             }
         }), env, ctx)
 
