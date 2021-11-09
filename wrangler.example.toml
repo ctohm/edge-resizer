@@ -39,3 +39,7 @@ api_token = "<CF TOKEN>"
 
   [build.upload]
     format = "service-worker"
+
+[site]
+  bucket = "./docs"
+  entry-point = "."
