@@ -14,13 +14,13 @@ This worker computes the original image's URL using the convention:
 
 `https://img.ctohm.com/<protocol>/<domain>/<pathname>`
 
-Let's use our Github Avatar as an example:
+Let's use CF-Badger logo as an example:
 
-`https://avatars.githubusercontent.com/u/71311688`
+`https://cf-badger.com/images/cf-badger-512x512.png`
 
 You'd request it with
 
-`https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688`
+`https://img.ctohm.com/` `https` / `cf-badger.com` / `images/cf-badger-512x512.png`
 
 The original url is rebuilt and served from then on cached in the edge.
 
@@ -36,16 +36,16 @@ There's a middle step in which any transformations computed from the search para
 -    w: 'Width',
 -    h: 'Height',
 
-- e.g. https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=150&h=150
+- e.g. https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150
 
-![avatar](https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=150&h=150)
+![avatar](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150)
 
 #### Fit/Colorize/Sharpen
 
  - fit: [Fit](https://images.weserv.nl/docs/fit.html)
  - cbg: Background Color for Fit=Contain
 
- ![fit and cbg](https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=150&h=250&fit=contain&cbg=green)
+ ![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=250&fit=contain&cbg=green)
 
  - sharp: [Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
  - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) (is multipage images still a thing?)
@@ -62,11 +62,11 @@ There's a middle step in which any transformations computed from the search para
 - output: [Output](https://images.weserv.nl/docs/format.html#output)
 - filename: [Filename](https://images.weserv.nl/docs/format.html#filename)
 
-- e.g https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=100&output=gif
+- e.g https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=100&output=gif
 
 | Original (png) | JPEG |   GIF   | WEBP |
 |----------|------|---------|  --  |
-|![original](https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=100) |![jpg](https://img.ctohm.com/hue=40_w=100/avatars.githubusercontent.com/u/71311688?output=jpeg) |  ![gif](https://img.ctohm.com/hue=90/avatars.githubusercontent.com/u/71311688?w=100&output=gif) |  ![webp](https://img.ctohm.com/hue=120/avatars.githubusercontent.com/u/71311688?w=100&output=webp) |  
+|![original](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=100) |![jpg](https://img.ctohm.com/hue=40_w=100/https://cf-badger.com/images/cf-badger-512x512.png?output=jpeg) |  ![gif](https://img.ctohm.com/hue=90/https://cf-badger.com/images/cf-badger-512x512.png?w=100&output=gif) |  ![webp](https://img.ctohm.com/hue=120/https://cf-badger.com/images/cf-badger-512x512.png?w=100&output=webp) |  
 
 
 #### [Cropping](https://images.weserv.nl/docs/crop.html#rectangle-crop)
@@ -75,3 +75,5 @@ There's a middle step in which any transformations computed from the search para
     cy: 'Crop y',
     cx: 'Crop x',
     ch: 'Crop height',
+
+(This one is tricky to get it right)
