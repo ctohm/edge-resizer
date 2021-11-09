@@ -45,7 +45,14 @@ const router = ThrowableRouter<RequestWithParams>({
           env: EnvWithBindings,
           ctx: Context
         ): Promise<Response> => {
-          const transformSegment = new URL(req.url).pathname.split('/')[1]
+          const url = new URL(req.url)
+          if (url.pathname.startsWith('/edge-resizer/')) {
+            url.hostname = 'ctohm.github.io'
+            url.protocol = 'https'
+            url.port = '443'
+            return fetch(url.toString(), req)
+          }
+          const transformSegment = url.pathname.split('/')[1]
           req.params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>
 
           for (let [key, value] of new URLSearchParams(transformSegment.replace(/_/g, '&')).entries()) {
@@ -74,6 +81,13 @@ router
   //.get('/(?:_)?([^=]+)=([^_]+)/')
   //.get(`/(http|https)/:domain/:pathname*`, thirdParty)
   .get('/favicon.ico', () => new Response(fallbackSvg, { headers: { 'Content-Type': 'image/svg' } }))
+  .get('/edge-resizer/*', (req: RequestWithParams) => {
+    const url = new URL(req.url)
+    url.hostname = 'ctohm.github.io'
+    url.protocol = 'https'
+    url.port = '443'
+    return fetch(url.toString(), req)
+  })
   .get('/', () => {
     return fetch('https://ctohm.github.io/edge-resizer/').then(res => res.text())
       .then(html => new Response(
