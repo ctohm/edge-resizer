@@ -95,7 +95,7 @@ This one is tricky to get it right and deserves it's own section: **No Query-Str
 
 Free is good. Free on-demand edge cached thumbnails are even better. **But it gets better yet**. It turns out I had a mobile app in whose banner Google Play and App Store were promoted, side to side.
 
-![banner](https://img.ctohm.com/banner.png)
+![banner](https://ctohm.github.io/edge-resizer/docs/banner.png)
 
 It turns out this was an unforgivable sin, for which the app was stopped from publishing further updates. 
 
