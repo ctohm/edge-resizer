@@ -1,8 +1,9 @@
 
 //import { version } from '../package.json';
-import { json, ThrowableRouter } from 'itty-router-extras';
+import { json, ThrowableRouter, text } from 'itty-router-extras';
 import { fallbackSvg } from './fallback_svg';
 import { AvailableTransforms, IdefaultSearchParams, thirdParty } from './thirdParty';
+import { home_html } from './home_html';
 
 interface IWaitableObject {
   waitUntil: (promise: Promise<any>) => void;
@@ -16,7 +17,7 @@ export type RequestWithParams = Request & {
 
 }
 
-
+import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
 
 
@@ -74,9 +75,13 @@ router
   //.get('/(?:_)?([^=]+)=([^_]+)/')
   //.get(`/(http|https)/:domain/:pathname*`, thirdParty)
   .get('/favicon.ico', () => new Response(fallbackSvg, { headers: { 'Content-Type': 'image/svg' } }))
+  .get('*',
+    (
+      request: RequestWithParams, env: EnvWithBindings, ctx: Context) => getAssetFromKV({ request, waitUntil: ctx.waitUntil } as unknown as FetchEvent
+      )
+  )
 
-console.log(router.routes)
-router.get('*', (request: RequestWithParams) => json({ params: request.params }))
+
 
 const exportDefault = {
   fetch: async (request: Request, env: EnvWithBindings, ctx: Context): Promise<Response> => {

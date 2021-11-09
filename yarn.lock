@@ -226,6 +226,13 @@
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
 
+"@cloudflare/kv-asset-handler@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@cloudflare/kv-asset-handler/-/kv-asset-handler-0.1.3.tgz#3eaaf962b16c48a7189db5d5ac1c4dca4e2ed1a0"
+  integrity sha512-FNcunDuTmEfQTLRLtA6zz+buIXUHj1soPvSWzzQFBC+n2lsy+CGf/NIrR3SEPCmsVNQj70/Jx2lViCpq+09YpQ==
+  dependencies:
+    mime "^2.5.2"
+
 "@cloudflare/workers-types@^2.0.0", "@cloudflare/workers-types@^2.2.2":
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-2.2.2.tgz#1bced16bba801d7af987da835467545bb5cc7ac6"
@@ -2226,6 +2233,11 @@ mime-types@^2.1.12:
   integrity sha512-hJGaVS4G4c9TSMYh2n6SQAGrC4RnfU+daP8G7cSCmaqNjiOoUY0VHCMS42pxnQmVF1GWwFhbHWn3RIxCqTmZ9A==
   dependencies:
     mime-db "1.49.0"
+
+mime@^2.5.2:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-2.6.0.tgz#a2a682a95cd4d0cb1d6257e28f83da7e35800367"
+  integrity sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==
 
 mimic-fn@^2.1.0:
   version "2.1.0"
