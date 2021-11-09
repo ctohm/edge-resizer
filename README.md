@@ -1,4 +1,4 @@
-<center>
+
 
 ![Logo](repo_title.svg)
 
@@ -6,7 +6,7 @@
 
 Resize, crop and optimize images according to URL parameters, and serve a cached result from then on.
 
-</center>
+
 
 ## How ?
 
