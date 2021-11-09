@@ -26,7 +26,13 @@ Query string parameters can be passed along to perform transformations over the 
 
 e.g `https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150`
 
-In the example above, a 150x150 thumbnail is created on the fly, then it's cached in the edge and served from there with a distant expiration time. Further requests for the same modification on the same original image will actually be served from the cache.
+| w=150 hue=160 | w=120 h=160 fit=contain cbf=green |   fit=cover sharp=2  |
+|----------|------|---------|  
+|![original](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&hue=160) |![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=120&h=160&fit=contain&cbg=green) |  ![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=100&fit=cover&sharp=2&cbg=green) |  
+
+In the examples above, each thumbnail is created on the fly, then cached in the edge and served from there. Further requests for the same modification on the same original image will actually be served from the cache without ever reaching Weserve nor the origin. 
+
+Also, it will be served with distant expiration times so your browser will hopefully not need requesting it anytime soon.
 
 So yay, you've got a free on-demand thumbnail that is basically stored for free (unless we discover we've gone bankrupt due to TOS misunterstanding)
 
@@ -45,17 +51,16 @@ So yay, you've got a free on-demand thumbnail that is basically stored for free 
 
 - e.g. https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150
 
-![avatar](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150)
-
 #### Fit/Colorize/Sharpen
 
  - fit: [Fit](https://images.weserv.nl/docs/fit.html)
  - cbg: Background Color for Fit=Contain
-
- ![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=250&fit=contain&cbg=green)
+ - hue: [Hue Rotation (0 to 360) ](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
 
  - sharp: [Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
  - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) (is multipage images still a thing?)
+
+
 
 #### Compression/Optimization
 
@@ -99,11 +104,13 @@ Technically, I could modify all banners using query string:
 ![banner](https://img.ctohm.com/https/img.ctohm.com/banner.png?ch=250)
 `https://img.ctohm.com/https/img.ctohm.com/banner.png?ch=250`
 
-But their verification system didn't take those parameters in consideration. So we implemented an alternate syntax that dismisses protocol parameter and in its place, instead, encodes the query parameters. The resulting banner, in the end, was fully compliant (hue wasn't changed. I'm just showing off):
+But their verification system didn't take those parameters in consideration. So we implemented an alternate syntax that dismisses protocol parameter and in its place, instead, encodes the query parameters. The resulting banner, in the end, was fully compliant
 
 
 ![banner](https://img.ctohm.com/ch=250_cx=40_cw=560_hue=110/img.ctohm.com/banner.png)
 `https://img.ctohm.com/ch=250_cx=80_cw=470_format=webp_q=0.5/img.ctohm.com/banner.png`
+
+ (hue wasn't changed. I'm just showing off)
 
 -----------
 
