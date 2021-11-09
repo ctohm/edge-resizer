@@ -36,21 +36,20 @@ There's a middle step in which any transformations computed from the search para
 -    w: 'Width',
 -    h: 'Height',
 
+- e.g. https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=150&h=150
 
+![avatar](https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=150&h=150)
 
 #### Fit/Colorize/Sharpen
 
  - fit: [Fit](https://images.weserv.nl/docs/fit.html)
- - cbg: [Background Color for Fit=Contain](https://images.weserv.nl/docs/format.html#compression-level)
+ - cbg: Background Color for Fit=Contain
+
+ ![fit and cbg](https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=150&h=250&fit=contain&cbg=green)
+
  - sharp: [Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
  - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) (is multipage images still a thing?)
 
-#### [Cropping](https://images.weserv.nl/docs/crop.html#rectangle-crop)
-
-    cw: 'Crop width',
-    cy: 'Crop y',
-    cx: 'Crop x',
-    ch: 'Crop height',
 #### Compression/Optimization
 
 - af: [Adaptative Filter](https://images.weserv.nl/docs/format.html#adaptive-filter)
@@ -63,4 +62,16 @@ There's a middle step in which any transformations computed from the search para
 - output: [Output](https://images.weserv.nl/docs/format.html#output)
 - filename: [Filename](https://images.weserv.nl/docs/format.html#filename)
 
+- e.g https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=100&output=gif
 
+| Original (png) | JPEG |   GIF   | WEBP |
+|----------|------|---------|  --  |
+|![original](https://img.ctohm.com/https/avatars.githubusercontent.com/u/71311688?w=100) |![jpg](https://img.ctohm.com/hue=40_w=100/avatars.githubusercontent.com/u/71311688?output=jpeg) |  ![gif](https://img.ctohm.com/hue=90/avatars.githubusercontent.com/u/71311688?w=100&output=gif) |  ![webp](https://img.ctohm.com/hue=120/avatars.githubusercontent.com/u/71311688?w=100&output=webp) |  
+
+
+#### [Cropping](https://images.weserv.nl/docs/crop.html#rectangle-crop)
+
+    cw: 'Crop width',
+    cy: 'Crop y',
+    cx: 'Crop x',
+    ch: 'Crop height',

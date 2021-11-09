@@ -2,22 +2,7 @@ import { error } from 'itty-router-extras';
 import { RequestWithParams } from '.';
 import { EnvWithBindings } from './index';
 import { Context } from './index';
-let keys: Array<keyof IdefaultSearchParams> = [
-    'output',
-    'cw',
-    'cy',
-    'cx',
-    'ch',
-    'q',
-    'w',
-    'h',
-    'l',
-    'il',
-    'filename',
-    'fit',
-    'sharp',
-    'cbg'
-];
+
 async function computeCachedResponse(imageRequest: Request, env: EnvWithBindings, ctx: Context) {
     const cache = caches.default;
     let response = await cache.match(imageRequest),
@@ -93,7 +78,7 @@ export const thirdParty = async (
         } as Record<string & keyof IdefaultSearchParams, string>;
     defaultSearchParams = { ...defaultSearchParams, ...transforms }
     for (let [paramName, paramValue] of url.searchParams.entries()) {
-        if (keys.includes(paramName as keyof IdefaultSearchParams)) {
+        if (Object.keys(AvailableTransforms).includes(paramName as keyof IdefaultSearchParams)) {
             defaultSearchParams[paramName as keyof IdefaultSearchParams] = paramValue;
         }
     }
@@ -164,8 +149,10 @@ export interface IdefaultSearchParams {
     sharp?: string;
     cw?: number;
     cy?: number;
+    bg?: string;
     cx?: number;
     ch?: number;
+    hue?: number
 }
 
 
@@ -187,4 +174,6 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
     cy: 'Crop y',
     cx: 'Crop x',
     ch: 'Crop height',
+    bg: 'Background',
+    hue: 'Hue'
 }

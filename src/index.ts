@@ -39,7 +39,7 @@ const router = ThrowableRouter<RequestWithParams>({
   stack: true,
   routes: [
     [
-      'GET', new RegExp(`(?:_)?([^=/]+)(=?[^_/]*)\/(?<domain>([a-z0-9_.-]+))/(?<pathname>(.*))?`)
+      'GET', new RegExp(`([^=/]+)(=?[^_/]*)\/(?<domain>([a-z0-9_.-]+))/(?<pathname>(.*))?`)
       , [
         async (
           req: RequestWithParams,
