@@ -4,7 +4,7 @@
 
 ![](https://img.shields.io/static/v1?label=Made%20With&message=TypeScript&color=f0f0f0&labelColor=3974c0&style=for-the-badge&logo=typescript&logoColor=white&messageColor=3974c0) &nbsp; &nbsp; ![](https://img.shields.io/badge/Cloudflare-Workers-orange?color=f38020&logo=cloudflare&logoColor=f38020&style=for-the-badge&labelColor=gainsboro)
 
-Resize, crop and optimize images according to URL parameters, and serve a cached result from then on.
+Resize, crop and optimize images on the fly (according to URL parameters), cache the result on the edge and serve it from there indefinitely.
 
 
 
@@ -22,9 +22,16 @@ You'd request it with
 
 `https://img.ctohm.com/` `https` / `cf-badger.com` / `images/cf-badger-512x512.png`
 
-The original url is rebuilt and served from then on cached in the edge.
+Query string parameters can be passed along to perform transformations over the image: resizing, optimizing, compression, changing format, cropping and changing hue. These operations are applied through [Images.weserv.nl API](https://images.weserv.nl/)
 
-There's a middle step in which any transformations computed from the search params are applied through [Images.weserv.nl API](https://images.weserv.nl/)
+e.g `https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150`
+
+In the example above, a 150x150 thumbnail is created on the fly, then it's cached in the edge and served from there with a distant expiration time. Further requests for the same modification on the same original image will actually be served from the cache.
+
+So yay, you've got a free on-demand thumbnail that is basically stored for free (unless we discover we've gone bankrupt due to TOS misunterstanding)
+
+
+
 
 ----------
 ## Available Transformations
@@ -69,11 +76,47 @@ There's a middle step in which any transformations computed from the search para
 |![original](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=100) |![jpg](https://img.ctohm.com/hue=40_w=100/https://cf-badger.com/images/cf-badger-512x512.png?output=jpeg) |  ![gif](https://img.ctohm.com/hue=90/https://cf-badger.com/images/cf-badger-512x512.png?w=100&output=gif) |  ![webp](https://img.ctohm.com/hue=120/https://cf-badger.com/images/cf-badger-512x512.png?w=100&output=webp) |  
 
 
-#### [Cropping](https://images.weserv.nl/docs/crop.html#rectangle-crop)
+### [Cropping](https://images.weserv.nl/docs/crop.html#rectangle-crop)
 
     cw: 'Crop width',
     cy: 'Crop y',
     cx: 'Crop x',
     ch: 'Crop height',
 
-(This one is tricky to get it right)
+This one is tricky to get it right and deserves it's own section: **No Query-String alternate syntax**.
+
+--------------
+## No Query-String alternate syntax
+
+Free is good. Free on-demand edge cached thumbnails are even better. **But it gets better yet**. It turns out I had a mobile app in whose banner Google Play and App Store were promoted, side to side.
+
+![banner](https://img.ctohm.com/banner.png)
+
+It turns out this was an unforgivable sin, for which the app was stopped from publishing further updates. 
+
+Technically, I could modify all banners using query string:
+
+![banner](https://img.ctohm.com/https/img.ctohm.com/banner.png?ch=250)
+`https://img.ctohm.com/https/img.ctohm.com/banner.png?ch=250`
+
+But their verification system didn't take those parameters in consideration. So we implemented an alternate syntax that dismisses protocol parameter and in its place, instead, encodes the query parameters. The resulting banner, in the end, was fully compliant (hue wasn't changed. I'm just showing off):
+
+
+![banner](https://img.ctohm.com/ch=250_cx=40_cw=560_hue=110/img.ctohm.com/banner.png)
+`https://img.ctohm.com/ch=250_cx=80_cw=470_format=webp_q=0.5/img.ctohm.com/banner.png`
+
+-----------
+
+
+
+## TODO
+
+- [ ] tests
+- [ ] use vary to deliver WEBP, then AVIF to everyone except iOS
+- [ ] figure out a way to receive device pixel ratio and deliver retina images
+- [ ] other transformations
+- [ ] get absorbed by Cloudflare
+- [ ] don't get absorbed but have massive adoption
+  - [ ] lots of issues 
+  - [ ] anxiety
+  - [ ] abandon project
