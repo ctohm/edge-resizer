@@ -17,7 +17,6 @@ export type RequestWithParams = Request & {
 
 }
 
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
 
 
@@ -75,11 +74,15 @@ router
   //.get('/(?:_)?([^=]+)=([^_]+)/')
   //.get(`/(http|https)/:domain/:pathname*`, thirdParty)
   .get('/favicon.ico', () => new Response(fallbackSvg, { headers: { 'Content-Type': 'image/svg' } }))
-  .get('*',
-    (
-      request: RequestWithParams, env: EnvWithBindings, ctx: Context) => getAssetFromKV({ request, waitUntil: ctx.waitUntil } as unknown as FetchEvent
-      )
-  )
+  .get('/', () => {
+    return fetch('https://ctohm.github.io/edge-resizer/').then(res => res.text())
+      .then(html => new Response(
+        html.replace('<body>', '<body style="max-width:900px;margin:0 auto">'), {
+        headers: { 'content-type': 'text/html' }
+      }
+      ))
+  })
+
 
 
 
