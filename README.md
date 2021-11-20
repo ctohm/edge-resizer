@@ -14,27 +14,45 @@ This worker computes the original image's URL using the convention:
 
 `https://img.ctohm.com/<protocol>/<domain>/<pathname>`
 
-Let's use CF-Badger logo as an example:
+Example: 
 
-`https://cf-badger.com/images/cf-badger-512x512.png`
+- Origin src: `https://cf-badger.com/images/cf-badger-512x512.png`
+- Edge-processed src: `https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png`
 
-You'd request it with
+Which means:
 
-`https://img.ctohm.com/` `https` / `cf-badger.com` / `images/cf-badger-512x512.png`
+|`https://img.ctohm.com/` |`https` /| `cf-badger.com` /| `images/cf-badger-512x512.png`|
+|----------|------|---------|  --- |
+| *worker subdomain* |*protocol*| *origin hostname*| *origin pathname*|
+
+
+#### Transformations
 
 Query string parameters can be passed along to perform transformations over the image: resizing, optimizing, compression, changing format, cropping and changing hue. These operations are applied through [Images.weserv.nl API](https://images.weserv.nl/)
 
 e.g `https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150`
 
-| w=150 hue=160 | w=120 h=160 fit=contain cbf=green |   fit=cover sharp=2  |
+| w=150 hue=160 | w=160 h=120 cbf=green |   fit=cover sharp=2  |
 |----------|------|---------|  
-|![original](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&hue=160) |![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=120&h=160&fit=contain&cbg=green) |  ![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=100&fit=cover&sharp=2&cbg=green) |  
+|![original](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&hue=160) |![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=160&h=120&cbg=green) |  ![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=100&fit=cover&sharp=2&cbg=green) |  
 
-In the examples above, each thumbnail is created on the fly, then cached in the edge and served from there. Further requests for the same modification on the same original image will actually be served from the cache without ever reaching Weserve nor the origin. 
+In the examples above, each thumbnail is created on the fly, then cached in the edge and served from there. Further requests for the same modification on the same original image will actually be served from the cache without ever reaching Weserve nor the origin.
 
 Also, it will be served with distant expiration times so your browser will hopefully not need requesting it anytime soon.
 
 So yay, you've got a free on-demand thumbnail that is basically stored for free (unless we discover we've gone bankrupt due to TOS misunterstanding)
+
+#### Alternative Syntax 
+
+Instead of using the query string, parameters can be passed stringified in place of the protocol, so instead of requesting this:
+
+https://img.ctohm.com/https/ctohm.github.io/edge-resizer/docs/designcue-z6oS9pVZghE-unsplash_1920x1440.jpg?ch=150&cy=10&w=700
+
+I could do
+
+https://img.ctohm.com/ch=150_cy=10_w=700/ctohm.github.io/edge-resizer/docs/designcue-z6oS9pVZghE-unsplash_1920x1440.jpg
+
+![Unsplash](https://img.ctohm.com/ch=150_cy=10_w=700/ctohm.github.io/edge-resizer/docs/designcue-z6oS9pVZghE-unsplash_1920x1440.jpg)
 
 
 
@@ -101,18 +119,20 @@ It turns out this was an unforgivable sin, for which the app was stopped from pu
 
 Technically, I could modify all banners using query string:
 
-![banner](https://img.ctohm.com/https/img.ctohm.com/banner.png?ch=250)
+![banner](https://img.ctohm.com/https/ctohm.github.io/edge-resizer/docs/banner.png?ch=250)
 `https://img.ctohm.com/https/img.ctohm.com/banner.png?ch=250`
 
 But their verification system didn't take those parameters in consideration. So we implemented an alternate syntax that dismisses protocol parameter and in its place, instead, encodes the query parameters. The resulting banner, in the end, was fully compliant
 
 
-![banner](https://img.ctohm.com/ch=250_cx=40_cw=560_hue=110/img.ctohm.com/banner.png)
-`https://img.ctohm.com/ch=250_cx=80_cw=470_format=webp_q=0.5/img.ctohm.com/banner.png`
+![banner](https://img.ctohm.com/ch=250_cx=40_cw=560_hue=110/ctohm.github.io/edge-resizer/docs/banner.png)
+`https://img.ctohm.com/ch=250_cx=80_cw=470_format=webp_q=0.5/ctohm.github.io/edge-resizer/docs/banner.png`
 
  (hue wasn't changed. I'm just showing off)
 
 -----------
+Photo by drmakete lab on Unsplash
+
 
 
 
