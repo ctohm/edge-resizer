@@ -35,7 +35,7 @@ https://img.ctohm.com/ctohm.github.io/edge-resizer/designcue-unsplash.jpg
 
 Edge-Resizer understands it as:
 
-|`https://img.ctohm.com/` |`https` | `cf-badger.com` | `images/cf-badger-512x512.png`|
+|`https://img.ctohm.com/` |`https` | `ctohm.github.io` | `edge-resizer/designcue-unsplash.jpg`|
 |----------|------|---------|  --- |
 | *worker subdomain* |*protocol*| *origin hostname*| *origin pathname*|
 
@@ -44,16 +44,18 @@ Edge-Resizer understands it as:
 
 Query string parameters can be passed along to perform transformations over the image: resizing, optimizing, compression, changing format, cropping and changing hue. These operations are applied through [Images.weserv.nl API](https://images.weserv.nl/)
 
-e.g
+e.g resize to 150x150
 ```html
 https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=150`
 ```
 
-| w=130 hue=160 | w=160 h=120 cbf=green |   fit=cover sharp=2  |
-|----------|------|---------|  
-|![original](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=130&hue=160) |![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=160&h=120&cbg=green) |  ![fit and cbg](https://img.ctohm.com/https/cf-badger.com/images/cf-badger-512x512.png?w=150&h=100&fit=cover&sharp=2&cbg=green) |  
+| w=150 h=150 |
+|----------|
+|![150x150](https://img.ctohm.com/w=150_h=150/cf-badger.com/images/cf-badger-512x512.png)
 
-In the examples above, each thumbnail is created on the fly, then cached in the edge and served from there. Further requests for the same modification on the same original image will actually be served from the cache without ever reaching Weserve nor the origin.
+
+
+In the example above, the thumbnail is created on the fly, then cached in the edge and served from there. Further requests for the same modification on the same original image will actually be served from the cache without ever reaching Weserve nor the origin.
 
 Also, it will be served with distant expiration times so your browser will hopefully not need requesting it anytime soon.
 
@@ -106,6 +108,11 @@ Edge-Resizer understands it as:
 https://img.ctohm.com/w=150_h=150/cf-badger.com/images/cf-badger-512x512.png
 ```
 
+| w=150 h=150 |
+|----------|
+|![150x150](https://img.ctohm.com/w=150_h=150/cf-badger.com/images/cf-badger-512x512.png)
+
+
 ### Fit/Colorize/Sharpen
 
  - fit: [Fit](https://images.weserv.nl/docs/fit.html)
@@ -115,6 +122,9 @@ https://img.ctohm.com/w=150_h=150/cf-badger.com/images/cf-badger-512x512.png
  - sharp: [Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
  - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) (is multipage images still a thing?)
 
+| w=100 hue=160 | w=160 h=100 cbg=green |  w=150 h=100 fit=cover sharp=4  |
+|----------|------|---------|  
+|![original](https://img.ctohm.com/w=100_hue=160/cf-badger.com/images/cf-badger-512x512.png) |![fit and cbg](https://img.ctohm.com/w=160_h=100_cbg=green/cf-badger.com/images/cf-badger-512x512.png) |  ![fit and cbg](https://img.ctohm.com/w=150_h=100_fit=cover&sharp=4/cf-badger.com/images/cf-badger-512x512.png) |  
 
 
 ### Compression/Optimization
@@ -123,6 +133,13 @@ https://img.ctohm.com/w=150_h=150/cf-badger.com/images/cf-badger-512x512.png
 - l: [Compression Level](https://images.weserv.nl/docs/format.html#compression-level)
 - q: [Quality](https://images.weserv.nl/docs/format.html#quality)
 - il: [Interlaced/Progressive](https://images.weserv.nl/docs/format.html#interlace-progressive)
+
+| resize only | q=60 |   af   | il  l=9 |
+|----------|------|---------|  --  |
+| 26.2Kb | |---------|  --  |
+|![original](http://192.168.0.18:8989/w=150_output=jpeg_q=100/ctohm.github.io/edge-resizer/docs/designcue-unsplash.jpg) |![jpg](http://192.168.0.18:8989/w=150_output=jpeg_q=60/ctohm.github.io/edge-resizer/docs/designcue-unsplash.jpg) |  ![af](http://192.168.0.18:8989/w=150_output=jpeg_af/ctohm.github.io/edge-resizer/docs/designcue-unsplash.jpg)  |  ![webp](http://192.168.0.18:8989/w=150_output=jpeg_il_l=9/ctohm.github.io/edge-resizer/docs/designcue-unsplash.jpg) |  
+
+
 
 ### Output Format and naming
 
