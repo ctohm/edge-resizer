@@ -5,6 +5,9 @@
   "main": "dist/worker.js",
   "types": "types/main.d.ts",
   "scripts": {
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
+    "docs:dev": "vitepress dev docs",
     "deploy": "wrangler publish",
     "dev": "wrangler dev --env=dev",
     "format": "prettier --write '**/*.{ts,js,css,json,md}'",
@@ -38,7 +41,8 @@
     "itty-router-extras": "^0.4.2",
     "miniflare": "^1.3.3",
     "prettier": "^2.2.1",
-    "typescript": "^4"
+    "typescript": "^4",
+    "vitepress": "^0.20.1"
   },
   "dependencies": {}
 }
