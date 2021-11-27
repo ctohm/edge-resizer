@@ -1,1 +1,1 @@
-docs/index.md
+docs/getting_started.md

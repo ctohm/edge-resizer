@@ -1,15 +1,9 @@
-name = "edge-resizer"
-route = "cdn.example.app/thumbnails/*"
+name = "ctohm-edge-resizer"
+route = "<YOUR ROUTE>"
 account_id = "<YOUR ACCOUNT>"
-zone_id = "<YOUT_ZONE_ID>"
+zone_id = "<YOUR_ZONE_ID>"
 type = "javascript"
 api_token = "<CF TOKEN>"
-
-[vars]
-  WORKER_ENV = "production"
-  PNG_QUALITY = 80
-  JPG_QUALITY = 90
-  
 
 [dev]
   port = 8989
@@ -17,7 +11,7 @@ api_token = "<CF TOKEN>"
   local_protocol = "http"
 
 [miniflare]
-  upstream = "https://cdn.example.app"
+  upstream = "https://img.ctohm.com"
   cache_persist = true
   env_path = ".env"
   wrangler_env = "dev"
@@ -28,10 +22,7 @@ api_token = "<CF TOKEN>"
   [env.dev]
     workers_dev = true
 
-    [env.dev.vars]
-      WORKER_ENV = "development"
-      PNG_QUALITY = 80
-      JPG_QUALITY = 90
+
 
 
 [build]
@@ -39,3 +30,6 @@ api_token = "<CF TOKEN>"
 
   [build.upload]
     format = "service-worker"
+
+
+

@@ -2,7 +2,8 @@ export { };
 
 declare global {
 
-  const PNG_QUALITY: number;
-  const JPG_QUALITY: number;
+
+  const DEBUG: boolean;
   const WORKER_ENV: string;
+  const ROUTE_PREFIX: string
 }

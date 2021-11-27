@@ -10,4 +10,14 @@ esbuild
 
     minify: mode === 'production',
   })
+  .then(() => {
+    return esbuild
+      .build({
+        entryPoints: ['src/basic.ts'],
+        bundle: true,
+        outfile: 'dist/basic.js',
+
+        minify: false
+      })
+  })
   .catch(() => process.exit(1));

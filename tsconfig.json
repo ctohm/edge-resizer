@@ -21,11 +21,9 @@
     "noImplicitThis": true
   },
   "include": [
-    "./src/bindings.d.ts",
     "./src/*.ts",
     "./src/**/*.ts",
-    // "./test/*.ts",
-    //"./test/**/*.ts",
+    "./src/**/*.d.ts",
     "./node_modules/@cloudflare/workers-types/index.d.ts"
   ],
   "exclude": ["node_modules/", "dist/"]

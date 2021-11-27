@@ -11,3 +11,4 @@ wrangler.yaml*
 *.log
 
 wrangler.toml
+docs/banner.xcf
