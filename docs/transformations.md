@@ -1,61 +1,30 @@
-# Transformations
+# ♻️ Transformations
 
-Parameters can be passed along to perform transformations over the image: resizing, optimizing, compression, changing format, cropping and changing hue. These operations are applied through [Images.weserv.nl API](https://images.weserv.nl/)
+Our routing logic expects the transformation part to come right before the target image hostname. This part of the variation url will be translated -under the hood- to searchParams as expected by [images.weserv.nl API](https://images.weserv.nl/). 
 
 e.g resize to 150x150
+
 ```html
-https://img.ctohm.com/https/ctohm.github.io/edge-resizer/designcue-unsplash.jpg?w=150&h=150`
+https://img.ctohm.com/w=150_h=150/riff.one/images/designcue-unsplash.jpg`
 ```
 
-| w=150 h=150 |
+<ShowCase>
+<template v-slot:first_paragraph>
+Except for the very first time they are requested (and inmediately cached), variations will answer from the edge at blazing speed, and will even survive for a few months if the original image is deleted. The image to the right doesn't exist but in Cloudflare's Cache.
+</template>
+<template v-slot:second_paragraph>The response headers will also hint the browser not to request this same asset for a year. While this isn't much of a feature, your browser will hopefully not need requesting it anytime soon and that will shave a couple of ms off.
+
+</template>
+<template v-slot:table>
+
+ | w=150 h=150 |
 |----------|
-|![150x150](https://img.ctohm.com/w=150_h=150/ctohm.github.io/edge-resizer/designcue-unsplash.jpg)
+|![150x150](https://img.ctohm.com/w=150_h=150/riff.one/images/designcue-unsplash.jpg)
 
+</template>
+</ShowCase>
 
-
-In the example above, the thumbnail is created on the fly, then cached in the edge and served from there. Further requests for the same modification on the same original image will actually be served from the cache without ever reaching Weserve nor the origin.
-
-Also, it will be served with distant expiration times so your browser will hopefully not need requesting it anytime soon.
-
-So yay, you've got a free on-demand thumbnail that is basically stored for free (unless we discover we've gone bankrupt due to TOS misunterstanding)
-
-### Alternative Syntax 
-
-Instead of using the query string, parameters can be passed stringified in place of the protocol, replacing `&` with `_`. So instead of requesting this:
-
-```html
-https://img.ctohm.com/https/ctohm.github.io/edge-resizer/designcue-unsplash.jpg?ch=150&cy=10&w=700
-```
-<center>
-<img src="https://img.ctohm.com/ch=150_cy=10_w=700/ctohm.github.io/edge-resizer/designcue-unsplash.jpg">
-
-<sup>Photo by drmakete lab on Unsplash</sup>
-
-</center>
-
-
-
-
-I could achieve the same transformation (width 700, crop height 150, crop vertical offset 10 ) using:
-
-```html
-https://img.ctohm.com/ch=150_cy=10_w=700/ctohm.github.io/edge-resizer/designcue-unsplash.jpg
-```
-
-See? the query string `ch=150&cy=10&w=700` was prepended to the pathname as `ch=150_cy=10_w=700`.
-
-Edge-Resizer understands it as:
-
-|`https://img.ctohm.com/` |`ch=150&cy=10&w=700` | `cf-badger.com` | `images/cf-badger-512x512.png`|
-|----------|------|---------|  --- |
-| *worker subdomain* |*transformations*| *origin hostname*| *origin pathname*|
-
-
-
-
-
-(I found a pretty good use case in which [this syntax shines over using query string](MY_USE_CASE.md))
-
+In this section we enumerate supported transformations such as resizing, optimizing, compression, changing format, cropping and changing hue. Other transformations can be passed directly as searchParams to the variation URL (not ideal, but :shrug:)
 
 ----------
 ## Available Transformations
@@ -70,12 +39,14 @@ Edge-Resizer understands it as:
 - dpr: [Device Pixel Ratio](https://images.weserv.nl/docs/size.html#device-pixel-ratio)
 
 ```html
-https://img.ctohm.com/w=150_h=150/ctohm.github.io/edge-resizer/designcue-unsplash.jpg
+https://img.ctohm.com/w=150_h=150/riff.one/images/dice.png
 ```
 
-| w=150 h=150 | w
-|----------|----------|
-|![150x150](https://img.ctohm.com/w=150_h=150/ctohm.github.io/edge-resizer/designcue-unsplash.jpg)|![150x150](https://img.ctohm.com/w=150_h=150/ctohm.github.io/edge-resizer/designcue-unsplash.jpg)
+| dpr=2 w=200 l=0 | dpr=2 w=200 l=6 af | dpr=2 w=200 q=100   | dpr=2 w=200 q=5 il |
+|----------|------|---------|  --  |
+| png 481kB | png 102kB | jpg 148kB| jpg 3.8kB  |
+|![original](https://img.ctohm.com/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://img.ctohm.com/dpr=4_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://img.ctohm.com/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://img.ctohm.com/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
+
 
 
 ### Fit/Colorize/Sharpen
@@ -89,7 +60,7 @@ https://img.ctohm.com/w=150_h=150/ctohm.github.io/edge-resizer/designcue-unsplas
 
 | w=100 hue=160 | w=160 h=100 cbg=green |  w=150 h=100 fit=cover sharp=4  |
 |----------|------|---------|  
-|![original](https://img.ctohm.com/w=100_hue=160/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |![fit and cbg](https://img.ctohm.com/w=160_h=100_cbg=green/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |  ![fit and cbg](https://img.ctohm.com/w=150_h=100_fit=cover&sharp=4/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |  
+|![original](https://img.ctohm.com/w=100_hue=160/riff.one/images/designcue-unsplash.jpg) |![fit and cbg](https://img.ctohm.com/w=160_h=100_cbg=green/riff.one/images/designcue-unsplash.jpg) |  ![fit and cbg](https://img.ctohm.com/w=150_h=100_fit=cover&sharp=4/riff.one/images/designcue-unsplash.jpg) |  
 
  ### Compression/Optimization
 
@@ -102,7 +73,7 @@ https://img.ctohm.com/w=150_h=150/ctohm.github.io/edge-resizer/designcue-unsplas
 | dpr=2 w=200 l=0 | dpr=2 w=200 l=6 af | dpr=2 w=200 q=100   | dpr=2 w=200 q=5 il |
 |----------|------|---------|  --  |
 | png 481kB | png 102kB | jpg 148kB| jpg 3.8kB  |
-|![original](https://img.ctohm.com/dpr=2_w=200_png_l=0/ctohm.github.io/edge-resizer/dice.png) |![jpg](https://img.ctohm.com/dpr=2_w=200_png_l=6_af/ctohm.github.io/edge-resizer/dice.png) |  ![af](https://img.ctohm.com/dpr=2_w=200_jpg_q=100/ctohm.github.io/edge-resizer/designcue-unsplash.jpg)  |  ![webp](https://img.ctohm.com/dpr=2_w=200_jpg_q=5/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |  
+|![original](https://img.ctohm.com/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://img.ctohm.com/dpr=2_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://img.ctohm.com/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://img.ctohm.com/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
 
 
 
@@ -112,12 +83,12 @@ https://img.ctohm.com/w=150_h=150/ctohm.github.io/edge-resizer/designcue-unsplas
 - filename: [Filename](https://images.weserv.nl/docs/format.html#filename)
 
 ```html
-https://img.ctohm.com/w=150_output=gif/ctohm.github.io/edge-resizer/designcue-unsplash.jpg
+https://img.ctohm.com/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
 ```
 
 | Original (png) | JPEG |   GIF   | WEBP |
 |----------|------|---------|  --  |
-|![original](https://img.ctohm.com/w=150_png/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |![jpg](https://img.ctohm.com/hue=90_w=150_jpg/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |  ![gif](https://img.ctohm.com/hue=180_w=150_gif/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |  ![webp](https://img.ctohm.com/hue=270_w=150_output=webp/ctohm.github.io/edge-resizer/designcue-unsplash.jpg) |  
+|![original](https://img.ctohm.com/w=150_png/riff.one/images/designcue-unsplash.jpg) |![jpg](https://img.ctohm.com/hue=90_w=150_jpg/riff.one/images/designcue-unsplash.jpg) |  ![gif](https://img.ctohm.com/hue=180_w=150_gif/riff.one/images/designcue-unsplash.jpg) |  ![webp](https://img.ctohm.com/hue=270_w=150_output=webp/riff.one/images/designcue-unsplash.jpg) |  
 
 
 ### Crop
@@ -129,12 +100,12 @@ https://img.ctohm.com/w=150_output=gif/ctohm.github.io/edge-resizer/designcue-un
 -  cx: 'Crop x',
 -  ch: 'Crop height',
 
-This one is tricky to get it right, but you can see an example on the story of [my use case](MY_USE_CASE.md).
+This one is tricky to get it right, but you can see an example on the story of [my use case](use_cases.md).
 
 | original w=200 h=150 | w=200 h=150 | w=200 h=150 |  w=400 h=300  |
 |----------|------|---------|  --  |
 |  | cx=20 cy=20 fit=cover| cx=20 cy=20 ch=54 fit=cover| cx=82 cy=67 ch=137 cw=224 fit=cover|
-|![original](https://img.ctohm.com/w=200_h=150/ctohm.github.io/edge-resizer/printable_chart.png) |![jpg](https://img.ctohm.com/w=200_h=150_cx=20_cy=20_fit=cover/ctohm.github.io/edge-resizer/printable_chart.png) |  ![af](https://img.ctohm.com/w=200_h=150_cx=20_cy=20_ch=54_fit=cover/ctohm.github.io/edge-resizer/printable_chart.png)  |  ![webp](https://img.ctohm.com/w=400_h=300_cx=82_cy=67_ch=137_cw=224_fit=cover/ctohm.github.io/edge-resizer/printable_chart.png) |  
+|![original](https://img.ctohm.com/w=200_h=150/riff.one/images/printable_chart.png) |![jpg](https://img.ctohm.com/w=200_h=150_cx=20_cy=20_fit=cover/riff.one/images/printable_chart.png) |  ![af](https://img.ctohm.com/w=200_h=150_cx=20_cy=20_ch=54_fit=cover/riff.one/images/printable_chart.png)  |  ![webp](https://img.ctohm.com/w=400_h=300_cx=82_cy=67_ch=137_cw=224_fit=cover/riff.one/images/printable_chart.png) |  
 
 
 --------------
@@ -143,7 +114,10 @@ This one is tricky to get it right, but you can see an example on the story of [
 
 ## TODO
 
-- [ ] tests
+- [x] basic tests
+- [ ] more tests
+- [ ] deploy with workers
+- [ ] enable using Edge-Resizer as a dependency
 - [x] fix a handful of embarassing bugs after announcing what-i-built
 - [ ] use vary to deliver WEBP, then AVIF to everyone except iOS
 - [ ] figure out a way to receive device pixel ratio and deliver retina images

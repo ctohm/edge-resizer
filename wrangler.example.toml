@@ -5,23 +5,11 @@ zone_id = "<YOUR_ZONE_ID>"
 type = "javascript"
 api_token = "<CF TOKEN>"
 
-[dev]
-  port = 8989
-  ip = "127.0.0.1"
-  local_protocol = "http"
 
-[miniflare]
-  upstream = "https://img.ctohm.com"
-  cache_persist = true
-  env_path = ".env"
-  wrangler_env = "dev"
-  port = 8989
-
-[env]
-
-  [env.dev]
-    workers_dev = true
-
+[vars]
+  WORKER_ENV = "production"
+  DEBUG = false
+  ROUTE_PREFIX='/' # e.g. /thumbnails
 
 
 

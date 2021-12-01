@@ -1,10 +1,11 @@
 declare module "itty-router-extras" {
-    import { Router, Route, RouterOptions } from 'itty-router'
+    import { Router, Route, RouterOptions, RouteEntry } from 'itty-router';
 
     function ThrowableRouter<TRequest>(options?: RouterOptions<TRequest> & { stack?: boolean }): Router<TRequest>
 
     type ThrowableRouter<TRequest> = {
-        handle: (request: Request & TRequest, ...extra: any) => any
+        handle: (request: Request & TRequest, ...extra: any) => any,
+        routes: RouteEntry<TRequest>[];
     } & {
         [any: string]: Route
     }

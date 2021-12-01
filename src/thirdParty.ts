@@ -1,12 +1,13 @@
 
-import { EnvWithBindings, RequestWithParams } from '.';
+import type { EnvWithBindings, RequestWithParams } from "./ResizerRouter";
 
-import { Context } from './index';
+import { Context, TImageParameters } from './ResizerRouter';
 
 async function computeCachedResponse(imageRequest: Request, ctx: Context, env?: EnvWithBindings,) {
     let debug = env && env.DEBUG ? console.log.bind('computeCachedResponse:') : () => { return null }
     let cacheEntry = imageRequest.headers.get('X-cacheEntry'),
-        filename = imageRequest.headers.get('filename')
+        fileName = imageRequest.headers.get('fileName'),
+        inputExtension = imageRequest.headers.get('X-inputExtension') || fileName?.split('.').pop() || ''
     const cache = caches.default;
 
     let resizedUrlStr = imageRequest.url
@@ -26,7 +27,7 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context, env?: 
     if (!response.ok || !contentType.startsWith('image')) {
         return response
     }
-
+    let newExtension = contentType.split('/').pop()?.replace('jpeg', 'jpg')
     response = new Response(response.body, response);
     let sourceUrl = imageRequest.headers.get('X-sourceUrl')
     //Set cache control headers to cache on browser for 1 year
@@ -41,8 +42,8 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context, env?: 
     if (sourceUrl) response.headers.set('X-sourceUrl', sourceUrl);
     response.headers.set('X-resizedUrl', resizedUrlStr);
 
-    if (filename) {
-        response.headers.set('Content-Disposition', `inline; filename=${filename}`);
+    if (fileName) {
+        response.headers.set('Content-Disposition', `inline; filename=${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension)).trim()}`);
     }
     let cacheRequest = cacheEntry ? new Request(cacheEntry) : imageRequest
     response.headers.set('link', `<${cacheRequest.url}>; rel="canonical"`)
@@ -54,7 +55,7 @@ function getFileName(url: URL): { fileName: string; extension: string } {
     const { pathname } = url,
         fileName = ((pathname || '').split('/').pop() || '').split('.'),
         extension = (fileName.pop() || '').toLowerCase();
-    return { fileName: fileName.join('.'), extension };
+    return { fileName: [...fileName, extension].join('.'), extension };
 }
 
 export const thirdParty = async (
@@ -63,7 +64,7 @@ export const thirdParty = async (
     ctx: Context,
     env?: EnvWithBindings
 ): Promise<Response> => {
-    const { transforms, protocol = 'https', domain, pathname, origin } = request.params
+    const { transforms, protocol = 'https', domain, pathname, origin } = request.params || {} as TImageParameters
     let debug = env && env.DEBUG ? console.log.bind('thirdParty:') : () => { return null }
     let url = new URL(request.url)
 
@@ -73,11 +74,10 @@ export const thirdParty = async (
 
         defaultSearchParams = {
             fit: 'contain',
-            //af: '',
             n: '-1',
 
         } as Record<string & keyof IdefaultSearchParams, string>;
-    let computedSearchParams = { ...defaultSearchParams, ...transforms }
+    let computedSearchParams = { ...defaultSearchParams, ...transforms } as Record<string & keyof IdefaultSearchParams, string>;
     for (let [paramName, paramValue] of url.searchParams.entries()) {
         if (Object.keys(AvailableTransforms).includes(paramName as keyof IdefaultSearchParams)) {
             computedSearchParams[paramName as keyof IdefaultSearchParams] = paramValue;
@@ -102,6 +102,14 @@ export const thirdParty = async (
         if (!computedSearchParams.q) {
             computedSearchParams.q = '75'
         }
+    } else if (!['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(computedSearchParams.output)) {
+     /**
+      *  Remove output parameter if it's not supported
+      */   let { output: discardedOutput, ...otherSearchParams } = computedSearchParams
+        debug(discardedOutput)
+
+        computedSearchParams = otherSearchParams as unknown as Record<string & keyof IdefaultSearchParams, string>;
+
     }
     /*if (['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(extension)) {
         computedSearchParams.output = extension
@@ -122,9 +130,16 @@ export const thirdParty = async (
     let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
 
     let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
-    debug({ cacheEntry })
+    debug({ cacheEntry, fileName })
     const cache = caches.default;
+    /**
+     * Canonical cached URL doesn't have weserv parameters `url` nor `filename`. 
+     * The former is already present in the original URL.  The latter is unrelated to the image's
+     * binary contents
+     * @todo The protocol isn't considered either. Shoudl it be?
+     */
     let response = await cache.match(new Request(cacheEntry))
+    weservUrl.searchParams.set('filename', fileName);
 
     weservUrl.searchParams.set('url', urlParam);
     if (['https', 'ssl'].includes(protocol)) weservUrl.searchParams.set('url', `ssl:${urlParam}`);
@@ -151,12 +166,14 @@ export const thirdParty = async (
     return computeCachedResponse(
         new Request(weservUrl.toString(), {
             headers: {
-                "accept": accept,
+                fileName,
+                accept,
                 "accept-encoding": accept_encoding,
                 "accept-language": accept_language,
                 "user-agent": user_agent,
                 "cache-control": cache_control,
                 "X-sourceUrl": request.url,
+                "X-inputExtension": extension,
                 "X-cacheEntry": cacheEntry
             }
         }), ctx).catch(err => {

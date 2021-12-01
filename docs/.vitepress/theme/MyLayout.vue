@@ -1,16 +1,14 @@
-<script setup>
-import DefaultTheme from 'vitepress/theme'
-const { Layout } = DefaultTheme
-</script>
-
 <template>
-  <Layout>
-      <!--  <template #sidebar-top>
-      My custom sidebar top content
-    </template>-->
-    <!--<template #home-features>
-     title   {{ $frontmatter.features }}
-    </template>-->
-
+    <Layout>
+   <template #home-hero>
+     <!-- My custom sidebar top content-->
+    </template>
   </Layout>
 </template>
+<script setup lang="ts">
+import DefaultTheme from 'vitepress/theme'
+const { Layout } = DefaultTheme
+
+ 
+
+</script>

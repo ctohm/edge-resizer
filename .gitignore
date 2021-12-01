@@ -12,3 +12,5 @@ wrangler.yaml*
 
 wrangler.toml
 docs/banner.xcf
+.temp
+.cache

@@ -3,3 +3,10 @@
     --c-brand: #7491a3;
     --c-brand-light: #99b8e7;
   }
+  a {
+    font-weight:600 ;
+    color:darkslategrey !important;
+  }
+  .nav-link.action a { color:white !important;font-weight:500 !important;}
+
+  .content table 

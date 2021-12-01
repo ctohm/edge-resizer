@@ -13,9 +13,9 @@ esbuild
   .then(() => {
     return esbuild
       .build({
-        entryPoints: ['src/basic.ts'],
+        entryPoints: ['src/ResizerRouter.ts'],
         bundle: true,
-        outfile: 'dist/basic.js',
+        outfile: 'dist/ResizerRouter.js',
 
         minify: false
       })
