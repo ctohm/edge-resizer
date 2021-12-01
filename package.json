@@ -4,6 +4,7 @@
   "description": "Clever routing to serve image variations using images.weserv.nl + cloudflare edge cache",
   "main": "src/worker.js",
   "types": "types/main.d.ts",
+  "files":["src","dist","test"],
   "scripts": {
     "docs:build": "vitepress build docs",
     "docs:dev": "vitepress dev docs -p 3000",
