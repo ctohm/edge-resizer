@@ -36,6 +36,7 @@ function getFileName(url: URL): { fileName: string; extension: string } {
 
 export interface IdefaultSearchParams {
     cbg: string;
+    page?: number;
     bg: string;
     fit: string;
     af: string;
@@ -88,6 +89,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
     l: 'Compression Level', //https://images.weserv.nl/docs/format.html#compression-level
     w: 'Width',
     h: 'Height',
+    page: 'Page',//https://images.weserv.nl/docs/format.html#page
     a: 'Alignment',
     output: 'Output', //https://images.weserv.nl/docs/format.html#output
     //  filename: 'Filename', //https://images.weserv.nl/docs/format.html#filename

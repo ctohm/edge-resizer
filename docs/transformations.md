@@ -64,18 +64,31 @@ https://img.ctohm.com/w=150_h=150/riff.one/images/dice.png
 ### Pages and Frames
 
 - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) 
+- page: [Page](https://images.weserv.nl/docs/format.html#page)
 
-Use this parameter to limit output to the first n  pages on a PDF or frames in an animation 
+Use the `n` parameter to limit output to the first n  pages on a PDF 
 
 
-| original PDF: 2 pages |n=1 (only page 1) |  n=2 (first two pages)  |
+| original PDF: 3 pages  |  n=2 (first two pages) |n=1 (only page 1) |
+|----------|------|---------|
+|![original](https://img.ctohm.com/w=300/riff.one/img/sample_3pages.pdf) |![page 1](https://img.ctohm.com/w=300_n=2/riff.one/img/sample_3pages.pdf) |  ![page 2](https://img.ctohm.com/w=300_n=1/riff.one/img/sample_3pages.pdf) |     
+
+Likewise, use it to limit to the first n frames in an animation 
+
+| original 24 frames | limit to 6 frames | 3 frames | wtf is this? (page=2) |
+|----------|------|---------|   -- |
+|![original](https://img.ctohm.com/w=300/riff.one/img/pig.gif) |![5 frames](https://img.ctohm.com/w=300_n=6/riff.one/img/pig.gif) | ![3 frames](https://img.ctohm.com/w=300_n=3/riff.one/img/pig.gif) |![original](https://img.ctohm.com/w=300_page=2/riff.one/img/pig.gif) |
+
+The `page` parameter is used to pick a particular resolution on a multi resolution .ico (however it had a weird effect in the pig above)
+
+| 72x72 | 96x96 | 128x128 |
 |----------|------|---------|  
-|![original](https://img.ctohm.com/w=300/riff.one/img/sample_3pages.pdf) |![page 1](https://img.ctohm.com/w=300_n=1/riff.one/img/sample_3pages.pdf) |  ![page 2](https://img.ctohm.com/w=300_n=2/riff.one/img/sample_3pages.pdf) |    
+|![original](https://img.ctohm.com/page=1/riff.one/img/multi_res.ico) |![5 frames](https://img.ctohm.com/page=2/riff.one/img/multi_res.ico) | ![3 frames](https://img.ctohm.com/page=3/riff.one/img/multi_res.ico) |  
 
 
-| original | limit to 5 frames |
+| page=1 | page=2 | page=3 |
 |----------|------|---------|  
-|![original](https://img.ctohm.com/w=300/riff.one/img/banana.gif) |![5 frames](https://img.ctohm.com/w=300_n=5/riff.one/img/banana.gif) |  
+|![page 2](https://img.ctohm.com/w=300_page=1_png/riff.one/img/image.tiff) |![page 2](https://img.ctohm.com/w=300_page=2_png/riff.one/img/image.tiff)| ![page 2](https://img.ctohm.com/w=300_page=-2_png/riff.one/img/image.tiff) |  
 
 
 
