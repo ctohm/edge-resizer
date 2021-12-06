@@ -43,7 +43,7 @@ export interface IdefaultSearchParams {
     w?: string | null;
     h?: string | null;
     output?: string;
-    filename?: string;
+    // filename?: string;
     q?: string;
     n?: string;
     il?: string;
@@ -90,7 +90,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
     h: 'Height',
     a: 'Alignment',
     output: 'Output', //https://images.weserv.nl/docs/format.html#output
-    filename: 'Filename', //https://images.weserv.nl/docs/format.html#filename
+    //  filename: 'Filename', //https://images.weserv.nl/docs/format.html#filename
     q: 'Quality', //https://images.weserv.nl/docs/format.html#quality
     n: 'Number of Pages', //https://images.weserv.nl/docs/format.html#number-of-pages
     il: 'Interlaced/Progressive',
@@ -106,6 +106,9 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
 
 
 }
+import { parse } from "worktop/cookie"
+
+
 export class ResizerRouter {
     readonly validKeys = Object.keys(AvailableTransforms).concat(Object.keys(AvailableFormats), ['http', 'https', 'images', 'img']);
 
@@ -244,9 +247,9 @@ export class ResizerRouter {
             }
         }
         let { fileName, extension } = getFileName(url)
+        let nocache = url.searchParams.has('nocache')
 
-
-        debug({ fileName, extension }, Object.entries(computedSearchParams).map(([key, value]) => `${key}=${value}`).join('_'))
+        debug({ nocache, fileName, extension }, Object.entries(computedSearchParams).map(([key, value]) => `${key}=${value}`).join('_'))
 
         let urlParam = `${url.hostname}${url.pathname}`,
             weservUrl = new URL('https://images.weserv.nl/');
@@ -286,15 +289,16 @@ export class ResizerRouter {
         let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
 
         let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
-        debug({ cacheEntry, fileName })
         const cache = caches.default;
+
+        debug({ cacheEntry, fileName })
         /**
          * Canonical cached URL doesn't have weserv parameters `url` nor `filename`. 
          * The former is already present in the original URL.  The latter is unrelated to the image's
          * binary contents
          * @todo The protocol isn't considered either. Shoudl it be?
          */
-        let response = await cache.match(new Request(cacheEntry))
+        let response = !nocache && await cache.match(new Request(cacheEntry))
         weservUrl.searchParams.set('filename', fileName);
 
         weservUrl.searchParams.set('url', urlParam);
@@ -304,6 +308,7 @@ export class ResizerRouter {
             weservUrl.searchParams.set('filename', renamedFilename);
         }
         weservUrl.searchParams.sort()
+        if (nocache) weservUrl.searchParams.set('cachebust', String(Date.now()))
         debug(weservUrl.toString())
         if (response) {
             //debug({ cacheHit: true, ctx });
@@ -314,16 +319,25 @@ export class ResizerRouter {
             "accept-encoding": accept_encoding,
             "accept-language": accept_language,
             "user-agent": user_agent,
-            "cache-control": cache_control
+            "cache-control": cache_control,
+            Cookie
         } = Object.fromEntries(request.headers.entries())
 
+        const cookie = Object.entries(parse(request.headers.get("Cookie") || "")),
+            cfFiltered = cookie.filter(([key, val]) => key.startsWith('cf.image.'));
 
+        let cfImages = cfFiltered.reduce((accum, [key, val]) => {
+            accum[key.replace('cf.image.', '')] = val
+            console.log(accum)
+            return accum
+        }, {} as { [s: string]: unknown })
 
         return this.computeCachedResponse(
             new Request(weservUrl.toString(), {
                 headers: {
                     fileName,
                     accept,
+
                     "accept-encoding": accept_encoding,
                     "accept-language": accept_language,
                     "user-agent": user_agent,
@@ -332,12 +346,12 @@ export class ResizerRouter {
                     "X-inputExtension": extension,
                     "X-cacheEntry": cacheEntry
                 }
-            }), ctx).catch(err => {
+            }), ctx, cfImages).catch(err => {
                 return fetch(`https://${urlParam}`)
             })
 
     }
-    async computeCachedResponse(imageRequest: Request, ctx: Context): Promise<Response> {
+    async computeCachedResponse(imageRequest: Request, ctx: Context, cfImages: { [s: string]: unknown }): Promise<Response> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let cacheEntry = imageRequest.headers.get('X-cacheEntry'),
             fileName = imageRequest.headers.get('fileName'),
@@ -345,14 +359,11 @@ export class ResizerRouter {
         const cache = caches.default;
 
         let resizedUrlStr = imageRequest.url
-        let maxAge = 31536000
-        if (imageRequest.headers.has('max-age')) {
-            maxAge = Number(imageRequest.headers.get('max-age'))
-        }
-        let cf = {
-            cacheTtl: maxAge,
 
-            //image: { format: 'avif' },
+
+        let cf = {
+
+            image: cfImages || {},
         };
         let response = await fetch(resizedUrlStr, { cf });
 

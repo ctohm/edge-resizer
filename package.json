@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "Clever routing to serve image variations using images.weserv.nl + cloudflare edge cache",
   "main": "dist/worker.js",
-  
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/ctohm/edge-resizer"
-    },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ctohm/edge-resizer"
+  },
   "types": "types/main.d.ts",
-  "files":["src","dist","test"],
+  "files": [
+    "src",
+    "dist",
+    "test"
+  ],
   "scripts": {
     "docs:build": "vitepress build docs",
     "docs:dev": "vitepress dev docs -p 3000",
@@ -25,13 +28,13 @@
   "author": "Felipe Figueroa <ffigueroa@ctohm.com>",
   "license": "MIT OR Apache-2.0",
   "devDependencies": {
-    "edge-resizer":"link:./lib",
     "@cloudflare/workers-types": "^2.0.0",
     "@types/node": "^14.14.31",
     "@types/service-worker-mock": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "ava": "^3.15.0",
+    "edge-resizer": "link:./lib",
     "esbuild": "^0.12.22",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
@@ -42,7 +45,8 @@
     "miniflare": "^1.3.3",
     "prettier": "^2.2.1",
     "typescript": "^4",
-    "vitepress": "^0.20.1"
+    "vitepress": "^0.20.1",
+    "worktop": "^0.7.3"
   },
   "dependencies": {}
 }

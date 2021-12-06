@@ -55,11 +55,31 @@ https://img.ctohm.com/w=150_h=150/riff.one/images/dice.png
  - cbg: Background Color for Fit=Contain (eg  fit=contain&cbg=0f0)
  - hue: [🔗 Hue Rotation (0 to 360) ](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
  - sharp: [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
- - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) (is multipage images still a thing?)
+ 
 
 | w=100 hue=160 | w=160 h=100 cbg=green |  w=150 h=100 fit=cover sharp=4  |
 |----------|------|---------|  
 |![original](https://img.ctohm.com/w=100_hue=160/riff.one/images/designcue-unsplash.jpg) |![fit and cbg](https://img.ctohm.com/w=160_h=100_cbg=green/riff.one/images/designcue-unsplash.jpg) |  ![fit and cbg](https://img.ctohm.com/w=150_h=100_fit=cover&sharp=4/riff.one/images/designcue-unsplash.jpg) |  
+
+### Pages and Frames
+
+- n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) 
+
+Use this parameter to limit output to the first n  pages on a PDF or frames in an animation 
+
+
+| original PDF: 2 pages |n=1 (only page 1) |  n=2 (first two pages)  |
+|----------|------|---------|  
+|![original](https://img.ctohm.com/w=300/riff.one/img/sample_3pages.pdf) |![page 1](https://img.ctohm.com/w=300_n=1/riff.one/img/sample_3pages.pdf) |  ![page 2](https://img.ctohm.com/w=300_n=2/riff.one/img/sample_3pages.pdf) |    
+
+
+| original | limit to 5 frames |
+|----------|------|---------|  
+|![original](https://img.ctohm.com/w=300/riff.one/img/banana.gif) |![5 frames](https://img.ctohm.com/w=300_n=5/riff.one/img/banana.gif) |  
+
+
+
+
 
  ### Compression/Optimization
 

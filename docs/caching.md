@@ -25,9 +25,9 @@ Except for the very first time they are requested (and inmediately cached), vari
 The routing logic will take care of canonicalizing the transformation parameters so you don't need to care about their order. The next two URLs are equivalent
 
 ```html
-https://img.ctohm.com/w=150_h=150/riff.one/images/designcue-unsplash.jpg
+https://img.ctohm.com/il_w=150_h=150/riff.one/images/designcue-unsplash.jpg
 
-https://img.ctohm.com/h=150_w=150/riff.one/images/designcue-unsplash.jpg
+https://img.ctohm.com/h=150_il_w=150/riff.one/images/designcue-unsplash.jpg
 
 ```
 
