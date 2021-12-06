@@ -1,0 +1,29 @@
+{
+ "name": "@ctohm/edge-resizer",
+ "version": "1.1.2",
+ "description": "Clever routing to serve image variations using images.weserv.nl + cloudflare edge cache",
+ "main": "ResizerRouter.cjs",
+ "module": "ResizerRouter.mjs",
+ "types": "main.d.ts",
+ "repository": {
+  "type": "git",
+  "url": "https://github.com/ctohm/edge-resizer"
+ },
+ "scripts": {
+  "build": "yarn build:types && yarn build:cjs && yarn build:esm ",
+  "build:esm": "esbuild --bundle ResizerRouter.ts --format=esm --outfile=ResizerRouter.mjs",
+  "build:cjs": "esbuild --bundle ResizerRouter.ts --format=cjs --outfile=ResizerRouter.js",
+  "build:types": "tsc --project ."
+ },
+ "author": "Felipe Figueroa <ffigueroa@ctohm.com>",
+ "license": "MIT OR Apache-2.0",
+ "devDependencies": {
+  "esbuild": "^0.14.2",
+  "itty-router": "^2.4.4",
+  "itty-router-extras": "^0.4.2"
+ },
+ "peerDependencies": {
+  "typescript": "^4"
+ },
+ "dependencies": {}
+}
