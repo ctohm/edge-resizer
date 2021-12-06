@@ -24,6 +24,8 @@ Except for the very first time they are requested (and inmediately cached), vari
 </template>
 </ShowCase>
 
+----
+
 In this section we enumerate supported transformations such as resizing, optimizing, compression, changing format, cropping and changing hue. Other transformations can be passed directly as searchParams to the variation URL (not ideal, but :shrug:)
 
 ----------
@@ -88,7 +90,7 @@ The `page` parameter is used to pick a particular resolution on a multi resoluti
 
 | page=1 | page=2 | page=3 |
 |----------|------|---------|  
-|![page 2](https://img.ctohm.com/w=300_page=1_png/riff.one/img/image.tiff) |![page 2](https://img.ctohm.com/w=300_page=2_png/riff.one/img/image.tiff)| ![page 2](https://img.ctohm.com/w=300_page=-2_png/riff.one/img/image.tiff) |  
+|![page 2](https://img.ctohm.com/w=300_page=1_png/riff.one/img/banners.tiff) |![page 2](https://img.ctohm.com/w=300_page=2_png/riff.one/img/banners.tiff)| ![page 2](https://img.ctohm.com/w=300_page=-2_png/riff.one/img/banners.tiff) |  
 
 
 
