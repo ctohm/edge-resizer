@@ -13,4 +13,13 @@ Please note **images.weserv.nl** and Cloudflare must be able to access the sourc
 :blush: ...*Besides the above explanation, in all honesty you could also say it's a cheap version of [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing)*
 
 
-[[toc]]
+
+* ['🍬 About](https://img.ctohm.com/about.html)
+* ['🔌 Routing Strategy](https://img.ctohm.com/routing.html)
+* ['🔗 Hotlink at will](https://img.ctohm.com/hotlinking.html)
+* ['🌎 Deploy your own](https://img.ctohm.com/deploy.html)
+* ['📙 Use it as a library](https://img.ctohm.com/library.html)
+* ['♻️ Transformations](https://img.ctohm.com/transformations.html)
+* ['🔃 Conversion](https://img.ctohm.com/conversion.html)
+* ['🚀 Caching](https://img.ctohm.com/caching.html)
+* ['⛳ Use Cases](https://img.ctohm.com/use_cases.html)

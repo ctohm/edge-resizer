@@ -3,12 +3,12 @@
 For those cases in which you want to add Edge-Resizer capabilities to your existing worker, required with `npm` or `yarn` 
 
 ```bash
-npm i -D @ctohm/edge-resizer
+npm i -D edge-resizer
 ```
 
 
 ```bash
-yarn add -D @ctohm/edge-resizer
+yarn add -D edge-resizer
 ```
 
 It's up to you where to have Edge-Resizer's router handle the request, but when you do, make sure you instance it with the proper `ROUTE_PREFIX` (it should have a leading slash).
@@ -20,13 +20,12 @@ Parameters to the `handle` method are pretty generic: the ubiquitous Request, an
 
 ```ts 
 
-import { EnvWithBindings,   ResizerRouter } from './ResizerRouter'
+import {ResizerRouter} from 'edge-resizer/ResizerRouter'
 
 addEventListener('fetch', async (event: FetchEvent) => {
   //console.log({ url, keys: Object.keys(event.request) })
   const { request } = event,
-    
-    env: EnvWithBindings = {
+    env = {
       WORKER_ENV:'development',
       DEBUG:true,
       ROUTE_PREFIX='/'
@@ -44,11 +43,10 @@ If your worker is using the `module` format:
 
 ```ts 
 
-import type { EnvWithBindings } from  '@ctohm/edge-resizer/dist/ResizerRouter'
-import {ResizerRouter} from '@ctohm/edge-resizer/dist/ResizerRouter'
+import {ResizerRouter} from 'edge-resizer/ResizerRouter'
 
 export default {
-    fetch:(request,env,context) => {
+    fetch:(request, env, context) => {
         const resizeRouter=new ResizerRouter({base: env.ROUTE_PREFIX||'/' })
         return resizeRouter.handle(request, env, context)
     }

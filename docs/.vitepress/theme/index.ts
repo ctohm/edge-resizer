@@ -3,7 +3,7 @@ import DefaultTheme from 'vitepress/theme'
 import './style.css'
 
 import ShowCase from './ShowCase.vue'
-
+import OutputFormats from './OutputFormats.vue'
 import MyLayout from './MyLayout.vue'
 export default {
   ...DefaultTheme,
@@ -21,7 +21,8 @@ export default {
     //app.component('MarkdownBox', MarkdownBox)
     //app.component('NativeSelect', NativeSelect)
     //app.component('RepoAndButtons', RepoAndButtons)
-    //app.component('BadgerComponent', BadgerComponent)
+    app.component('output-formats', OutputFormats)
+
     app.component('ShowCase', ShowCase)
   }
 }

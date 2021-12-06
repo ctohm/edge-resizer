@@ -34,28 +34,27 @@ In this section we enumerate supported transformations such as resizing, optimiz
 ### Width and Height
 
 
--    w: [Width](https://images.weserv.nl/docs/size.html#width),
--    h: [Height](https://images.weserv.nl/docs/size.html#height)
-- dpr: [Device Pixel Ratio](https://images.weserv.nl/docs/size.html#device-pixel-ratio)
+-    w: [🔗 Width](https://images.weserv.nl/docs/size.html#width),
+-    h: [🔗 Height](https://images.weserv.nl/docs/size.html#height)
+- dpr: [🔗 Device Pixel Ratio](https://images.weserv.nl/docs/size.html#device-pixel-ratio)
 
 ```html
 https://img.ctohm.com/w=150_h=150/riff.one/images/dice.png
 ```
 
-| dpr=2 w=200 l=0 | dpr=2 w=200 l=6 af | dpr=2 w=200 q=100   | dpr=2 w=200 q=5 il |
+| dpr=2 w=200 l=0 | dpr=4 w=200 | dpr=2 w=200   | dpr=4 w=200 |
 |----------|------|---------|  --  |
-| png 481kB | png 102kB | jpg 148kB| jpg 3.8kB  |
 |![original](https://img.ctohm.com/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://img.ctohm.com/dpr=4_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://img.ctohm.com/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://img.ctohm.com/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
 
 
 
 ### Fit/Colorize/Sharpen
 
- - fit: [Fit](https://images.weserv.nl/docs/fit.html) (contain, cover, inside, outside, fill)
- - bg: [Background Color](https://images.weserv.nl/docs/adjustment.html#background) (eg  fit=contain&cbg=0f0)
+ - fit: [🔗 Fit](https://images.weserv.nl/docs/fit.html) (contain, cover, inside, outside, fill)
+ - bg: [🔗 Background Color](https://images.weserv.nl/docs/adjustment.html#background) (eg  fit=contain&cbg=0f0)
  - cbg: Background Color for Fit=Contain (eg  fit=contain&cbg=0f0)
- - hue: [Hue Rotation (0 to 360) ](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
- - sharp: [Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
+ - hue: [🔗 Hue Rotation (0 to 360) ](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
+ - sharp: [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
  - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) (is multipage images still a thing?)
 
 | w=100 hue=160 | w=160 h=100 cbg=green |  w=150 h=100 fit=cover sharp=4  |

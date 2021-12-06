@@ -10,12 +10,12 @@ As stated elsewhere, Edge-Resizer delegates to [**images.weserv.nl**](https://im
 
 ### Output: 
 
-See algo: [Output at weserv docs](https://images.weserv.nl/docs/format.html#output)
+See also: [Output at weserv docs](https://images.weserv.nl/docs/format.html#output)
 
 
-Using the `output` parameter it is possible to request the image to be transformed to `jpg`, `png`, `gif`, `tiff` and `webp`. When not specified, it defaults to the input format as long as it's supported.
+Using the `output` parameter it is possible to request the image to be transformed to `jpg`, `png`, `gif`, `tiff` and `webp`. When not specified, it defaults to the input format as long as it's among the former. Other formats that are valid inputs will gracefully fallback to supported output formats (mostly png and jpg tbh)
 
-Other formats that are valid inputs will gracefully fallback to supported output formats (mostly png and jpg tbh)
+<output-formats :formats="[`jpg`, `png`, `gif`, `webp`]" image="https://riff.one/images/designcue-unsplash.jpg"></output-formats>
 
 
 ### Filename: 
