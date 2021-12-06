@@ -27,11 +27,11 @@ addEventListener('fetch', async (event: FetchEvent) => {
   const { request } = event,
     
     env: EnvWithBindings = {
-      WORKER_ENV,
-      DEBUG,
+      WORKER_ENV:'development',
+      DEBUG:true,
       ROUTE_PREFIX='/'
     },
-    resizeRouter=new ResizerRouter({base:ROUTE_PREFIX})
+    resizeRouter=new ResizerRouter({base: env.ROUTE_PREFIX })
 
   event.respondWith(resizeRouter.handle(request, env, event))
 });
@@ -44,11 +44,12 @@ If your worker is using the `module` format:
 
 ```ts 
 
-import { EnvWithBindings,   ResizerRouter } from './ResizerRouter'
+import type { EnvWithBindings } from  '@ctohm/edge-resizer/dist/ResizerRouter'
+import {ResizerRouter} from '@ctohm/edge-resizer/dist/ResizerRouter'
 
 export default {
     fetch:(request,env,context) => {
-        const resizeRouter=new ResizerRouter({base:ROUTE_PREFIX})
+        const resizeRouter=new ResizerRouter({base: env.ROUTE_PREFIX||'/' })
         return resizeRouter.handle(request, env, context)
     }
 }

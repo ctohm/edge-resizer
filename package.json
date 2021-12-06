@@ -1,8 +1,13 @@
 {
-  "name": "@ctohm/edge-resizer",
+  "name": "@ctohm/edge-resizer-worker",
   "version": "1.0.0",
   "description": "Clever routing to serve image variations using images.weserv.nl + cloudflare edge cache",
-  "main": "src/worker.js",
+  "main": "dist/worker.js",
+  
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ctohm/edge-resizer"
+    },
   "types": "types/main.d.ts",
   "files":["src","dist","test"],
   "scripts": {
@@ -20,6 +25,7 @@
   "author": "Felipe Figueroa <ffigueroa@ctohm.com>",
   "license": "MIT OR Apache-2.0",
   "devDependencies": {
+    "edge-resizer":"link:./lib",
     "@cloudflare/workers-types": "^2.0.0",
     "@types/node": "^14.14.31",
     "@types/service-worker-mock": "^2.0.1",

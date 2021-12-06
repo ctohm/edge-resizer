@@ -2,6 +2,7 @@
 :root {
     --c-brand: #7491a3;
     --c-brand-light: #99b8e7;
+    --c-text-light:#666;
   }
   a {
     font-weight:600 ;
@@ -10,3 +11,13 @@
   .nav-link.action a { color:white !important;font-weight:500 !important;}
 
   .content table 
+
+  td code {
+    color:#111;
+    white-space:nowrap;
+  }
+  .custom-block.tip {border-color:#4caf50;}
+
+  .custom-block.tip .custom-block-title::before {
+    content:'💡';width:20px;height:20px;margin-right:0.5em;color:#2c9f50;font-size:1.2em;
+  }

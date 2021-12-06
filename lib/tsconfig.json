@@ -1,0 +1,15 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "outDir": ".",
+        "target": "ES2020",
+        "module": "CommonJS",
+        "lib": ["ES2020", "WebWorker"],
+    
+          "rootDir": ".",
+        "declarationDir": "."
+      },
+      "include": [
+        "./*.ts"
+      ]
+}

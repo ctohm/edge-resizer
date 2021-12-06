@@ -8,7 +8,9 @@ As stated elsewhere, Edge-Resizer delegates to [**images.weserv.nl**](https://im
 
 
 
-### Output: [Output](https://images.weserv.nl/docs/format.html#output)
+### Output: 
+
+See algo: [Output at weserv docs](https://images.weserv.nl/docs/format.html#output)
 
 
 Using the `output` parameter it is possible to request the image to be transformed to `jpg`, `png`, `gif`, `tiff` and `webp`. When not specified, it defaults to the input format as long as it's supported.
@@ -16,7 +18,9 @@ Using the `output` parameter it is possible to request the image to be transform
 Other formats that are valid inputs will gracefully fallback to supported output formats (mostly png and jpg tbh)
 
 
-### Filename: [Filename](https://images.weserv.nl/docs/format.html#filename)
+### Filename: 
+
+See also: [Filename at weserv docs](https://images.weserv.nl/docs/format.html#filename)
 
 The `filename` parameter affects, for example, the name suggested when you rightclick the image and pick `save image as`. 
 

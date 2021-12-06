@@ -13,3 +13,4 @@ Please note **images.weserv.nl** and Cloudflare must be able to access the sourc
 :blush: ...*Besides the above explanation, in all honesty you could also say it's a cheap version of [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing)*
 
 
+[[toc]]

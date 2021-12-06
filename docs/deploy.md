@@ -22,6 +22,6 @@ The URL of the image you want to proxy should be appended right after the (optio
 
  :::
 
- ::: info another tip
+ ::: tip another tip
  To ensure a given route is handled by the worker when not using a prefix or a transformation, use `_` as dummy prefix
  :::

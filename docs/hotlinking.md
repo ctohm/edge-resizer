@@ -6,6 +6,9 @@ Append the source URL according to [Routing Strategy](routing.html) after any tr
 
 **[https://img.ctohm.com/w=150_h=150/riff.one/images/designcue-unsplash.jpg](https://img.ctohm.com/w=150_h=150/riff.one/images/designcue-unsplash.jpg)**
 
-If no transformation is needed, pass an underscore as dummy prefix.
+::: tip Dummy prefix
+Notice thit deploy isn't configured with any route prefix. Therefore, if you don't need any transformations, pass an underscore as dummy prefix.
+:::
 
 **[https://img.ctohm.com/_/riff.one/images/designcue-unsplash.jpg](https://img.ctohm.com/_/riff.one/images/designcue-unsplash.jpg)**
+

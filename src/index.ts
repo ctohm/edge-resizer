@@ -1,8 +1,8 @@
 
 //import { version } from '../package.json';
 import { json, ThrowableRouter } from 'itty-router-extras';
-import { format } from 'path';
-import { EnvWithBindings, Context, ResizerRouter } from './ResizerRouter'
+
+import { EnvWithBindings, Context, ResizerRouter } from 'edge-resizer/ResizerRouter'
 
 /**
  * Ensure leading slash and no trailing slash for non empty prefixes.

@@ -12,3 +12,8 @@ const { Layout } = DefaultTheme
  
 
 </script>
+<style>
+.home-hero {
+  text-align:center;
+}
+</style>

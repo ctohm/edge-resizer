@@ -1,6 +1,14 @@
 # 🔌 Routing Strategy
 
-Edge Resizer will try to infer the source image's URL by taking into account, in the first place, an optional route prefix (see [deploy](deploy.html)),  then a regular expression matching the pattern of [available transformations](transformations.html). When both are present, **make sure the prefix comes before  the transformation part** :
+Edge Resizer will try to infer the source image's URL by taking into account, in the first place, an optional route prefix (see [deploy](deploy.html)),  then a regular expression matching the pattern of [available transformations](transformations.html). 
+
+In the following scenarios, the source image is:
+
+> **https://riff.one/images/designcue-unsplash.jpg**
+
+### Scenario: prefix + transformation
+
+When both are present, **make sure the prefix comes before  the transformation part**
 
 | *worker subdomain* |*prefix or transformation*| *origin hostname*| *origin pathname*|
 |----------|------|---------|  --- |
@@ -11,17 +19,19 @@ Edge Resizer will try to infer the source image's URL by taking into account, in
 
 The last URL wouldn't work. The prefix must come before the transformation part. Otherwise it would be **postfix**.
 
-If neither is found, Edge Resizer will ultimately forward the request. If this is unintended, you can ensure the URL is treated as an image by passing an underscore as dummy prefix:
+### Scenario: no prefix, no transformation
+
+If neither is found, Edge Resizer will ultimately forward the request, unmodified. This might be ok if you're using Edge-Resizer as part of an existing site. If this is unintended, you can ensure the URL is treated as an image by passing an underscore as dummy prefix:
 
 | *worker subdomain* |*prefix or transformation*| *origin hostname*| *origin pathname*|
 |----------|------|---------|  --- |
-|`https://img.ctohm.com/` |`_` | `/riff.one` | `/images/designcue-unsplash.jpg`|
+|`zone/` |`_` | `/riff.one` | `/images/designcue-unsplash.jpg`|
 
 
 
 ## Transformation vs searchParams
 
-When present, the transformation part is turned into searchParams as expected by  [img.weserv.nl](https://img.weserv.nl). You can pass said searchParams directly and they'll be forwarded accordingly. 
+Internally, requested transformations are translated to searchParams as expected by  [img.weserv.nl](https://img.weserv.nl). You can pass said searchParams directly and they'll be forwarded accordingly. 
 
 
 ::: info 💡 The following are equivalent
@@ -42,7 +52,7 @@ This is the only way in which some transformations detailed on [images.weserv.nl
 
 ---
 
-You might wonder: "*why not just use the searchParams and forget about routing?*". Well: There was  **[:boom: a very practical reason](use_cases.html)** to implement our routing logic. But having compact and tidy URLs is nice too.
+You might wonder: "*why not just use the searchParams and forget about routing?*". Well: There was  **[:boom: a very practical reason](use_cases.html)** to implement our routing logic. But having compact and tidy URLs is nice by itself, isn't it?
 
 
 

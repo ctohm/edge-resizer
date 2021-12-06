@@ -1,5 +1,5 @@
 {
- "name": "@ctohm/edge-resizer",
+ "name": "edge-resizer",
  "version": "1.1.4",
  "description": "Clever routing to serve image variations using images.weserv.nl + cloudflare edge cache",
  "main": "ResizerRouter.cjs",
@@ -17,6 +17,7 @@
  },
  "author": "Felipe Figueroa <ffigueroa@ctohm.com>",
  "license": "MIT OR Apache-2.0",
+ "private":false,
  "devDependencies": {
   "esbuild": "^0.14.2",
   "itty-router": "^2.4.4",
