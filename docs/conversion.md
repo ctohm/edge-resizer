@@ -11,7 +11,7 @@ The following formats can be safely read, but you cannot use them as output:
 
 |ICO | PDF |   HEIC   | SVG | AVIF |
 |----------|------|---------|  --  | --  |
-|![ico](https://img.ctohm.com/w=150/riff.one/img/multi_res.ico) |![pdf](https://img.ctohm.com/w=150_n=1/riff.one/img/sample_3pages.pdf) |  ![heig](https://img.ctohm.com/w=150/riff.one/img/sample1.heic) |  ![svg](https://img.ctohm.com/w=128/riff.one/favicon.svg) | ![avif](https://img.ctohm.com/w=150/riff.one/img/fox.avif) 
+|![ico](https://edge.resizer.pictures/w=150/riff.one/img/multi_res.ico) |![pdf](https://edge.resizer.pictures/w=150_n=1/riff.one/img/sample_3pages.pdf) |  ![heig](https://edge.resizer.pictures/w=150/riff.one/img/sample1.heic) |  ![svg](https://edge.resizer.pictures/w=128/riff.one/favicon.svg) | ![avif](https://edge.resizer.pictures/w=150/riff.one/img/fox.avif) 
 
 </span>
 
@@ -29,7 +29,7 @@ Using the `output` parameter it is possible to request the image to be transform
 
 You can output TIFF too. Clicking the following link will start downloading an image:
 
-https://img.ctohm.com/tiff/riff.one/images/designcue-unsplash.jpg
+https://edge.resizer.pictures/tiff/riff.one/images/designcue-unsplash.jpg
 
 
 
@@ -38,7 +38,7 @@ Internally, we attempt to compute the [filename](https://images.weserv.nl/docs/f
 The `filename` parameter affects, for example, the name suggested when you rightclick the image and pick `save image as`. 
 
 ```html
-https://img.ctohm.com/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
+https://edge.resizer.pictures/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
 ```
 
 would suggest name `designcue-unsplash.gif`
@@ -49,7 +49,7 @@ would suggest name `designcue-unsplash.gif`
 If you pass `auto` to the `output` parameter, we'll check the  `accept` header of your request to figure out if you're using a WebP enabled browser or app. If that's the case, we'll alter the canonical request as if you explicitly asked for `webp`. [Caching](caching.html) will take place *after* this step, as to avoid using the same cache-key for devices with different feature support.
 
 ```html
-https://img.ctohm.com/w=150_output=auto/riff.one/img/designcue-unsplash.jpg
+https://edge.resizer.pictures/w=150_output=auto/riff.one/img/designcue-unsplash.jpg
 
-https://img.ctohm.com/w=150_auto/riff.one/img/designcue-unsplash.jpg
+https://edge.resizer.pictures/w=150_auto/riff.one/img/designcue-unsplash.jpg
 ```

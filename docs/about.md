@@ -14,12 +14,30 @@ Please note **images.weserv.nl** and Cloudflare must be able to access the sourc
 
 
 
-* ['🍬 About](https://img.ctohm.com/about.html)
-* ['🔌 Routing Strategy](https://img.ctohm.com/routing.html)
-* ['🔗 Hotlink at will](https://img.ctohm.com/hotlinking.html)
-* ['🌎 Deploy your own](https://img.ctohm.com/deploy.html)
-* ['📙 Use it as a library](https://img.ctohm.com/library.html)
-* ['♻️ Transformations](https://img.ctohm.com/transformations.html)
-* ['🔃 Conversion](https://img.ctohm.com/conversion.html)
-* ['🚀 Caching](https://img.ctohm.com/caching.html)
-* ['⛳ Use Cases](https://img.ctohm.com/use_cases.html)
+* ['🍬 About](https://edge.resizer.pictures/about.html)
+* ['🔌 Routing Strategy](https://edge.resizer.pictures/routing.html)
+* ['🔗 Hotlink at will](https://edge.resizer.pictures/hotlinking.html)
+* ['🌎 Deploy your own](https://edge.resizer.pictures/deploy.html)
+* ['📙 Use it as a library](https://edge.resizer.pictures/library.html)
+* ['♻️ Transformations](https://edge.resizer.pictures/transformations.html)
+* ['🔃 Conversion](https://edge.resizer.pictures/conversion.html)
+* ['🚀 Caching](https://edge.resizer.pictures/caching.html)
+* ['⛳ Use Cases](https://edge.resizer.pictures/use_cases.html)
+
+
+
+## TODO
+
+- [x] basic tests
+- [ ] more tests
+- [ ] deploy with workers
+- [x] enable using Edge-Resizer as a dependency
+- [x] fix a handful of embarassing bugs after announcing what-i-built
+- [ ] use vary to deliver WEBP?
+- [ ] figure out a way to receive device pixel ratio and deliver retina images
+- [ ] other transformations
+- [ ] get absorbed by Cloudflare
+- [ ] don't get absorbed but have massive adoption
+  - [ ] lots of issues 
+  - [x] anxiety
+  - [ ] abandon project

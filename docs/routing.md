@@ -35,14 +35,14 @@ Internally, requested transformations are translated to searchParams as expected
 
 
 ::: info 💡 The following are equivalent
-https://img.ctohm.com/_/riff.one/images/designcue-unsplash.jpg?ch=150&w=700
+https://edge.resizer.pictures/_/riff.one/images/designcue-unsplash.jpg?ch=150&w=700
 
-https://img.ctohm.com/ch=150_w=700/riff.one/images/designcue-unsplash.jpg
+https://edge.resizer.pictures/ch=150_w=700/riff.one/images/designcue-unsplash.jpg
 :::
 
 
 <div style="margin:0 auto;">
-<img src="https://img.ctohm.com/ch=150_w=700/riff.one/images/designcue-unsplash.jpg">
+<img src="https://edge.resizer.pictures/ch=150_w=700/riff.one/images/designcue-unsplash.jpg">
 
 <sup style="margin:-1em auto 1em;width:100%;display:block;text-align:center">Photo by drmakete lab on Unsplash</sup>
 
