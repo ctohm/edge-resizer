@@ -21,7 +21,7 @@ jobs:
         uses: actions/cache@v2
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: .cache/yarn/v6
+          path: .cache/yarn_cache
           key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.OS }}-node-
