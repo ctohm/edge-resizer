@@ -43,7 +43,7 @@ const list = ref(
             url,
             format,
             transform,
-            image: `https://edge.resizer.pictures/${pathname}`,
+            image: `https://resizer.pictures/${pathname}`,
             comment:
                 extension === format
                     ? 'Actually same as not requesting any format'

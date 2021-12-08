@@ -2,7 +2,7 @@
 //import { version } from '../package.json';
 import { json, ThrowableRouter } from 'itty-router-extras';
 
-import { EnvWithBindings, Context, ResizerRouter } from 'edge-resizer/ResizerRouter'
+import { EnvWithBindings, Context, ResizerRouter, fallbackSvg } from 'edge-resizer/ResizerRouter'
 
 /**
  * Ensure leading slash and no trailing slash for non empty prefixes.
@@ -13,15 +13,15 @@ import { EnvWithBindings, Context, ResizerRouter } from 'edge-resizer/ResizerRou
 const normalizePrefix = (prefix = '') => `/${(prefix).replace(/^\/?(.*?)\/?$/g, '$1')}`.replace(/^\/$/, '')
 
 const exportDefault = {
-  fetch: async (request: Request, env: EnvWithBindings, ctx: Context): Promise<Response> => {
+  fetch: async (request: Request, env: EnvWithBindings, ctx: FetchEvent): Promise<Response> => {
     const NORMALIZED_ROUTE_PREFIX = normalizePrefix(env.ROUTE_PREFIX),
       url = new URL(request.url)
-    const options = { base: `${NORMALIZED_ROUTE_PREFIX}/`, DEBUG: env.DEBUG || url.searchParams.has('debug') }
-
+    const options = { ROUTE_PREFIX: `${NORMALIZED_ROUTE_PREFIX}/`, DEBUG: env.DEBUG || url.searchParams.has('debug') }
+    ctx.passThroughOnException()
     // Replace 
     const mainRouter: ThrowableRouter<Request> = ThrowableRouter({ base: '', stack: true })
-      .get('favicon*', (req: Request) => new Response(ResizerRouter.fallbackSvg(), { headers: { "cache-control": 'public, max-age=31536000', 'X-Requested': req.url } }))
-
+      .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { "cache-control": 'public, max-age=31536000', 'X-Requested': req.url } }))
+      .get('/about', () => json({ worker: '@ctohm/edge-resizer', release: env.RELEASE, env: env.WORKER_ENV, route_prefix: NORMALIZED_ROUTE_PREFIX }))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`, new ResizerRouter(options).handle)
       .all('*', (req: Request) => {
         /**
@@ -36,7 +36,7 @@ const exportDefault = {
 
 
 
-    return Promise.resolve(mainRouter.handle(request, env, ctx))
+    return Promise.resolve(mainRouter.handle(request, ctx))
       .catch((err) => {
         let warnObj = {
           error: err.message,
@@ -52,17 +52,15 @@ addEventListener('fetch', async (event: FetchEvent) => {
   //console.log({ url, keys: Object.keys(event.request) })
   const { request } = event,
     waitUntil = event.waitUntil.bind(event),
-    ctx: Context = {
-      waitUntil,
-      request,
-    },
+
     env: EnvWithBindings = {
       WORKER_ENV,
       DEBUG,
-      ROUTE_PREFIX
+      ROUTE_PREFIX,
+      RELEASE
     }
 
-  event.respondWith(exportDefault.fetch(request, env, ctx))
+  event.respondWith(exportDefault.fetch(request, env, event))
 });
 
 

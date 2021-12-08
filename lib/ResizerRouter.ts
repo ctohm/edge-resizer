@@ -1,4 +1,4 @@
-import { RouteEntry, Router, RouterOptions } from 'itty-router';
+import { Router, RouterOptions } from 'itty-router';
 
 interface IWaitableObject {
     waitUntil: (promise: Promise<any>) => void;
@@ -23,6 +23,7 @@ export interface EnvWithBindings {
     DEBUG: boolean;
     WORKER_ENV: string;
     ROUTE_PREFIX: string;
+    RELEASE: string;
 }
 
 
@@ -59,7 +60,14 @@ export interface IdefaultSearchParams {
 
 
     precrop?: string;
-
+    flip?: string;
+    flop?: string;
+    ro: number;
+    we?: string;
+    trim?: string;
+    blur?: number;
+    filt?: string;
+    con?: number;
 }
 
 export interface IOutputFormats {
@@ -85,6 +93,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
     cbg: 'Background Color for Fit=Contain',
     bg: 'Background Color', //https://images.weserv.nl/docs/adjustment.html#background
     fit: 'Fit', //https://images.weserv.nl/docs/fit.html#inside
+
     af: 'Adaptative Filter', //https://images.weserv.nl/docs/format.html#adaptive-filter
     l: 'Compression Level', //https://images.weserv.nl/docs/format.html#compression-level
     w: 'Width',
@@ -104,308 +113,310 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
     ch: 'Crop height',
     precrop: 'Crop applied before resizing',
     hue: 'Hue',
-    dpr: 'Device Pixel Ratio' //https://images.weserv.nl/docs/size.html#device-pixel-ratio
+    dpr: 'Device Pixel Ratio', //https://images.weserv.nl/docs/size.html#device-pixel-ratio
+    // Added on version 1.2.0
+    we: 'Without Enlargement',
+    blur: 'Blur',
+    flip: 'Flip',
+    flop: 'Flop',
+    ro: 'Rotate',
+    con: 'Contrast',
+    filt: 'Filter',
+    trim: 'Trim',
 
 
+}
+
+export function defaultRoutes<Q extends Request | RequestWithParams, R extends Router<Q>>(router: R): R {
+    return router
+        .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { 'X-Requested': req.url } }))
+        /**
+         * Requests not handled at this point are forwarded as-is
+         */
+        .get('*', (req: Request) => {
+            return fetch(req);
+        }) as unknown as R;
+}
+export function fallbackSvg(): string {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50.8mm" height="49.98mm" viewBox="0 0 180 177.1" xmlns="http://www.w3.org/2000/svg">
+<g transform="matrix(3.9212 0 0 3.9212 6182.7 1395.7)">
+<rect x="-1574" y="-353.15" width="40.331" height="39.59" rx="2.5955" ry="2.5955" fill="#e0ffff" opacity=".857" stroke="#0063bb" stroke-linejoin="round" stroke-width="2.7109"/>
+<text x="-1553.8228" y="-341.6825" fill="#171e31" font-family="sans-serif" font-size="9.5981px" font-weight="bold" letter-spacing="0px" stroke-width=".39821" text-anchor="middle" word-spacing="0px" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="-1553.8228" y="-341.6825" text-align="center">CTOhm</tspan><tspan x="-1553.8228" y="-329.68481" text-align="center">Edge</tspan><tspan x="-1553.8228" y="-317.68713" text-align="center">Resizer</tspan></text>
+</g>
+</svg>`;
 }
 import { parse } from "worktop/cookie"
 
 
-export class ResizerRouter {
-    readonly validKeys = Object.keys(AvailableTransforms).concat(Object.keys(AvailableFormats), ['http', 'https', 'images', 'img']);
+function handleMatchingRoute(
+    debugFn: { (...attrs: any[]): void }): { (req: RequestWithParams, ctx: Context): Promise<Response> } {
+    return (
+        req: RequestWithParams,
 
+        ctx: Context
+    ): Promise<Response> => {
+        const url = new URL(req.url),
+            debug = debugFn
+        req.params = req.params || {} as TImageParameters;
 
-    debug: { (...data: any[]): void; };
-    readonly domainGroup = `(?<domain>([a-z0-9._-]+))`;
-    readonly pathNameGroup = `(?<pathname>(.*))`;
-    /**
-    *
-    */
-    get transformationsGroup(): string {
-        return `(?<transformations>(_?(${this.validKeys.join('|')})?(=[^_/]*)*)*)`;
+        req.params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>;
+        req.params.origin = url.origin;
+        try {
+            debug({
+                //cf: cf, referrerPolicy, origin: url.origin, host: url.host, hostname: url.hostname,
+                domain: req.params.domain,
+                pathname: req.params.pathname,
+                transformations: req.params.transformations,
+                // headers: Object.fromEntries(req.headers)
+            });
+
+            for (let [key, value] of new URLSearchParams(req.params.transformations.replace(/[_/,]/g, '&')).entries()) {
+                if (['http', 'https'].includes(key))
+                    req.params.protocol = key;
+                if (Object.keys(AvailableTransforms).includes(key))
+                    req.params.transforms[key as keyof IdefaultSearchParams] = value ?? true;
+                if (Object.keys(AvailableFormats).includes(key)) {
+                    debug({ output: key });
+                    req.params.transforms.output = key;
+                }
+            }
+            req.params.protocol = req.params.protocol || 'https';
+            return thirdParty(req, ctx, debug);
+        } catch (e) {
+            console.error(e);
+            return Promise.resolve(new Response((e as Error).message, { status: 500 }))
+        }
     }
-    /**
- *
- */
-    get groupRegex(): string {
-        return `\/${this.transformationsGroup}\/${this.domainGroup}\/${this.pathNameGroup}?`;
+
+}
+async function thirdParty(
+    request: RequestWithParams,
+
+    ctx: Context,
+    debug: { (...attrs: any[]): void }
+): Promise<Response> {
+    const { transforms, domain, protocol, pathname, origin } = request.params || {} as TImageParameters
+
+    let url = new URL(request.url)
+
+    url.pathname = pathname
+    url.hostname = domain
+    let accepts: string = request.headers.get('accept') || '',
+
+        defaultSearchParams = {
+            fit: 'contain',
+            n: '-1',
+
+        } as Record<string & keyof IdefaultSearchParams, string>;
+    let computedSearchParams = { ...defaultSearchParams, ...transforms } as Record<string & keyof IdefaultSearchParams, string>;
+    let discardedSearchParamsBag = new URLSearchParams()
+    for (let [paramName, paramValue] of url.searchParams.entries()) {
+        if (Object.keys(AvailableTransforms).includes(paramName as keyof IdefaultSearchParams)) {
+            computedSearchParams[paramName as keyof IdefaultSearchParams] = paramValue;
+        } else if (Object.keys(AvailableFormats).includes(paramName as keyof IOutputFormats)) {
+            console.info({ output: paramName })
+            computedSearchParams.output = paramName
+        } else {
+            discardedSearchParamsBag.set(paramName, paramValue)
+        }
+    }
+    let { fileName, extension } = getFileName(url)
+    let nocache = url.searchParams.has('nocache')
+
+    debug({ nocache, fileName, extension }, Object.entries(computedSearchParams).map(([key, value]) => `${key}=${value}`).join('_'))
+
+    let urlParam = `${url.hostname}${url.pathname}`,
+        weservUrl = new URL('https://images.weserv.nl/');
+
+
+
+    if (accepts.includes('webp') && computedSearchParams.output === 'auto') {
+        computedSearchParams.output = 'webp';
+        if (!computedSearchParams.q) {
+            computedSearchParams.q = '75'
+        }
+    } else if (!['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(computedSearchParams.output)) {
+     /**
+      *  Remove output parameter if it's not supported
+      */   let { output: discardedOutput, ...otherSearchParams } = computedSearchParams
+        debug(discardedOutput)
+
+        computedSearchParams = otherSearchParams as unknown as Record<string & keyof IdefaultSearchParams, string>;
+
+    }
+    /*if (['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(extension)) {
+        computedSearchParams.output = extension
+    }*/
+
+    if (computedSearchParams.output) {
+        computedSearchParams.output = computedSearchParams.output.replace('jpeg', 'jpg')
     }
 
 
-    handle: { (req: Request, env: EnvWithBindings, ctx: Context): Promise<any> }
+    debug(JSON.stringify({ computedSearchParams }))
+    for (let [paramName, paramValue] of Object.entries(computedSearchParams)) {
+        weservUrl.searchParams.set(paramName, paramValue);
+    }
+
+
+
+    let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
+
+    let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
+    const cache = caches.default;
+
+    debug({ cacheEntry, fileName, protocol })
     /**
-     * The constructor expects the environment to avoid reading globals,
-     * which might not exist when using module format
-     *
-     * @param {EnvWithBindings} env
+     * Canonical cached URL doesn't have weserv parameters `url` nor `filename`. 
+     * The former is already present in the original URL.  The latter is unrelated to the image's
+     * binary contents
+     * @todo The protocol isn't considered either. Shoudl it be?
      */
+    let response = !nocache && await cache.match(new Request(cacheEntry))
+    weservUrl.searchParams.set('filename', fileName);
+    urlParam = decodeURIComponent(urlParam)
+    weservUrl.searchParams.set('url', urlParam);
+    if (['https', 'ssl'].includes(protocol)) weservUrl.searchParams.set('url', `ssl:${urlParam}`);
+    if (computedSearchParams.output && computedSearchParams.output !== extension) {
+        let renamedFilename = fileName.replace(`${extension}`, `${computedSearchParams.output}`);
+        weservUrl.searchParams.set('filename', renamedFilename);
+    }
+    weservUrl.searchParams.sort()
+    if (nocache) weservUrl.searchParams.set('cachebust', String(Date.now()))
+    debug(weservUrl.toString(), discardedSearchParamsBag.toString())
+    if (response) {
+        const contentType = response.headers.get('Content-Type') || '';
+        debug({ cacheHit: true, contentType });
+        return response;
+    }
+    let {
+        "accept": accept,
+        "accept-encoding": accept_encoding,
+        "accept-language": accept_language,
+        "user-agent": user_agent,
+        "cache-control": cache_control,
+        //Cookie
+    } = Object.fromEntries(request.headers.entries())
+
+    const cookie = Object.entries(parse(request.headers.get("Cookie") || "")),
+        cfFiltered = cookie.filter(([key]) => key.startsWith('cf.image.'));
+
+    let cfImages = cfFiltered.reduce((accum, [key, val]) => {
+        accum[key.replace('cf.image.', '')] = val
+        console.log(accum)
+        return accum
+    }, {} as { [s: string]: unknown })
+
+    return computeCachedResponse(
+        new Request(weservUrl.toString(), {
+            headers: {
+                fileName,
+                accept,
+
+                "accept-encoding": accept_encoding,
+                "accept-language": accept_language,
+                "user-agent": user_agent,
+                "cache-control": cache_control,
+                "X-sourceUrl": request.url,
+                "X-inputExtension": extension,
+                "X-cacheEntry": cacheEntry
+            }
+        }), ctx, cfImages).catch(err => {
+            return fetch(`https://${urlParam}`)
+        })
+
+}
+async function computeCachedResponse(imageRequest: Request, ctx: Context, cfImages: { [s: string]: unknown }): Promise<Response> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let cacheEntry = imageRequest.headers.get('X-cacheEntry'),
+        fileName = imageRequest.headers.get('fileName'),
+        inputExtension = imageRequest.headers.get('X-inputExtension') || fileName?.split('.').pop() || ''
+    const cache = caches.default;
+
+    let resizedUrlStr = imageRequest.url
+
+
+    let cf = {
+
+        image: cfImages || {},
+    };
+    let response = await fetch(resizedUrlStr/*, { cf }*/);
+
+    const contentType = response.headers.get('Content-Type') || '';
+    // debug({ cacheMiss: response, event, contentType });
+    if (!response.ok || !contentType.startsWith('image')) {
+        console.log({ ok: response.ok, contentType, statusText: response.statusText, status: response.status })
+        return response
+    }
+    let newExtension = contentType.split('/').pop()?.replace('jpeg', 'jpg')
+    response = new Response(response.body, response);
+    let sourceUrl = imageRequest.headers.get('X-sourceUrl')
+    //Set cache control headers to cache on browser for 1 year
+    response.headers.set('Accept-CH', 'Viewport-Width');
+    response.headers.append('Accept-CH', 'Width');
+    response.headers.set('Vary', 'Viewport-Width, Width, Accept');
+    response.headers.set('Requested-CF', JSON.stringify(cf));
+    response.headers.delete('cf-cache-status');
+    response.headers.set('Cache-Control', 'public, max-age=31536000');
+    response.headers.set('X-Cached-On', String(Date.now()));
+    response.headers.set('last-modified', new Date(Date.now() - 180000).toUTCString());
+    if (sourceUrl) response.headers.set('X-sourceUrl', sourceUrl);
+    response.headers.set('X-resizedUrl', resizedUrlStr);
+
+    if (fileName) {
+        response.headers.set('Content-Disposition', `inline; filename=${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension)).trim()}`);
+    }
+    let cacheRequest = cacheEntry ? new Request(cacheEntry) : imageRequest
+    response.headers.set('link', `<${cacheRequest.url}>; rel="canonical"`)
+    ctx.waitUntil(cache.put(cacheRequest, response.clone()));
+    return response;
+
+}
+export class ResizerRouter {
+    handle: (request: Request, ...extra: any) => any
     constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>) {
-        this.debug = (options || {}).DEBUG ? console.log.bind('ResizerRouter:') : () => { return null; };
-
-
+        const debug = (options || {}).DEBUG ? console.log.bind('ResizerRouter:') : () => { return null; };
+        const domainGroup = `(?<domain>([a-z0-9._-]+))`;
+        const pathNameGroup = `(?<pathname>(.*))`;
+        const validXFormKeys = Object.keys(AvailableTransforms).concat(Object.keys(AvailableFormats), ['http', 'https', 'images', 'img']);
+        const transformationsGroup = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^_/]*)*)*)`;
+        const groupRegex = `\/${transformationsGroup}\/${domainGroup}\/${pathNameGroup}?`;
 
         const ittyRouter = Router<RequestWithParams>({
-            base: options.base,
+            base: options.ROUTE_PREFIX || options.base,
 
             routes: [
-                ['GET', new RegExp(this.groupRegex), [this.handleMatchingRoute(this.debug)]],
+                ['GET', new RegExp(groupRegex), [handleMatchingRoute(debug)]],
             ]
         }) as Router<RequestWithParams>
 
         /**
          * 
          */
-        ittyRouter.get('favicon*', (req: Request) => new Response(ResizerRouter.fallbackSvg(), { headers: { 'X-Requested': req.url } }))
-            /**
-             * Requests not handled at this point are forwarded as-is
-             */
-            .get('*', (req: Request) => {
-                return fetch(req);
+        ittyRouter.get('favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { 'X-Requested': req.url } }))
+            .all('*', (req: Request) => {
+                /**
+                 * Prevent infinite favicon loop
+                 */
+                if (req.headers.get('referer')?.includes('favicon.ico')) {
+                    return new Response(null, { status: 204 })
+                }
+
+                return fetch(req)
             })
 
-        this.handle = async (req: Request, env: EnvWithBindings, ctx: Context) => {
-            // console.log({ req })
-            return ittyRouter.handle(req, ctx)
-        }
-    }
-
-    static defaultRoutes<Q extends Request | RequestWithParams, R extends Router<Q>>(router: R): R {
-        return router
-            .get('/favicon*', (req: Request) => new Response(ResizerRouter.fallbackSvg(), { headers: { 'X-Requested': req.url } }))
-            /**
-             * Requests not handled at this point are forwarded as-is
-             */
-            .get('*', (req: Request) => {
-                return fetch(req);
-            }) as unknown as R;
-    }
-    handleMatchingRoute(debugFn: { (...attrs: any[]): void }): { (req: RequestWithParams, ctx: Context): Promise<Response> } {
-        return (
-            req: RequestWithParams,
-
-            ctx: Context
-        ): Promise<Response> => {
-            const url = new URL(req.url),
-                debug = debugFn
-            req.params = req.params || {} as TImageParameters;
-
-            req.params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>;
-            req.params.origin = url.origin;
-            try {
-                debug({
-                    //cf: cf, referrerPolicy, origin: url.origin, host: url.host, hostname: url.hostname,
-                    domain: req.params.domain,
-                    pathname: req.params.pathname,
-                    transformations: req.params.transformations,
-                    // headers: Object.fromEntries(req.headers)
-                });
-
-                for (let [key, value] of new URLSearchParams(req.params.transformations.replace(/[_/,]/g, '&')).entries()) {
-                    if (['http', 'https'].includes(key))
-                        req.params.protocol = key;
-                    if (Object.keys(AvailableTransforms).includes(key))
-                        req.params.transforms[key as keyof IdefaultSearchParams] = value ?? true;
-                    if (Object.keys(AvailableFormats).includes(key)) {
-                        debug({ output: key });
-                        req.params.transforms.output = key;
-                    }
-                }
-                req.params.protocol = req.params.protocol || 'https';
-                return this.thirdParty(req, ctx, debug);
-            } catch (e) {
-                console.error(e);
-                return Promise.resolve(new Response((e as Error).message, { status: 500 }))
-            }
-        }
-
-    }
-    async thirdParty(
-        request: RequestWithParams,
-
-        ctx: Context,
-        debug: { (...attrs: any[]): void }
-    ): Promise<Response> {
-        const { transforms, protocol = 'https', domain, pathname, origin } = request.params || {} as TImageParameters
-
-        let url = new URL(request.url)
-
-        url.pathname = pathname
-        url.hostname = domain
-        let accepts: string = request.headers.get('accept') || '',
-
-            defaultSearchParams = {
-                fit: 'contain',
-                n: '-1',
-
-            } as Record<string & keyof IdefaultSearchParams, string>;
-        let computedSearchParams = { ...defaultSearchParams, ...transforms } as Record<string & keyof IdefaultSearchParams, string>;
-        for (let [paramName, paramValue] of url.searchParams.entries()) {
-            if (Object.keys(AvailableTransforms).includes(paramName as keyof IdefaultSearchParams)) {
-                computedSearchParams[paramName as keyof IdefaultSearchParams] = paramValue;
-            }
-            if (Object.keys(AvailableFormats).includes(paramName as keyof IOutputFormats)) {
-                console.info({ output: paramName })
-                computedSearchParams.output = paramName
-            }
-        }
-        let { fileName, extension } = getFileName(url)
-        let nocache = url.searchParams.has('nocache')
-
-        debug({ nocache, fileName, extension }, Object.entries(computedSearchParams).map(([key, value]) => `${key}=${value}`).join('_'))
-
-        let urlParam = `${url.hostname}${url.pathname}`,
-            weservUrl = new URL('https://images.weserv.nl/');
-
-
-
-        if (accepts.includes('webp') && computedSearchParams.output === 'auto') {
-            computedSearchParams.output = 'webp';
-            if (!computedSearchParams.q) {
-                computedSearchParams.q = '75'
-            }
-        } else if (!['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(computedSearchParams.output)) {
-         /**
-          *  Remove output parameter if it's not supported
-          */   let { output: discardedOutput, ...otherSearchParams } = computedSearchParams
-            debug(discardedOutput)
-
-            computedSearchParams = otherSearchParams as unknown as Record<string & keyof IdefaultSearchParams, string>;
-
-        }
-        /*if (['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(extension)) {
-            computedSearchParams.output = extension
-        }*/
-
-        if (computedSearchParams.output) {
-            computedSearchParams.output = computedSearchParams.output.replace('jpeg', 'jpg')
-        }
-
-
-        debug(JSON.stringify({ computedSearchParams }))
-        for (let [paramName, paramValue] of Object.entries(computedSearchParams)) {
-            weservUrl.searchParams.set(paramName, paramValue);
-        }
-
-
-
-        let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
-
-        let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
-        const cache = caches.default;
-
-        debug({ cacheEntry, fileName })
         /**
-         * Canonical cached URL doesn't have weserv parameters `url` nor `filename`. 
-         * The former is already present in the original URL.  The latter is unrelated to the image's
-         * binary contents
-         * @todo The protocol isn't considered either. Shoudl it be?
+         * Requests not handled at this point are forwarded as-is
          */
-        let response = !nocache && await cache.match(new Request(cacheEntry))
-        weservUrl.searchParams.set('filename', fileName);
 
-        weservUrl.searchParams.set('url', urlParam);
-        if (['https', 'ssl'].includes(protocol)) weservUrl.searchParams.set('url', `ssl:${urlParam}`);
-        if (computedSearchParams.output && computedSearchParams.output !== extension) {
-            let renamedFilename = fileName.replace(`${extension}`, `${computedSearchParams.output}`);
-            weservUrl.searchParams.set('filename', renamedFilename);
-        }
-        weservUrl.searchParams.sort()
-        if (nocache) weservUrl.searchParams.set('cachebust', String(Date.now()))
-        debug(weservUrl.toString())
-        if (response) {
-            //debug({ cacheHit: true, ctx });
-            return response;
-        }
-        let {
-            "accept": accept,
-            "accept-encoding": accept_encoding,
-            "accept-language": accept_language,
-            "user-agent": user_agent,
-            "cache-control": cache_control,
-            Cookie
-        } = Object.fromEntries(request.headers.entries())
+        this.handle = (req: RequestWithParams, ctx: Context) => ittyRouter.handle(req, ctx)
 
-        const cookie = Object.entries(parse(request.headers.get("Cookie") || "")),
-            cfFiltered = cookie.filter(([key, val]) => key.startsWith('cf.image.'));
-
-        let cfImages = cfFiltered.reduce((accum, [key, val]) => {
-            accum[key.replace('cf.image.', '')] = val
-            console.log(accum)
-            return accum
-        }, {} as { [s: string]: unknown })
-
-        return this.computeCachedResponse(
-            new Request(weservUrl.toString(), {
-                headers: {
-                    fileName,
-                    accept,
-
-                    "accept-encoding": accept_encoding,
-                    "accept-language": accept_language,
-                    "user-agent": user_agent,
-                    "cache-control": cache_control,
-                    "X-sourceUrl": request.url,
-                    "X-inputExtension": extension,
-                    "X-cacheEntry": cacheEntry
-                }
-            }), ctx, cfImages).catch(err => {
-                return fetch(`https://${urlParam}`)
-            })
-
+        return new Proxy(ittyRouter, {
+            get: (obj, prop) => (...args) => obj[prop](...args)
+        })
     }
-    async computeCachedResponse(imageRequest: Request, ctx: Context, cfImages: { [s: string]: unknown }): Promise<Response> {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        let cacheEntry = imageRequest.headers.get('X-cacheEntry'),
-            fileName = imageRequest.headers.get('fileName'),
-            inputExtension = imageRequest.headers.get('X-inputExtension') || fileName?.split('.').pop() || ''
-        const cache = caches.default;
-
-        let resizedUrlStr = imageRequest.url
-
-
-        let cf = {
-
-            image: cfImages || {},
-        };
-        let response = await fetch(resizedUrlStr, { cf });
-
-        const contentType = response.headers.get('Content-Type') || '';
-        // debug({ cacheMiss: response, event, contentType });
-        if (!response.ok || !contentType.startsWith('image')) {
-            return response
-        }
-        let newExtension = contentType.split('/').pop()?.replace('jpeg', 'jpg')
-        response = new Response(response.body, response);
-        let sourceUrl = imageRequest.headers.get('X-sourceUrl')
-        //Set cache control headers to cache on browser for 1 year
-        response.headers.set('Accept-CH', 'Viewport-Width');
-        response.headers.append('Accept-CH', 'Width');
-        response.headers.set('Vary', 'Viewport-Width, Width, Accept');
-        response.headers.set('Requested-CF', JSON.stringify(cf));
-        response.headers.delete('cf-cache-status');
-        response.headers.set('Cache-Control', 'public, max-age=31536000');
-        response.headers.set('X-Cached-On', String(Date.now()));
-        response.headers.set('last-modified', new Date(Date.now() - 180000).toUTCString());
-        if (sourceUrl) response.headers.set('X-sourceUrl', sourceUrl);
-        response.headers.set('X-resizedUrl', resizedUrlStr);
-
-        if (fileName) {
-            response.headers.set('Content-Disposition', `inline; filename=${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension)).trim()}`);
-        }
-        let cacheRequest = cacheEntry ? new Request(cacheEntry) : imageRequest
-        response.headers.set('link', `<${cacheRequest.url}>; rel="canonical"`)
-        ctx.waitUntil(cache.put(cacheRequest, response.clone()));
-        return response;
-
-    }
-    static fallbackSvg(): string {
-        return `<?xml version="1.0" encoding="UTF-8"?>
-  <svg width="50.8mm" height="49.98mm" viewBox="0 0 180 177.1" xmlns="http://www.w3.org/2000/svg">
-  <g transform="matrix(3.9212 0 0 3.9212 6182.7 1395.7)">
-  <rect x="-1574" y="-353.15" width="40.331" height="39.59" rx="2.5955" ry="2.5955" fill="#e0ffff" opacity=".857" stroke="#0063bb" stroke-linejoin="round" stroke-width="2.7109"/>
-  <text x="-1553.8228" y="-341.6825" fill="#171e31" font-family="sans-serif" font-size="9.5981px" font-weight="bold" letter-spacing="0px" stroke-width=".39821" text-anchor="middle" word-spacing="0px" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="-1553.8228" y="-341.6825" text-align="center">CTOhm</tspan><tspan x="-1553.8228" y="-329.68481" text-align="center">Edge</tspan><tspan x="-1553.8228" y="-317.68713" text-align="center">Resizer</tspan></text>
-  </g>
-  </svg>`;
-    }
-
 }
+
+
+

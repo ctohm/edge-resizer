@@ -14,15 +14,15 @@ Please note **images.weserv.nl** and Cloudflare must be able to access the sourc
 
 
 
-* ['🍬 About](https://edge.resizer.pictures/about.html)
-* ['🔌 Routing Strategy](https://edge.resizer.pictures/routing.html)
-* ['🔗 Hotlink at will](https://edge.resizer.pictures/hotlinking.html)
-* ['🌎 Deploy your own](https://edge.resizer.pictures/deploy.html)
-* ['📙 Use it as a library](https://edge.resizer.pictures/library.html)
-* ['♻️ Transformations](https://edge.resizer.pictures/transformations.html)
-* ['🔃 Conversion](https://edge.resizer.pictures/conversion.html)
-* ['🚀 Caching](https://edge.resizer.pictures/caching.html)
-* ['⛳ Use Cases](https://edge.resizer.pictures/use_cases.html)
+* ['🍬 About](https://resizer.pictures/about.html)
+* ['🔌 Routing Strategy](https://resizer.pictures/routing.html)
+* ['🔗 Hotlink at will](https://resizer.pictures/hotlinking.html)
+* ['🌎 Deploy your own](https://resizer.pictures/deploy.html)
+* ['📙 Use it as a library](https://resizer.pictures/library.html)
+* ['♻️ Transformations](https://resizer.pictures/transformations.html)
+* ['🔃 Conversion](https://resizer.pictures/conversion.html)
+* ['🚀 Caching](https://resizer.pictures/caching.html)
+* ['⛳ Use Cases](https://resizer.pictures/use_cases.html)
 
 
 

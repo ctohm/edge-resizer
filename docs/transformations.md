@@ -5,7 +5,7 @@ Our routing logic expects the transformation part to come right before the targe
 e.g resize to 150x150
 
 ```html
-https://edge.resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg`
+https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg`
 ```
 
 <ShowCase>
@@ -19,7 +19,7 @@ Except for the very first time they are requested (and inmediately cached), vari
 
  | w=150 h=150 |
 |----------|
-|![150x150](https://edge.resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg)
+|![150x150](https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg)
 
 </template>
 </ShowCase>
@@ -41,12 +41,12 @@ In this section we enumerate supported transformations such as resizing, optimiz
 - dpr: [🔗 Device Pixel Ratio](https://images.weserv.nl/docs/size.html#device-pixel-ratio)
 
 ```html
-https://edge.resizer.pictures/w=150_h=150/riff.one/images/dice.png
+https://resizer.pictures/w=150_h=150/riff.one/images/dice.png
 ```
 
 | dpr=2 w=200 l=0 | dpr=4 w=200 | dpr=2 w=200   | dpr=4 w=200 |
 |----------|------|---------|  --  |
-|![original](https://edge.resizer.pictures/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://edge.resizer.pictures/dpr=4_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://edge.resizer.pictures/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://edge.resizer.pictures/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
+|![original](https://resizer.pictures/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://resizer.pictures/dpr=4_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://resizer.pictures/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://resizer.pictures/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
 
 
 
@@ -61,7 +61,7 @@ https://edge.resizer.pictures/w=150_h=150/riff.one/images/dice.png
 
 | w=100 hue=160 | w=160 h=100 cbg=green |  w=150 h=100 fit=cover sharp=4  |
 |----------|------|---------|  
-|![original](https://edge.resizer.pictures/w=100_hue=160/riff.one/images/designcue-unsplash.jpg) |![fit and cbg](https://edge.resizer.pictures/w=160_h=100_cbg=green/riff.one/images/designcue-unsplash.jpg) |  ![fit and cbg](https://edge.resizer.pictures/w=150_h=100_fit=cover&sharp=4/riff.one/images/designcue-unsplash.jpg) |  
+|![original](https://resizer.pictures/w=100_hue=160/riff.one/images/designcue-unsplash.jpg) |![fit and cbg](https://resizer.pictures/w=160_h=100_cbg=green/riff.one/images/designcue-unsplash.jpg) |  ![fit and cbg](https://resizer.pictures/w=150_h=100_fit=cover&sharp=4/riff.one/images/designcue-unsplash.jpg) |  
 
 ### Pages and Frames
 
@@ -73,24 +73,24 @@ Use the `n` parameter to limit output to the first n  pages on a PDF
 
 | original PDF: 3 pages  |  n=2 (first two pages) |n=1 (only page 1) |
 |----------|------|---------|
-|![original](https://edge.resizer.pictures/w=300/riff.one/img/sample_3pages.pdf) |![page 1](https://edge.resizer.pictures/w=300_n=2/riff.one/img/sample_3pages.pdf) |  ![page 2](https://edge.resizer.pictures/w=300_n=1/riff.one/img/sample_3pages.pdf) |     
+|![original](https://resizer.pictures/w=300/riff.one/img/sample_3pages.pdf) |![page 1](https://resizer.pictures/w=300_n=2/riff.one/img/sample_3pages.pdf) |  ![page 2](https://resizer.pictures/w=300_n=1/riff.one/img/sample_3pages.pdf) |     
 
 Likewise, use it to limit to the first n frames in an animation 
 
 | original 24 frames | limit to 6 frames | 3 frames | wtf is this? (page=2) |
 |----------|------|---------|   -- |
-|![original](https://edge.resizer.pictures/w=300/riff.one/img/pig.gif) |![5 frames](https://edge.resizer.pictures/w=300_n=6/riff.one/img/pig.gif) | ![3 frames](https://edge.resizer.pictures/w=300_n=3/riff.one/img/pig.gif) |![original](https://edge.resizer.pictures/w=300_page=2/riff.one/img/pig.gif) |
+|![original](https://resizer.pictures/w=300/riff.one/img/pig.gif) |![5 frames](https://resizer.pictures/w=300_n=6/riff.one/img/pig.gif) | ![3 frames](https://resizer.pictures/w=300_n=3/riff.one/img/pig.gif) |![original](https://resizer.pictures/w=300_page=2/riff.one/img/pig.gif) |
 
 The `page` parameter is used to pick a particular resolution on a multi resolution .ico (however it had a weird effect in the pig above)
 
 | 72x72 | 96x96 | 128x128 |
 |----------|------|---------|  
-|![original](https://edge.resizer.pictures/page=1/riff.one/img/multi_res.ico) |![5 frames](https://edge.resizer.pictures/page=2/riff.one/img/multi_res.ico) | ![3 frames](https://edge.resizer.pictures/page=3/riff.one/img/multi_res.ico) |  
+|![original](https://resizer.pictures/page=1/riff.one/img/multi_res.ico) |![5 frames](https://resizer.pictures/page=2/riff.one/img/multi_res.ico) | ![3 frames](https://resizer.pictures/page=3/riff.one/img/multi_res.ico) |  
 
 
 | page=1 | page=2 | page=3 |
 |----------|------|---------|  
-|![page 2](https://edge.resizer.pictures/w=300_page=1_png/riff.one/img/banners.tiff) |![page 2](https://edge.resizer.pictures/w=300_page=2_png/riff.one/img/banners.tiff)| ![page 2](https://edge.resizer.pictures/w=300_page=-2_png/riff.one/img/banners.tiff) |  
+|![page 2](https://resizer.pictures/w=300_page=1_png/riff.one/img/banners.tiff) |![page 2](https://resizer.pictures/w=300_page=2_png/riff.one/img/banners.tiff)| ![page 2](https://resizer.pictures/w=300_page=-2_png/riff.one/img/banners.tiff) |  
 
 
 
@@ -107,7 +107,7 @@ The `page` parameter is used to pick a particular resolution on a multi resoluti
 | dpr=2 w=200 l=0 | dpr=2 w=200 l=6 af | dpr=2 w=200 q=100   | dpr=2 w=200 q=5 il |
 |----------|------|---------|  --  |
 | png 481kB | png 102kB | jpg 148kB| jpg 3.8kB  |
-|![original](https://edge.resizer.pictures/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://edge.resizer.pictures/dpr=2_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://edge.resizer.pictures/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://edge.resizer.pictures/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
+|![original](https://resizer.pictures/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://resizer.pictures/dpr=2_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://resizer.pictures/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://resizer.pictures/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
 
 
 
@@ -117,12 +117,12 @@ The `page` parameter is used to pick a particular resolution on a multi resoluti
 - filename: [Filename](https://images.weserv.nl/docs/format.html#filename)
 
 ```html
-https://edge.resizer.pictures/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
+https://resizer.pictures/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
 ```
 
 | Original (png) | JPEG |   GIF   | WEBP |
 |----------|------|---------|  --  |
-|![original](https://edge.resizer.pictures/w=150_png/riff.one/images/designcue-unsplash.jpg) |![jpg](https://edge.resizer.pictures/hue=90_w=150_jpg/riff.one/images/designcue-unsplash.jpg) |  ![gif](https://edge.resizer.pictures/hue=180_w=150_gif/riff.one/images/designcue-unsplash.jpg) |  ![webp](https://edge.resizer.pictures/hue=270_w=150_output=webp/riff.one/images/designcue-unsplash.jpg) |  
+|![original](https://resizer.pictures/w=150_png/riff.one/images/designcue-unsplash.jpg) |![jpg](https://resizer.pictures/hue=90_w=150_jpg/riff.one/images/designcue-unsplash.jpg) |  ![gif](https://resizer.pictures/hue=180_w=150_gif/riff.one/images/designcue-unsplash.jpg) |  ![webp](https://resizer.pictures/hue=270_w=150_output=webp/riff.one/images/designcue-unsplash.jpg) |  
 
 
 ### Crop
@@ -139,7 +139,7 @@ This one is tricky to get it right, but you can see an example on the story of [
 | original w=200 h=150 | w=200 h=150 | w=200 h=150 |  w=400 h=300  |
 |----------|------|---------|  --  |
 |  | cx=20 cy=20 fit=cover| cx=20 cy=20 ch=54 fit=cover| cx=82 cy=67 ch=137 cw=224 fit=cover|
-|![original](https://edge.resizer.pictures/w=200_h=150/riff.one/images/printable_chart.png) |![jpg](https://edge.resizer.pictures/w=200_h=150_cx=20_cy=20_fit=cover/riff.one/images/printable_chart.png) |  ![af](https://edge.resizer.pictures/w=200_h=150_cx=20_cy=20_ch=54_fit=cover/riff.one/images/printable_chart.png)  |  ![webp](https://edge.resizer.pictures/w=400_h=300_cx=82_cy=67_ch=137_cw=224_fit=cover/riff.one/images/printable_chart.png) |  
+|![original](https://resizer.pictures/w=200_h=150/riff.one/images/printable_chart.png) |![jpg](https://resizer.pictures/w=200_h=150_cx=20_cy=20_fit=cover/riff.one/images/printable_chart.png) |  ![af](https://resizer.pictures/w=200_h=150_cx=20_cy=20_ch=54_fit=cover/riff.one/images/printable_chart.png)  |  ![webp](https://resizer.pictures/w=400_h=300_cx=82_cy=67_ch=137_cw=224_fit=cover/riff.one/images/printable_chart.png) |  
 
 
 --------------

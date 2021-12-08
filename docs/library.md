@@ -23,16 +23,15 @@ Parameters to the `handle` method are pretty generic: the ubiquitous Request, an
 import {ResizerRouter} from 'edge-resizer/ResizerRouter'
 
 addEventListener('fetch', async (event: FetchEvent) => {
-  //console.log({ url, keys: Object.keys(event.request) })
   const { request } = event,
     env = {
       WORKER_ENV:'development',
       DEBUG:true,
       ROUTE_PREFIX='/'
     },
-    resizeRouter=new ResizerRouter({base: env.ROUTE_PREFIX })
+    resizeRouter=new ResizerRouter({ ROUTE_PREFIX:  })
 
-  event.respondWith(resizeRouter.handle(request, env, event))
+  event.respondWith(resizeRouter.handle(request, event))
 });
 ``` 
 
@@ -47,8 +46,8 @@ import {ResizerRouter} from 'edge-resizer/ResizerRouter'
 
 export default {
     fetch:(request, env, context) => {
-        const resizeRouter=new ResizerRouter({base: env.ROUTE_PREFIX||'/' })
-        return resizeRouter.handle(request, env, context)
+        const resizeRouter=new ResizerRouter({ ROUTE_PREFIX: env.ROUTE_PREFIX || '/' })
+        return resizeRouter.handle(request, context)
     }
 }
 

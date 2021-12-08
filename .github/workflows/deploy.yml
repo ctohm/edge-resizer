@@ -1,8 +1,13 @@
 name: Deploy
+
 on:
-  push:
   pull_request:
+    branches:
+      - master
   repository_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'
+
 jobs:
     deploy:
       runs-on: ubuntu-latest
@@ -15,6 +20,7 @@ jobs:
           with:
             apiToken: ${{ secrets.CF_API_TOKEN }}
           env:
+            CF_ZONE_ID: ${{secrets.CF_ZONE_ID}}
             CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
 

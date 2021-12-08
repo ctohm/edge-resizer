@@ -7,7 +7,7 @@ import test from "ava";
  * @type {import('miniflare').Options}
  */
 const mfOptions={
-  scriptPath: "./dist/worker.js",
+  scriptPath: "./test/worker.js",
   // Some options omitted, see src/options/index.ts for the full list
   sourceMap: true,
   

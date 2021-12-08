@@ -1,0 +1,22 @@
+name = "ctohm-edge-resizer"
+type = "javascript"
+workers_dev = true
+compatibility_date = "2021-10-05"
+# route = ""
+account_id = ""
+api_token = ""
+zone_id = ""
+
+[vars]
+  WORKER_ENV = "production"
+  DEBUG = false
+  ROUTE_PREFIX='/' # e.g. /thumbnails
+  RELEASE = "e72fb9d"
+
+
+[build]
+  command = "npx esbuild src/index.ts --bundle --format=cjs --outfile=dist/worker.js"
+
+  [build.upload]
+    format = "service-worker"
+

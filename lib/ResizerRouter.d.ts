@@ -20,6 +20,7 @@ export interface EnvWithBindings {
 }
 export interface IdefaultSearchParams {
     cbg: string;
+    page?: number;
     bg: string;
     fit: string;
     af: string;
@@ -27,7 +28,6 @@ export interface IdefaultSearchParams {
     w?: string | null;
     h?: string | null;
     output?: string;
-    filename?: string;
     q?: string;
     n?: string;
     il?: string;
@@ -40,6 +40,14 @@ export interface IdefaultSearchParams {
     hue?: number;
     dpr?: number;
     precrop?: string;
+    flip?: string;
+    flop?: string;
+    ro: number;
+    we?: string;
+    trim?: string;
+    blur?: number;
+    filt?: string;
+    con?: number;
 }
 export interface IOutputFormats {
     jpg?: string;
@@ -51,33 +59,10 @@ export interface IOutputFormats {
 }
 export declare const AvailableFormats: Record<keyof IOutputFormats, string>;
 export declare const AvailableTransforms: Record<keyof IdefaultSearchParams, string>;
+export declare function defaultRoutes<Q extends Request | RequestWithParams, R extends Router<Q>>(router: R): R;
+export declare function fallbackSvg(): string;
 export declare class ResizerRouter {
-    readonly validKeys: string[];
-    debug: {
-        (...data: any[]): void;
-    };
-    readonly domainGroup = "(?<domain>([a-z0-9._-]+))";
-    readonly pathNameGroup = "(?<pathname>(.*))";
-    /**
-    *
-    */
-    get transformationsGroup(): string;
-    /**
- *
- */
-    get groupRegex(): string;
-    handle: {
-        (req: Request, env: EnvWithBindings, ctx: Context): Promise<any>;
-    };
-    /**
-     * The constructor expects the environment to avoid reading globals,
-     * which might not exist when using module format
-     *
-     * @param {EnvWithBindings} env
-     */
+    handle: (request: Request, ...extra: any) => any;
     constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>);
-    static defaultRoutes<Q extends Request | RequestWithParams, R extends Router<Q>>(router: R): R;
-    handleMatchingRoute(req: RequestWithParams, env: EnvWithBindings, ctx: Context): Promise<Response>;
-    static fallbackSvg(): string;
 }
 export {};
