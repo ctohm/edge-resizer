@@ -318,9 +318,7 @@ async function thirdParty(
         computedSearchParams = otherSearchParams as unknown as Record<string & keyof IdefaultSearchParams, string>;
 
     }
-    /*if (['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(extension)) {
-        computedSearchParams.output = extension
-    }*/
+
 
     if (computedSearchParams.output) {
         computedSearchParams.output = computedSearchParams.output.replace('jpeg', 'jpg')
@@ -426,13 +424,11 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context): Promi
     const cache = caches.default;
 
     let resizedUrlStr = imageRequest.url
+    console.info({ cacheEntry, resizedUrlStr })
 
 
-    let cf = {
 
-        image: cfImages || {},
-    };
-    let response = await fetch(resizedUrlStr/*, { cf }*/);
+    let response = await fetch(resizedUrlStr);
 
     const contentType = response.headers.get('Content-Type') || '';
     // debug({ cacheMiss: response, event, contentType });
@@ -447,7 +443,7 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context): Promi
     response.headers.set('Accept-CH', 'Viewport-Width');
     response.headers.append('Accept-CH', 'Width');
     response.headers.set('Vary', 'Viewport-Width, Width, Accept');
-    response.headers.set('Requested-CF', JSON.stringify(cf));
+
     response.headers.delete('cf-cache-status');
     response.headers.set('Cache-Control', 'public, max-age=31536000');
     response.headers.set('X-Cached-On', String(Date.now()));
