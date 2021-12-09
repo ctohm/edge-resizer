@@ -20,7 +20,7 @@ const exportDefault = {
     ctx.passThroughOnException()
     // Replace 
     const mainRouter: ThrowableRouter<Request> = ThrowableRouter({ base: '', stack: true })
-      .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { "cache-control": 'public, max-age=31536000', 'X-Requested': req.url } }))
+      .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { "content-type": "image/svg", "cache-control": 'public, max-age=31536000', 'X-Requested': req.url } }))
       .get('/about', () => json({ worker: '@ctohm/edge-resizer', release: env.RELEASE, env: env.WORKER_ENV, route_prefix: NORMALIZED_ROUTE_PREFIX }))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`, new ResizerRouter(options).handle)
       .all('*', (req: Request) => {

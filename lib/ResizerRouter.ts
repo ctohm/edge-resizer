@@ -259,11 +259,26 @@ async function thirdParty(
         weservUrl.searchParams.set(paramName, paramValue);
     }
 
-
-
+    weservUrl.searchParams.sort()
     let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
 
     let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
+    /**
+     * !experimental
+     * Pass any unknown searchparams unchanged to weserve
+     */
+    discardedSearchParamsBag.sort()
+    const discardedSearchParamsStr = discardedSearchParamsBag.toString().trim()
+    if (discardedSearchParamsStr !== '') {
+        cacheEntry = [
+            cacheEntry,
+            discardedSearchParamsStr
+        ].join('?')
+        for (let [paramName, paramValue] of discardedSearchParamsBag.entries()) {
+            weservUrl.searchParams.set(paramName, paramValue)
+        }
+    }
+
     const cache = caches.default;
 
     debug({ cacheEntry, fileName, protocol })
@@ -274,8 +289,10 @@ async function thirdParty(
      * @todo The protocol isn't considered either. Shoudl it be?
      */
     let response = !nocache && await cache.match(new Request(cacheEntry))
+
     weservUrl.searchParams.set('filename', fileName);
     urlParam = decodeURIComponent(urlParam)
+
     weservUrl.searchParams.set('url', urlParam);
     if (['https', 'ssl'].includes(protocol)) weservUrl.searchParams.set('url', `ssl:${urlParam}`);
     if (computedSearchParams.output && computedSearchParams.output !== extension) {
