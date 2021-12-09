@@ -7,5 +7,5 @@ declare global {
   const WORKER_ENV: string;
   const ROUTE_PREFIX: string;
   const RELEASE: string
-
+  const TIMESTAMP: number;
 }

@@ -11,5 +11,8 @@ esbuild
     sourcemap: 'inline',
 
     minify: mode === 'production',
+    define:{
+      TIMESTAMP:Date.now()
+    }
   }) 
   .catch(() => process.exit(1));

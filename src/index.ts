@@ -35,6 +35,7 @@ const exportDefault = {
       .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { "content-type": "image/svg", "cache-control": 'public, max-age=31536000', 'X-Requested': req.url } }))
       .get('/version', () => json({
         worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
+        timestamp: env.TIMESTAMP,
         route_prefix: NORMALIZED_ROUTE_PREFIX
       }))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
@@ -73,7 +74,8 @@ addEventListener('fetch', async (event: FetchEvent) => {
       WORKER_ENV,
       DEBUG,
       ROUTE_PREFIX,
-      RELEASE
+      RELEASE,
+      TIMESTAMP
     }
 
   event.respondWith(exportDefault.fetch(request, env, event))
