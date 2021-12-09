@@ -29,35 +29,10 @@ If neither is found, Edge Resizer will ultimately forward the request, unmodifie
 
 
 
-## Transformation vs searchParams
+### Alternative transformation separators
 
-Internally, requested transformations are translated to searchParams as expected by  [img.weserv.nl](https://img.weserv.nl). You can pass said searchParams directly and they'll be forwarded accordingly. 
-
-
-::: info 💡 The following are equivalent
-https://resizer.pictures/_/riff.one/img/designcue-unsplash.jpg?hue=150&w=700
-
-https://resizer.pictures/hue=150_w=700/riff.one/img/designcue-unsplash.jpg
-:::
-
-
-<div style="margin:0 auto;">
-<img src="https://resizer.pictures/ch=150_w=700/riff.one/img/designcue-unsplash.jpg">
-
-<sup style="margin:-1em auto 1em;width:100%;display:block;text-align:center">Photo by drmakete lab on Unsplash</sup>
-
-</div>
-
-This is the only way in which some transformations detailed on [images.weserv.nl docs](https://images.weserv.nl/docs/), which we don't explicitly consider, can be applied to your images.
-
----
-
-You might wonder: "*why not just use the searchParams and forget about routing?*". Well: There was  **[:boom: a very practical reason](use_cases.html)** to implement our routing logic. But having compact and tidy URLs is nice by itself, isn't it?
-
-
-
-
-
+The transformation part of the URL you request through Edge-Resizer uses an underscore to separate parameters from each other.
+Though we don't aim to offer feature parity with Cloudflare Images, 
 
 
 

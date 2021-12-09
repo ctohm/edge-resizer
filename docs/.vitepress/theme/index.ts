@@ -5,6 +5,8 @@ import './style.css'
 import ShowCase from './ShowCase.vue'
 import OutputFormats from './OutputFormats.vue'
 import MyLayout from './MyLayout.vue'
+import LabeledImage from './LabeledImage.vue'
+import ImageTransform from './ImageTransform.vue'
 export default {
   ...DefaultTheme,
   // override the Layout with a wrapper component that injects the slots
@@ -22,7 +24,8 @@ export default {
     //app.component('NativeSelect', NativeSelect)
     //app.component('RepoAndButtons', RepoAndButtons)
     app.component('output-formats', OutputFormats)
-
+    app.component('image-transform', ImageTransform)
+    app.component('labeled-image', LabeledImage)
     app.component('ShowCase', ShowCase)
   }
 }

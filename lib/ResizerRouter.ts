@@ -3,7 +3,10 @@ import { Router, RouterOptions } from 'itty-router';
 interface IWaitableObject {
     waitUntil: (promise: Promise<any>) => void;
 }
-export type TImageParameters = { transforms: Record<string & keyof IdefaultSearchParams, string>; } & {
+export type TImageParameters = {
+    transforms: Record<string & keyof IdefaultSearchParams, string>;
+    discarded: Record<string, string>;
+} & {
     [s: string]: string;
 
 };
@@ -24,6 +27,7 @@ export interface EnvWithBindings {
     WORKER_ENV: string;
     ROUTE_PREFIX: string;
     RELEASE: string;
+    UNKNOWN?: string;
 }
 
 
@@ -68,6 +72,9 @@ export interface IdefaultSearchParams {
     blur?: number;
     filt?: string;
     con?: number;
+    mod?: string;
+    sat?: string;
+    tint?: string;
 }
 
 export interface IOutputFormats {
@@ -79,8 +86,21 @@ export interface IOutputFormats {
 
     auto?: string;
 }
-
-export const AvailableFormats: Record<keyof IOutputFormats, string> = {
+interface IFitModes {
+    contain?: string;
+    cover?: string;
+    fill?: string;
+    inside?: string;
+    outside?: string;
+}
+const AvailableFits: Record<keyof IFitModes, string> = {
+    contain: 'Short for fit=contain',
+    cover: 'Short for fit=cover',
+    fill: 'Short for fit=fill',
+    inside: 'Short for fit=inside',
+    outside: 'Short for fit=outside',
+}
+const AvailableFormats: Record<keyof IOutputFormats, string> = {
     jpg: 'Short for output=jpg',
     png: 'Short for output=png',
     tiff: 'Short for output=tiff',
@@ -120,12 +140,70 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
     flip: 'Flip',
     flop: 'Flop',
     ro: 'Rotate',
+    mod: 'Brightness',
+    sat: 'Sat',
+    tint: 'Tint',
     con: 'Contrast',
     filt: 'Filter',
     trim: 'Trim',
 
 
 }
+
+export class ResizerRouter {
+    handle: (request: Request, ...extra: any) => any
+    constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>) {
+        const debug = (options || {}).DEBUG ? console.log.bind('ResizerRouter:') : () => { return null; };
+        const domainGroup = `(?<domain>([a-z0-9._-]+))`;
+        const pathNameGroup = `(?<pathname>(.*))`;
+        const validXFormKeys = Object.keys(AvailableTransforms)
+            .concat(
+                Object.keys(AvailableFormats),
+                Object.keys(AvailableFits),
+                ['http', 'https', 'images', 'img']
+            );
+        const transformationsGroup = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^_/]*)*)*)`;
+        const groupRegex = `\/${transformationsGroup}\/${domainGroup}\/${pathNameGroup}?`;
+
+        const ittyRouter = Router<RequestWithParams>({
+            base: options.ROUTE_PREFIX || options.base,
+
+            routes: [
+                ['GET', new RegExp(groupRegex), [handleMatchingRoute(debug)]],
+            ]
+        }) as Router<RequestWithParams>
+
+        /**
+         * 
+         */
+        ittyRouter.get('favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { 'X-Requested': req.url } }))
+
+
+        /**
+         * Requests not handled at this point are forwarded as-is
+         */
+
+        this.handle = (req: RequestWithParams, ctx: Context) => ittyRouter.handle(req, ctx)
+
+        return new Proxy(ittyRouter, {
+            get: (obj, prop) => (...args: any) => {
+                return prop === 'handle' ? obj.get('*', (req2: Request) => {
+                    /**
+                     * Prevent infinite favicon loop
+                     */
+                    if (req2.headers.get('referer')?.includes('favicon.ico')) {
+                        return new Response(null, { status: 204 })
+                    }
+                    console.log({ resizeRouterCatchAll: req2.url })
+
+                    return fetch(req2)
+                    // @ts-ignore
+                }).handle(...args) : obj[prop](...args)
+            }
+        })
+    }
+}
+
 
 export function defaultRoutes<Q extends Request | RequestWithParams, R extends Router<Q>>(router: R): R {
     return router
@@ -159,7 +237,7 @@ function handleMatchingRoute(
         const url = new URL(req.url),
             debug = debugFn
         req.params = req.params || {} as TImageParameters;
-
+        req.params.discarded = {} as Record<string, string>;
         req.params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>;
         req.params.origin = url.origin;
         try {
@@ -171,14 +249,19 @@ function handleMatchingRoute(
                 // headers: Object.fromEntries(req.headers)
             });
 
-            for (let [key, value] of new URLSearchParams(req.params.transformations.replace(/[_/,]/g, '&')).entries()) {
-                if (['http', 'https'].includes(key))
+            for (let [key, value] of new URLSearchParams(req.params.transformations.replace(/[+_/,]/g, '&')).entries()) {
+                if (['http', 'https'].includes(key)) {
                     req.params.protocol = key;
-                if (Object.keys(AvailableTransforms).includes(key))
+                } else if (Object.keys(AvailableTransforms).includes(key)) {
                     req.params.transforms[key as keyof IdefaultSearchParams] = value ?? true;
-                if (Object.keys(AvailableFormats).includes(key)) {
+                } else if (Object.keys(AvailableFormats).includes(key)) {
                     debug({ output: key });
                     req.params.transforms.output = key;
+                } else if (Object.keys(AvailableFits).includes(key)) {
+                    debug({ fit: key });
+                    req.params.transforms.fit = key;
+                } else {
+                    req.params.discarded[key as string] = value
                 }
             }
             req.params.protocol = req.params.protocol || 'https';
@@ -196,7 +279,7 @@ async function thirdParty(
     ctx: Context,
     debug: { (...attrs: any[]): void }
 ): Promise<Response> {
-    const { transforms, domain, protocol, pathname, origin } = request.params || {} as TImageParameters
+    const { transforms, discarded, domain, protocol, pathname, origin } = request.params || {} as TImageParameters
 
     let url = new URL(request.url)
 
@@ -210,21 +293,11 @@ async function thirdParty(
 
         } as Record<string & keyof IdefaultSearchParams, string>;
     let computedSearchParams = { ...defaultSearchParams, ...transforms } as Record<string & keyof IdefaultSearchParams, string>;
-    let discardedSearchParamsBag = new URLSearchParams()
-    for (let [paramName, paramValue] of url.searchParams.entries()) {
-        if (Object.keys(AvailableTransforms).includes(paramName as keyof IdefaultSearchParams)) {
-            computedSearchParams[paramName as keyof IdefaultSearchParams] = paramValue;
-        } else if (Object.keys(AvailableFormats).includes(paramName as keyof IOutputFormats)) {
-            console.info({ output: paramName })
-            computedSearchParams.output = paramName
-        } else {
-            discardedSearchParamsBag.set(paramName, paramValue)
-        }
-    }
+
     let { fileName, extension } = getFileName(url)
     let nocache = url.searchParams.has('nocache')
 
-    debug({ nocache, fileName, extension }, Object.entries(computedSearchParams).map(([key, value]) => `${key}=${value}`).join('_'))
+    debug({ nocache, fileName, extension },)
 
     let urlParam = `${url.hostname}${url.pathname}`,
         weservUrl = new URL('https://images.weserv.nl/');
@@ -239,8 +312,8 @@ async function thirdParty(
     } else if (!['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(computedSearchParams.output)) {
      /**
       *  Remove output parameter if it's not supported
-      */   let { output: discardedOutput, ...otherSearchParams } = computedSearchParams
-        debug(discardedOutput)
+      */   let { output: unsupportedFormat, ...otherSearchParams } = computedSearchParams
+        debug(unsupportedFormat)
 
         computedSearchParams = otherSearchParams as unknown as Record<string & keyof IdefaultSearchParams, string>;
 
@@ -261,27 +334,23 @@ async function thirdParty(
 
     weservUrl.searchParams.sort()
     let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
-
+    let discarded_entries = Object.entries(discarded).map(([key, val]) => `${key}=${val}`).sort().join('&')
     let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
     /**
      * !experimental
      * Pass any unknown searchparams unchanged to weserve
      */
-    discardedSearchParamsBag.sort()
-    const discardedSearchParamsStr = discardedSearchParamsBag.toString().trim()
-    if (discardedSearchParamsStr !== '') {
+    if (discarded_entries !== '') {
         cacheEntry = [
             cacheEntry,
-            discardedSearchParamsStr
+            decodeURIComponent(discarded_entries)
         ].join('?')
-        for (let [paramName, paramValue] of discardedSearchParamsBag.entries()) {
-            weservUrl.searchParams.set(paramName, paramValue)
-        }
+
     }
 
     const cache = caches.default;
 
-    debug({ cacheEntry, fileName, protocol })
+    debug({ discarded_entries, cacheEntry, fileName, protocol })
     /**
      * Canonical cached URL doesn't have weserv parameters `url` nor `filename`. 
      * The former is already present in the original URL.  The latter is unrelated to the image's
@@ -301,10 +370,10 @@ async function thirdParty(
     }
     weservUrl.searchParams.sort()
     if (nocache) weservUrl.searchParams.set('cachebust', String(Date.now()))
-    debug(weservUrl.toString(), discardedSearchParamsBag.toString())
     if (response) {
-        const contentType = response.headers.get('Content-Type') || '';
-        debug({ cacheHit: true, contentType });
+        const contentType = response.headers.get('Content-Type') || '',
+            age = response.headers.get('age') || '0';
+        debug({ cacheHit: true, contentType, age });
         return response;
     }
     let {
@@ -316,17 +385,22 @@ async function thirdParty(
         //Cookie
     } = Object.fromEntries(request.headers.entries())
 
-    const cookie = Object.entries(parse(request.headers.get("Cookie") || "")),
-        cfFiltered = cookie.filter(([key]) => key.startsWith('cf.image.'));
 
-    let cfImages = cfFiltered.reduce((accum, [key, val]) => {
-        accum[key.replace('cf.image.', '')] = val
-        console.log(accum)
-        return accum
-    }, {} as { [s: string]: unknown })
 
+
+    /**
+     * !experimental
+     * Pass any unknown searchparams unchanged to weserve
+    */
+    if (discarded_entries !== '') {
+        for (let [paramName, paramValue] of Object.entries(discarded)) {
+            weservUrl.searchParams.set(paramName, paramValue)
+        }
+    }
+    const weserveUrlStr = weservUrl.toString().replace(/%2C/g, ',')
+    console.log({ weserveUrlStr })
     return computeCachedResponse(
-        new Request(weservUrl.toString(), {
+        new Request(weserveUrlStr, {
             headers: {
                 fileName,
                 accept,
@@ -339,12 +413,12 @@ async function thirdParty(
                 "X-inputExtension": extension,
                 "X-cacheEntry": cacheEntry
             }
-        }), ctx, cfImages).catch(err => {
+        }), ctx).catch(() => {
             return fetch(`https://${urlParam}`)
         })
 
 }
-async function computeCachedResponse(imageRequest: Request, ctx: Context, cfImages: { [s: string]: unknown }): Promise<Response> {
+async function computeCachedResponse(imageRequest: Request, ctx: Context): Promise<Response> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let cacheEntry = imageRequest.headers.get('X-cacheEntry'),
         fileName = imageRequest.headers.get('fileName'),
@@ -390,50 +464,5 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context, cfImag
     return response;
 
 }
-export class ResizerRouter {
-    handle: (request: Request, ...extra: any) => any
-    constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>) {
-        const debug = (options || {}).DEBUG ? console.log.bind('ResizerRouter:') : () => { return null; };
-        const domainGroup = `(?<domain>([a-z0-9._-]+))`;
-        const pathNameGroup = `(?<pathname>(.*))`;
-        const validXFormKeys = Object.keys(AvailableTransforms).concat(Object.keys(AvailableFormats), ['http', 'https', 'images', 'img']);
-        const transformationsGroup = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^_/]*)*)*)`;
-        const groupRegex = `\/${transformationsGroup}\/${domainGroup}\/${pathNameGroup}?`;
-
-        const ittyRouter = Router<RequestWithParams>({
-            base: options.ROUTE_PREFIX || options.base,
-
-            routes: [
-                ['GET', new RegExp(groupRegex), [handleMatchingRoute(debug)]],
-            ]
-        }) as Router<RequestWithParams>
-
-        /**
-         * 
-         */
-        ittyRouter.get('favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { 'X-Requested': req.url } }))
-            .all('*', (req: Request) => {
-                /**
-                 * Prevent infinite favicon loop
-                 */
-                if (req.headers.get('referer')?.includes('favicon.ico')) {
-                    return new Response(null, { status: 204 })
-                }
-
-                return fetch(req)
-            })
-
-        /**
-         * Requests not handled at this point are forwarded as-is
-         */
-
-        this.handle = (req: RequestWithParams, ctx: Context) => ittyRouter.handle(req, ctx)
-
-        return new Proxy(ittyRouter, {
-            get: (obj, prop) => (...args) => obj[prop](...args)
-        })
-    }
-}
-
 
 

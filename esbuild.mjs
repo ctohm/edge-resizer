@@ -1,7 +1,8 @@
 import esbuild from 'esbuild'
 
 const mode = process.env.NODE_ENV || 'production';
-console.log({ mode });
+const UNKNOWN=process.env.UNKNOWN
+console.log({ mode,UNKNOWN });
 esbuild
   .build({
     entryPoints: ['src/index.ts'],

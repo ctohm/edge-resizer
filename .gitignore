@@ -18,3 +18,4 @@ deploy.sh
 wrangler.prod.toml
 actions-runner
 wrangler.prod.toml
+wrangler.develop.toml

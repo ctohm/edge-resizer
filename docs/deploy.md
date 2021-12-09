@@ -1,13 +1,13 @@
 # :package: Deploy
 
-**Edge Resizer can be deployed on your (sub)domain**. Just clone the repo, copy `wrangler.example.toml` as `wrangler.toml` replacing the placeholders 
-`YOUR_ACCOUNT_ID`, `YOUR_ZONE_ID`, `TOUR_CF_TOKEN` and the route (or routes) accordignly.
+**Edge Resizer can be deployed on your (sub)domain**. Just clone the repo, edit `wrangler.toml` populating `account_id`, `api_token` 
+with yours. 
 
 ----
 
 You'd probably want to have Edge-Resizer handle requests matching a particular path prefix (say `/img` o `/thumbnails`) instead of the whole (sub)domain. 
 
-If that's the case, please change the `ROUTE_PREFIX` variable in `wrangler.toml`, to match the former, including the leading slash.
+If that's the case, please define a secret `CF_ROUTE_PREFIX` in your repo (if you're using the 'Deploy with workers' button) or replace the `ROUTE_PREFIX` variable in `wrangler.toml` as you see fit. Internally a route normalization step should make the leading slash optional.
 
 The URL of the image you want to proxy should be appended right after the (optional) prefix 
 

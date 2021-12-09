@@ -28,7 +28,8 @@ module.exports = {
           { text: '♻️ Transformations', link: 'transformations.html' },
           { text: '🔃 Conversion',link:'conversion.html'},
           { text: '🚀 Caching', link: 'caching.html' },
-          { text: '⛳ Use Cases', link: 'use_cases.html' }
+          { text: '⛳ Use Cases', link: 'use_cases.html' },
+          { text: '💥 Troubleshooting', link: 'troubleshooting.html' }
         ]
      /* },
       {

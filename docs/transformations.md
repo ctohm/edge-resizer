@@ -57,7 +57,18 @@ https://resizer.pictures/w=150_h=150/riff.one/images/dice.png
  - cbg: Background Color for Fit=Contain (eg  fit=contain&cbg=0f0)
  - hue: [🔗 Hue Rotation (0 to 360) ](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
  - sharp: [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
- 
+ - blur: [ Blur](https://images.weserv.nl/docs/adjustment.html#blur)
+ - flip: [Flip](https://images.weserv.nl/docs/adjustment.html#flip)
+ - flop: [Flop](https://images.weserv.nl/docs/adjustment.html#flop)
+ - ro: [Rotate](https://images.weserv.nl/docs/adjustment.html#rotate)
+ - con: [Contrast](https://images.weserv.nl/docs/adjustment.html#contrast)
+ - filt: [Filter](https://images.weserv.nl/docs/adjustment.html#filter)
+ - trim: [Trim](https://images.weserv.nl/docs/adjustment.html#trim) 
+
+| |   |   |
+|----------|------|---------|  
+| <image-transform transform="w=200_hue=160">Hue</image-transform> | <image-transform transform="w=200_blur=2">Hue</image-transform> | <image-transform transform="w=200_sharp=3">Hue</image-transform> |
+| <image-transform transform="w=200_con=3">Contrast</image-transform> | <image-transform transform="w=200_con=3">Contrast</image-transform> | <image-transform transform="w=200_con=3">Contrast</image-transform> | 
 
 | w=100 hue=160 | w=160 h=100 cbg=green |  w=150 h=100 fit=cover sharp=4  |
 |----------|------|---------|  

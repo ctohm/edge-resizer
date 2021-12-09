@@ -6,7 +6,59 @@ Images are transformed and/or optimized through [**images.weserv.nl**](https://i
 
 With both services, plus our own [routing logic](routing.html) and sensible defaults, long lived image variations will be generated on demand with compact and clean urls (no searchParams whatsoever) and (optionally) served from [your own subdomain](deploy.html). 
 
+### TL/DR
+
+<ShowCase>
+<template v-slot:first_paragraph>
+Given the image at 
+
+> https://riff.one/img/dice.png
+
+</template>
+<template v-slot:table>
+
+![150x150](https://riff.one/img/dice_200.png)
+
+</template>
+</ShowCase>
+
+<ShowCase>
+<template v-slot:first_paragraph>
+Requesting 
+
+> https://resizer.pictures/w=260_h=250_jpg_cover/riff.one/img/dice_200.png
+
+</template>
+<template v-slot:table>
+
+![150x150](https://resizer.pictures/w=260_h=250_jpg_cover/riff.one/img/dice_200.png)
+
+</template>
+</ShowCase>
+
+<ShowCase>
+<template v-slot:first_paragraph>
+Internally translates to 
+
+> https://images.weserv.nl/?fit=cover&h=250&output=jpg&url=ssl%3Ariff.one%2Fimg%2Fdice.png&w=300
+
+
+</template>
+<template v-slot:table>
+
+![150x150](https://images.weserv.nl/?fit=cover&h=250&output=jpg&url=ssl%3Ariff.one%2Fimg%2Fdice.png&w=300)
+
+</template>
+</ShowCase>
+
+
+
 Please note **images.weserv.nl** and Cloudflare must be able to access the source URL in order to cache, proxy or generate variations.  The outcome, if successful, will be **publicly readable** regardless of the original image restrictions unless you implement access control yourself (for example, using Cloudflare Access).
+
+[![deploy](https://cf-badger.com/badger/_92d6783acc858b700b72/endpoint.svg?branch=master&style=for-the-badge)](https://github.com/ctohm/edge-resizer/actions/workflows/deploy.yml)
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ctohm/edge-resizer)
+
 
 -----
 
