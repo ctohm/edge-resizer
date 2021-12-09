@@ -5,7 +5,7 @@ Our routing logic expects the transformation part to come right before the targe
 e.g resize to 150x150
 
 ```html
-https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg`
+https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg
 ```
 
 <ShowCase>
@@ -134,13 +134,20 @@ https://resizer.pictures/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
 -  cx: 'Crop x',
 -  ch: 'Crop height',
 
-This one is tricky to get it right, but you can see an example on the story of [my use case](use_cases.md).
+This one is tricky to get right, but you can see an example on the story of [my use case](use_cases.md). 
 
 | original w=200 h=150 | w=200 h=150 | w=200 h=150 |  w=400 h=300  |
 |----------|------|---------|  --  |
 |  | cx=20 cy=20 fit=cover| cx=20 cy=20 ch=54 fit=cover| cx=82 cy=67 ch=137 cw=224 fit=cover|
 |![original](https://resizer.pictures/w=200_h=150/riff.one/images/printable_chart.png) |![jpg](https://resizer.pictures/w=200_h=150_cx=20_cy=20_fit=cover/riff.one/images/printable_chart.png) |  ![af](https://resizer.pictures/w=200_h=150_cx=20_cy=20_ch=54_fit=cover/riff.one/images/printable_chart.png)  |  ![webp](https://resizer.pictures/w=400_h=300_cx=82_cy=67_ch=137_cw=224_fit=cover/riff.one/images/printable_chart.png) |  
 
+Basically, taking the image AFTER any resizing, you define a rectangle of [cw] x [ch] pixels, starting from a top left corner located at [cx, cy]. 
+
+In the example below, the original image is resized to 430 x 270. From this size we want, in turn, to crop a 180 x 210 rectangle starting from [130, 50].
+
+![cropping](../docs/images/crop.png)
+
+Depending on the `fit` parameter, a transformation `cx=130_cy=50_cw=180_ch=210` would yield 
 
 --------------
 
