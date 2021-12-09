@@ -17,7 +17,7 @@ const exportDefault = {
     const NORMALIZED_ROUTE_PREFIX = normalizePrefix(env.ROUTE_PREFIX),
       url = new URL(request.url)
     const options = { ROUTE_PREFIX: `${NORMALIZED_ROUTE_PREFIX}/`, DEBUG: env.DEBUG || url.searchParams.has('debug'), UNKNOWN: env.UNKNOWN }
-    ctx.passThroughOnException()
+    //ctx.passThroughOnException()
     const resizerRouter = new ResizerRouter(options)
     resizerRouter.get('x*', (req: Request) => {
       /**
