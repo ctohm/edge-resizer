@@ -177,7 +177,18 @@ export class ResizerRouter {
          * 
          */
         ittyRouter.get('favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { 'X-Requested': req.url } }))
+            .get('*', (req2: Request) => {
+                /**
+                 * Prevent infinite favicon loop
+                 */
+                if (req2.headers.get('referer')?.includes('favicon.ico')) {
+                    return new Response(null, { status: 204 })
+                }
+                console.log({ resizeRouterCatchAll: req2.url })
 
+                return fetch(req2)
+                // @ts-ignore
+            })
 
         /**
          * Requests not handled at this point are forwarded as-is
@@ -187,18 +198,7 @@ export class ResizerRouter {
 
         return new Proxy(ittyRouter, {
             get: (obj, prop) => (...args: any) => {
-                return prop === 'handle' ? obj.get('*', (req2: Request) => {
-                    /**
-                     * Prevent infinite favicon loop
-                     */
-                    if (req2.headers.get('referer')?.includes('favicon.ico')) {
-                        return new Response(null, { status: 204 })
-                    }
-                    console.log({ resizeRouterCatchAll: req2.url })
-
-                    return fetch(req2)
-                    // @ts-ignore
-                }).handle(...args) : obj[prop](...args)
+                return obj[prop](...args)
             }
         })
     }

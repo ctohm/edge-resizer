@@ -33,7 +33,10 @@ const exportDefault = {
     // Replace 
     const mainRouter: ThrowableRouter<Request> = ThrowableRouter({ base: '', stack: true })
       .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { "content-type": "image/svg", "cache-control": 'public, max-age=31536000', 'X-Requested': req.url } }))
-      .get('/version', () => json({ worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV, route_prefix: NORMALIZED_ROUTE_PREFIX }))
+      .get('/version', () => json({
+        worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
+        route_prefix: NORMALIZED_ROUTE_PREFIX
+      }))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
         resizerRouter.handle)
       .all('*', (req: Request) => {
@@ -70,8 +73,7 @@ addEventListener('fetch', async (event: FetchEvent) => {
       WORKER_ENV,
       DEBUG,
       ROUTE_PREFIX,
-      RELEASE,
-      UNKNOWN: global.UNKNOWN
+      RELEASE
     }
 
   event.respondWith(exportDefault.fetch(request, env, event))
