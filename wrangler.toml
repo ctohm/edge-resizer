@@ -11,7 +11,7 @@ zone_id = ""
   WORKER_ENV = "production"
   DEBUG = true
   ROUTE_PREFIX='/' # e.g. /thumbnails
-  RELEASE = "31b629e"
+  RELEASE = "cc44a2a"
   TIMESTAMP = ""
 
 

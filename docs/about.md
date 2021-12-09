@@ -11,6 +11,8 @@ With both services, plus our own [routing logic](routing.html) and sensible defa
 <ShowCase>
 <template v-slot:first_paragraph>
 Given the image at 
+</template>
+<template v-slot:second_paragraph>
 
 > https://riff.one/img/dice.png
 
@@ -31,7 +33,7 @@ Requesting
 </template>
 <template v-slot:table>
 
-![150x150](https://resizer.pictures/w=260_h=250_jpg_cover/riff.one/img/dice_200.png)
+![150x150](http://192.168.0.18:8989/w=260_h=250_jpg_cover/riff.one/img/dice_200.png)
 
 </template>
 </ShowCase>
