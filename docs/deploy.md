@@ -1,7 +1,9 @@
 # :package: Deploy
 
 **Edge Resizer can be deployed on your (sub)domain**. Just clone the repo, edit `wrangler.toml` populating `account_id`, `api_token` 
-with yours. 
+with yours, or using the (experimental) "Deploy with Workers" button:
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ctohm/edge-resizer)
 
 ----
 

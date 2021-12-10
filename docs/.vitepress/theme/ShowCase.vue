@@ -1,6 +1,6 @@
 <template>
    <div class="showcase">
-    <div style="    flex: 1;    padding-right: 1em;    text-align: justify;">
+    <div class="left_text">
     <slot name="first_paragraph"></slot>
     <br>
     <p>
@@ -17,7 +17,14 @@
 .showcase {
     display:flex;align-items: center;justify-content:flex-end;
 }
-.image_div {
-           padding-right: 1em;    text-align: justify;
+.showcase .left_text {
+    flex: 1;    padding-right: 1em;    text-align: justify;
 }
+.showcase.bordered .image_div p {
+    border:1px solid #eee;
+}
+.image_div {
+           padding-right: 1em;    text-align: right;float:right
+}
+
 </style>

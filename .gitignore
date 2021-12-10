@@ -19,3 +19,5 @@ wrangler.prod.toml
 actions-runner
 wrangler.prod.toml
 wrangler.develop.toml
+docs/images/img
+docs/images/images

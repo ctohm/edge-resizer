@@ -5,6 +5,7 @@ interface IWaitableObject {
 }
 export type TImageParameters = {
     transforms: Record<string & keyof IdefaultSearchParams, string>;
+    defaults: { fit: string, n: string, maxage: string },
     discarded: Record<string, string>;
 } & {
     [s: string]: string;
@@ -27,7 +28,8 @@ export interface EnvWithBindings {
     WORKER_ENV: string;
     ROUTE_PREFIX: string;
     RELEASE: string;
-    TIMESTAMP?: string;
+    TIMESTAMP?: number;
+    MAX_AGE?: string
 }
 
 
@@ -74,6 +76,7 @@ export interface IdefaultSearchParams {
     con?: number;
     mod?: string;
     sat?: string;
+    gam?: number;
     tint?: string;
 }
 
@@ -130,6 +133,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
     cw: 'Crop width',
     cy: 'Crop y',
     cx: 'Crop x',
+    gam: 'Gamma',
     ch: 'Crop height',
     precrop: 'Crop applied before resizing',
     hue: 'Hue',
@@ -160,16 +164,20 @@ export class ResizerRouter {
             .concat(
                 Object.keys(AvailableFormats),
                 Object.keys(AvailableFits),
-                ['http', 'https', 'images', 'img']
+                ['http', 'https', 'images', 'img', 'vw']
             );
         const transformationsGroup = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^_/]*)*)*)`;
-        const groupRegex = `\/${transformationsGroup}\/${domainGroup}\/${pathNameGroup}?`;
-
+        const groupRegex = `\/${transformationsGroup}\/${domainGroup}\/${pathNameGroup}?`,
+            defaultSearchParams = {
+                fit: 'contain',
+                n: '-1',
+                maxage: options.MAX_AGE || '1y'
+            } as { fit: string, n: string, maxage: string }
         const ittyRouter = Router<RequestWithParams>({
             base: options.ROUTE_PREFIX || options.base,
 
             routes: [
-                ['GET', new RegExp(groupRegex), [handleMatchingRoute(debug)]],
+                ['GET', new RegExp(groupRegex), [handleMatchingRoute(debug, defaultSearchParams)]],
             ]
         }) as Router<RequestWithParams>
 
@@ -205,16 +213,7 @@ export class ResizerRouter {
 }
 
 
-export function defaultRoutes<Q extends Request | RequestWithParams, R extends Router<Q>>(router: R): R {
-    return router
-        .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { 'X-Requested': req.url } }))
-        /**
-         * Requests not handled at this point are forwarded as-is
-         */
-        .get('*', (req: Request) => {
-            return fetch(req);
-        }) as unknown as R;
-}
+
 export function fallbackSvg(): string {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="50.8mm" height="49.98mm" viewBox="0 0 180 177.1" xmlns="http://www.w3.org/2000/svg">
@@ -224,11 +223,23 @@ export function fallbackSvg(): string {
 </g>
 </svg>`;
 }
-import { parse } from "worktop/cookie"
 
-
+/**
+ * Process route params in order to extract transformations as an Object
+ * to pass to the next handler
+ * Shorthand syntax for output formats is translated to its canonical form (output=<format>)
+ * Shorthand syntax for fit types is translated to its canonical form (fit=<fit type>)
+* 
+* Searchparams, if they are among the supported transformations, will be merged into the Object, overriding route params 
+* When they aren't a recognizable transformation, they are stored (and passed to the next handler) as a separate object
+* That object will be ultimately added to the request to WeServe, but won't be part of the canonical nice URL we use as 
+* cache-key. 
+ * @returns 
+ */
 function handleMatchingRoute(
-    debugFn: { (...attrs: any[]): void }): { (req: RequestWithParams, ctx: Context): Promise<Response> } {
+    debugFn: { (...attrs: any[]): void },
+    defaultSearchParams: { fit: string, n: string, maxage: string }
+): { (req: RequestWithParams, ctx: Context): Promise<Response> } {
     return (
         req: RequestWithParams,
 
@@ -248,8 +259,13 @@ function handleMatchingRoute(
                 transformations: req.params.transformations,
                 // headers: Object.fromEntries(req.headers)
             });
-
-            for (let [key, value] of new URLSearchParams(req.params.transformations.replace(/[+_/,]/g, '&')).entries()) {
+            // Compute the searchparams equivalent of the transform slug that came in the request
+            const pathSearchParams = new URLSearchParams(req.params.transformations.replace(/[+_/,]/g, '&'))
+            // append the actual searchParams
+            for (let [key, value] of url.searchParams.entries()) {
+                pathSearchParams.set(key, value)
+            }
+            for (let [key, value] of pathSearchParams.entries()) {
                 if (['http', 'https'].includes(key)) {
                     req.params.protocol = key;
                 } else if (Object.keys(AvailableTransforms).includes(key)) {
@@ -260,10 +276,17 @@ function handleMatchingRoute(
                 } else if (Object.keys(AvailableFits).includes(key)) {
                     debug({ fit: key });
                     req.params.transforms.fit = key;
+                } else if (key === 'vw' && req.headers.has('viewport-width')) {
+                    const vw = Number(req.headers.get('viewport-width'))
+                    if (isNaN(vw)) continue;
+                    req.params.transforms.w = String(Math.ceil(vw / 10) * 10) // 10 px interval
+
                 } else {
                     req.params.discarded[key as string] = value
                 }
             }
+
+            req.params.defaults = defaultSearchParams
             req.params.protocol = req.params.protocol || 'https';
             return thirdParty(req, ctx, debug);
         } catch (e) {
@@ -279,20 +302,17 @@ async function thirdParty(
     ctx: Context,
     debug: { (...attrs: any[]): void }
 ): Promise<Response> {
-    const { transforms, discarded, domain, protocol, pathname, origin } = request.params || {} as TImageParameters
+    const { transforms, defaults, discarded, domain, protocol, pathname, origin } = request.params || {} as TImageParameters,
+        { maxage, ...otherDefaults } = defaults
 
     let url = new URL(request.url)
 
     url.pathname = pathname
     url.hostname = domain
-    let accepts: string = request.headers.get('accept') || '',
+    let accepts: string = request.headers.get('accept') || ''
 
-        defaultSearchParams = {
-            fit: 'contain',
-            n: '-1',
 
-        } as Record<string & keyof IdefaultSearchParams, string>;
-    let computedSearchParams = { ...defaultSearchParams, ...transforms } as Record<string & keyof IdefaultSearchParams, string>;
+
 
     let { fileName, extension } = getFileName(url)
     let nocache = url.searchParams.has('nocache')
@@ -300,7 +320,8 @@ async function thirdParty(
     debug({ nocache, fileName, extension },)
 
     let urlParam = `${url.hostname}${url.pathname}`,
-        weservUrl = new URL('https://images.weserv.nl/');
+        weservUrl = new URL('https://images.weserv.nl/'),
+        computedSearchParams = { ...otherDefaults, ...transforms }
 
 
 
@@ -315,7 +336,7 @@ async function thirdParty(
       */   let { output: unsupportedFormat, ...otherSearchParams } = computedSearchParams
         debug(unsupportedFormat)
 
-        computedSearchParams = otherSearchParams as unknown as Record<string & keyof IdefaultSearchParams, string>;
+        computedSearchParams = otherSearchParams as unknown as Record<string & keyof IdefaultSearchParams, string> & { maxage: string };
 
     }
 
@@ -333,10 +354,17 @@ async function thirdParty(
     weservUrl.searchParams.sort()
     let transform_slug = Object.entries(Object.fromEntries(weservUrl.searchParams)).map(([key, val]) => `${key}=${val}`).sort().join('_')
     let discarded_entries = Object.entries(discarded).map(([key, val]) => `${key}=${val}`).sort().join('&')
+
+    /**
+     * This is the clean, canonical and tidy URL string that we will look for in the cache,
+     * and use it to persist to it when not found already
+     */
     let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
     /**
      * !experimental
-     * Pass any unknown searchparams unchanged to weserve
+     * append unknown searchparams to the canonical cacheEntry to check or set 
+     * in the Cache API, since they may alter the final result, and we shouldn't
+     * have more than one possible outcome given a canonical cached request
      */
     if (discarded_entries !== '') {
         cacheEntry = [
@@ -357,6 +385,12 @@ async function thirdParty(
      */
     let response = !nocache && await cache.match(new Request(cacheEntry))
 
+    if (response) {
+        const contentType = response.headers.get('Content-Type') || '',
+            age = response.headers.get('age') || '0';
+        debug({ cacheHit: true, contentType, age });
+        return response;
+    }
     weservUrl.searchParams.set('filename', fileName);
     urlParam = decodeURIComponent(urlParam)
 
@@ -366,14 +400,9 @@ async function thirdParty(
         let renamedFilename = fileName.replace(`${extension}`, `${computedSearchParams.output}`);
         weservUrl.searchParams.set('filename', renamedFilename);
     }
+    weservUrl.searchParams.set('maxage', maxage)
     weservUrl.searchParams.sort()
-    if (nocache) weservUrl.searchParams.set('cachebust', String(Date.now()))
-    if (response) {
-        const contentType = response.headers.get('Content-Type') || '',
-            age = response.headers.get('age') || '0';
-        debug({ cacheHit: true, contentType, age });
-        return response;
-    }
+    if (nocache) weservUrl.searchParams.set('maxage', '1d') // this is the bare minimum. Sorry about that.
     let {
         "accept": accept,
         "accept-encoding": accept_encoding,
@@ -395,6 +424,7 @@ async function thirdParty(
             weservUrl.searchParams.set(paramName, paramValue)
         }
     }
+
     const weserveUrlStr = weservUrl.toString().replace(/%2C/g, ',')
     console.log({ weserveUrlStr })
     return computeCachedResponse(
@@ -442,10 +472,10 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context): Promi
     //Set cache control headers to cache on browser for 1 year
     response.headers.set('Accept-CH', 'Viewport-Width');
     response.headers.append('Accept-CH', 'Width');
-    response.headers.set('Vary', 'Viewport-Width, Width, Accept');
+    response.headers.set('Vary', 'Viewport-Width, Width, Accept, Accept-Encoding');
 
     response.headers.delete('cf-cache-status');
-    response.headers.set('Cache-Control', 'public, max-age=31536000');
+    response.headers.set('Cache-Control', 'public, max-age=' + String(31536000));
     response.headers.set('X-Cached-On', String(Date.now()));
     response.headers.set('last-modified', new Date(Date.now() - 180000).toUTCString());
     if (sourceUrl) response.headers.set('X-sourceUrl', sourceUrl);

@@ -1,7 +1,7 @@
 <template>
    <div class="labeledImageContainer">
     <div class="imagecell">
-    <img :src="src"/>
+    <img :src="src"   />
     </div>
     <div class="captioncell">
     <slot></slot>
@@ -11,7 +11,7 @@
 <script setup lang="ts">
  
 const { src } = defineProps<{
-    src: string;
+    src: string
 }>();
  </script>
  <style>
@@ -25,6 +25,15 @@ const { src } = defineProps<{
  }
  .labeledImageContainer .imagecell {
      flex: 1 1 0px;
+     
+ }
+ .bordered.labeledImageContainer .imagecell {
+padding:1em;
+ }
+ .bordered.labeledImageContainer .imagecell img {
+     border:3px dashed #ccc;
+     
+
  }
  .labeledImageContainer .captioncell {
       flex: 1 1 0px;

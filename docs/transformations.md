@@ -32,77 +32,73 @@ In this section we enumerate supported transformations such as resizing, optimiz
 ## Available Transformations
 
 
+### Colorize, Blur, Sharpen
 
-### Width and Height
+ - bg:  [🔗 Background Color](https://images.weserv.nl/docs/adjustment.html#background) (eg  fit=contain&cbg=0f0)
+ - ro:  [🔗 Rotate](https://images.weserv.nl/docs/adjustment.html#rotate)
+ - modulate:
+   - hue:   (0 to 360) [🔗 Hue Rotation](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
+   - mod: [🔗 Brightness](https://images.weserv.nl/docs/adjustment.html#brightness)
+   - sat: [🔗 Saturation](https://images.weserv.nl/docs/adjustment.html#saturation)
+ - sharp:  [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
+ - gam:  [🔗 Gamma](https://images.weserv.nl/docs/adjustment.html#gamma)
+ - blur:  [🔗 Blur](https://images.weserv.nl/docs/adjustment.html#blur)
+ - flip:  [🔗 Flip](https://images.weserv.nl/docs/adjustment.html#flip)
+ - flop:  [🔗 Flop](https://images.weserv.nl/docs/adjustment.html#flop)
+ - con:  [🔗 Contrast](https://images.weserv.nl/docs/adjustment.html#contrast)
+ - filt:  [🔗 Filter](https://images.weserv.nl/docs/adjustment.html#filter)
+ - trim:  [🔗 Trim](https://images.weserv.nl/docs/adjustment.html#trim) 
 
 
--    w: [🔗 Width](https://images.weserv.nl/docs/size.html#width),
--    h: [🔗 Height](https://images.weserv.nl/docs/size.html#height)
-- dpr: [🔗 Device Pixel Ratio](https://images.weserv.nl/docs/size.html#device-pixel-ratio)
-
-```html
-https://resizer.pictures/w=150_h=150/riff.one/images/dice.png
-```
-
-| dpr=2 w=200 l=0 | dpr=4 w=200 | dpr=2 w=200   | dpr=4 w=200 |
-|----------|------|---------|  --  |
-|![original](https://resizer.pictures/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://resizer.pictures/dpr=4_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://resizer.pictures/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://resizer.pictures/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
+<adjustments-grid :adjustments="{hue:160,blur:2,sharp:3,con:7,mod:1.4,sat:0.3,gam:2,flip:'',flop:'',tint:'red',ro:40,bg:'19C'}" :default_width="210" default_tx=""  :default_height="210" image="riff.one/dice_200.png"/>
 
 
 
-### Fit/Colorize/Sharpen
+----
+#### Filters 
 
- - fit: [🔗 Fit](https://images.weserv.nl/docs/fit.html) (contain, cover, inside, outside, fill)
- - bg: [🔗 Background Color](https://images.weserv.nl/docs/adjustment.html#background) (eg  fit=contain&cbg=0f0)
- - cbg: Background Color for Fit=Contain (eg  fit=contain&cbg=0f0)
- - hue: [🔗 Hue Rotation (0 to 360) ](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
- - sharp: [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
- - blur: [ Blur](https://images.weserv.nl/docs/adjustment.html#blur)
- - flip: [Flip](https://images.weserv.nl/docs/adjustment.html#flip)
- - flop: [Flop](https://images.weserv.nl/docs/adjustment.html#flop)
- - ro: [Rotate](https://images.weserv.nl/docs/adjustment.html#rotate)
- - con: [Contrast](https://images.weserv.nl/docs/adjustment.html#contrast)
- - filt: [Filter](https://images.weserv.nl/docs/adjustment.html#filter)
- - trim: [Trim](https://images.weserv.nl/docs/adjustment.html#trim) 
+Filters are passed though the `filt` parameter. 
 
-| |   |   |
-|----------|------|---------|  
-| <image-transform transform="w=200_hue=160">Hue</image-transform> | <image-transform transform="w=200_blur=2">Hue</image-transform> | <image-transform transform="w=200_sharp=3">Hue</image-transform> |
-| <image-transform transform="w=200_con=3">Contrast</image-transform> | <image-transform transform="w=200_con=3">Contrast</image-transform> | <image-transform transform="w=200_con=3">Contrast</image-transform> | 
-
-| w=100 hue=160 | w=160 h=100 cbg=green |  w=150 h=100 fit=cover sharp=4  |
-|----------|------|---------|  
-|![original](https://resizer.pictures/w=100_hue=160/riff.one/images/designcue-unsplash.jpg) |![fit and cbg](https://resizer.pictures/w=160_h=100_cbg=green/riff.one/images/designcue-unsplash.jpg) |  ![fit and cbg](https://resizer.pictures/w=150_h=100_fit=cover&sharp=4/riff.one/images/designcue-unsplash.jpg) |  
-
+| |   |   | |
+|----------|------|---------|  -- |
+| <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=greyscale">greyscale</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=sepia">sepia</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=negate">negate</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=duotone">duotone</image-transform> |
+ 
 ### Pages and Frames
 
 - n: [Number of Pages](https://images.weserv.nl/docs/format.html#number-of-pages) 
 - page: [Page](https://images.weserv.nl/docs/format.html#page)
 
-Use the `n` parameter to limit output to the first n  pages on a PDF 
+Use the `page` parameter to skip as many pages when reading from a **PDF or multipage TIFF**.  The `n` parameter means "output n pages". Using them in combination lets you   pull a single page.
 
-
-| original PDF: 3 pages  |  n=2 (first two pages) |n=1 (only page 1) |
+| page=1, n=2  |  n=2 (first two pages) | page=2 n=1 (only page 1) |
 |----------|------|---------|
-|![original](https://resizer.pictures/w=300/riff.one/img/sample_3pages.pdf) |![page 1](https://resizer.pictures/w=300_n=2/riff.one/img/sample_3pages.pdf) |  ![page 2](https://resizer.pictures/w=300_n=1/riff.one/img/sample_3pages.pdf) |     
+| skip 1, yield the next 2 | yields first 2 | skip 2, yield 1 page |
+|![original](https://resizer.pictures/w=300_page=1_n=2/riff.one/img/sample_3pages.pdf) |![page 1](https://resizer.pictures/w=300_n=2/riff.one/img/sample_3pages.pdf) |  ![page 2](https://resizer.pictures/w=300_page=2_n=1/riff.one/img/sample_3pages.pdf) |     
 
-Likewise, use it to limit to the first n frames in an animation 
+
+Example with TIFF images,  
+
+| page=0 n=1 | page=1 n=1 | page=2 n=1 |
+|----------|------|---------|  
+|![page 0](https://resizer.pictures/w=300_h=150_page=0_n=1_png/riff.one/banners2.tiff) |![page 1](https://resizer.pictures/w=300_page=1_n=1_png/riff.one/banners2.tiff)| ![page 2](https://resizer.pictures/w=300_page=2_n=1_png/riff.one/banners2.tiff) |  
+
+
+ 
+----
+
+On animations (this example uses an animated gif), `n`  limits the output to the first n frames. Also, applying the `page` parameter to it yields a funny effect.
 
 | original 24 frames | limit to 6 frames | 3 frames | wtf is this? (page=2) |
 |----------|------|---------|   -- |
-|![original](https://resizer.pictures/w=300/riff.one/img/pig.gif) |![5 frames](https://resizer.pictures/w=300_n=6/riff.one/img/pig.gif) | ![3 frames](https://resizer.pictures/w=300_n=3/riff.one/img/pig.gif) |![original](https://resizer.pictures/w=300_page=2/riff.one/img/pig.gif) |
+|![original](https://resizer.pictures/w=300/riff.one/img/pig.gif) |![5 frames](https://resizer.pictures/w=300_n=6/riff.one/img/pig.gif) | ![3 frames](https://resizer.pictures/w=300_n=3_page=0/riff.one/img/pig.gif) |![original](https://resizer.pictures/w=300_page=2/riff.one/img/pig.gif) |
 
-The `page` parameter is used to pick a particular resolution on a multi resolution .ico (however it had a weird effect in the pig above)
+--- 
 
-| 72x72 | 96x96 | 128x128 |
+On **multi resolution .ico files**, the `page` parameter is used to pick a particular resolution on a  (however it had a weird effect in the pig above)
+
+| page=1 72x72 | page=2 96x96 | page=3 128x128 |
 |----------|------|---------|  
 |![original](https://resizer.pictures/page=1/riff.one/img/multi_res.ico) |![5 frames](https://resizer.pictures/page=2/riff.one/img/multi_res.ico) | ![3 frames](https://resizer.pictures/page=3/riff.one/img/multi_res.ico) |  
-
-
-| page=1 | page=2 | page=3 |
-|----------|------|---------|  
-|![page 2](https://resizer.pictures/w=300_page=1_png/riff.one/img/banners.tiff) |![page 2](https://resizer.pictures/w=300_page=2_png/riff.one/img/banners.tiff)| ![page 2](https://resizer.pictures/w=300_page=-2_png/riff.one/img/banners.tiff) |  
-
 
 
 
@@ -119,47 +115,4 @@ The `page` parameter is used to pick a particular resolution on a multi resoluti
 |----------|------|---------|  --  |
 | png 481kB | png 102kB | jpg 148kB| jpg 3.8kB  |
 |![original](https://resizer.pictures/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://resizer.pictures/dpr=2_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://resizer.pictures/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://resizer.pictures/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
-
-
-
-### Output Format and naming
-
-- output: [Output](https://images.weserv.nl/docs/format.html#output)
-- filename: [Filename](https://images.weserv.nl/docs/format.html#filename)
-
-```html
-https://resizer.pictures/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
-```
-
-| Original (png) | JPEG |   GIF   | WEBP |
-|----------|------|---------|  --  |
-|![original](https://resizer.pictures/w=150_png/riff.one/images/designcue-unsplash.jpg) |![jpg](https://resizer.pictures/hue=90_w=150_jpg/riff.one/images/designcue-unsplash.jpg) |  ![gif](https://resizer.pictures/hue=180_w=150_gif/riff.one/images/designcue-unsplash.jpg) |  ![webp](https://resizer.pictures/hue=270_w=150_output=webp/riff.one/images/designcue-unsplash.jpg) |  
-
-
-### Crop
-
-[Cropping](https://images.weserv.nl/docs/crop.html#rectangle-crop) is achieved through 4 parameters
-
--  cw: 'Crop width',
--  cy: 'Crop y',
--  cx: 'Crop x',
--  ch: 'Crop height',
-
-This one is tricky to get right, but you can see an example on the story of [my use case](use_cases.md). 
-
-| original w=200 h=150 | w=200 h=150 | w=200 h=150 |  w=400 h=300  |
-|----------|------|---------|  --  |
-|  | cx=20 cy=20 fit=cover| cx=20 cy=20 ch=54 fit=cover| cx=82 cy=67 ch=137 cw=224 fit=cover|
-|![original](https://resizer.pictures/w=200_h=150/riff.one/images/printable_chart.png) |![jpg](https://resizer.pictures/w=200_h=150_cx=20_cy=20_fit=cover/riff.one/images/printable_chart.png) |  ![af](https://resizer.pictures/w=200_h=150_cx=20_cy=20_ch=54_fit=cover/riff.one/images/printable_chart.png)  |  ![webp](https://resizer.pictures/w=400_h=300_cx=82_cy=67_ch=137_cw=224_fit=cover/riff.one/images/printable_chart.png) |  
-
-Basically, taking the image AFTER any resizing, you define a rectangle of [cw] x [ch] pixels, starting from a top left corner located at [cx, cy]. 
-
-In the example below, the original image is resized to 430 x 270. From this size we want, in turn, to crop a 180 x 210 rectangle starting from [130, 50].
-
-![cropping](../docs/images/crop.png)
-
-Depending on the `fit` parameter, a transformation `cx=130_cy=50_cw=180_ch=210` would yield 
-
---------------
-
 

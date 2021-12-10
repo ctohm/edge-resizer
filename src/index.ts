@@ -16,23 +16,13 @@ const exportDefault = {
   fetch: async (request: Request, env: EnvWithBindings, ctx: FetchEvent): Promise<Response> => {
     const NORMALIZED_ROUTE_PREFIX = normalizePrefix(env.ROUTE_PREFIX),
       url = new URL(request.url)
-    const options = { ROUTE_PREFIX: `${NORMALIZED_ROUTE_PREFIX}/`, DEBUG: env.DEBUG || url.searchParams.has('debug'), UNKNOWN: env.UNKNOWN }
+    const options = { ROUTE_PREFIX: `${NORMALIZED_ROUTE_PREFIX}/`, DEBUG: env.DEBUG || url.searchParams.has('debug') }
     //ctx.passThroughOnException()
     const resizerRouter = new ResizerRouter(options)
-    resizerRouter.get('x*', (req: Request) => {
-      /**
-       * Prevent infinite favicon loop
-       */
-      if (req.headers.get('referer')?.includes('favicon.ico')) {
-        return new Response(null, { status: 204 })
-      }
-      console.log({ x: req.url })
 
-      return fetch(req)
-    })
     // Replace 
     const mainRouter: ThrowableRouter<Request> = ThrowableRouter({ base: '', stack: true })
-      .get('/favicon*', (req: Request) => new Response(fallbackSvg(), { headers: { "content-type": "image/svg", "cache-control": 'public, max-age=31536000', 'X-Requested': req.url } }))
+      .get('/favicon*', () => new Response(fallbackSvg()))
       .get('/version', () => json({
         worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
         timestamp: env.TIMESTAMP,
@@ -45,7 +35,7 @@ const exportDefault = {
          * Prevent infinite favicon loop
          */
         if (req.headers.get('referer')?.includes('favicon.ico')) {
-          return new Response(null, { status: 204 })
+          return new Response(fallbackSvg())
         }
         console.log({ catchAll: req.url })
         return fetch(req)
@@ -54,10 +44,10 @@ const exportDefault = {
 
     return mainRouter
       .handle(request, ctx)
-      .catch((err) => {
+      .catch((err: Error) => {
         let warnObj = {
           error: err.message,
-          stack: err.stack.split('\n'),
+          stack: (err.stack || '').split('\n'),
         };
 
         console.warn(warnObj);
@@ -68,14 +58,14 @@ const exportDefault = {
 addEventListener('fetch', async (event: FetchEvent) => {
   //console.log({ url, keys: Object.keys(event.request) })
   const { request } = event,
-    waitUntil = event.waitUntil.bind(event),
 
     env: EnvWithBindings = {
       WORKER_ENV,
       DEBUG,
       ROUTE_PREFIX,
       RELEASE,
-      TIMESTAMP
+      TIMESTAMP,
+      MAX_AGE
     }
 
   event.respondWith(exportDefault.fetch(request, env, event))

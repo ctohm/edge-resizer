@@ -6,6 +6,7 @@ import ShowCase from './ShowCase.vue'
 import OutputFormats from './OutputFormats.vue'
 import MyLayout from './MyLayout.vue'
 import LabeledImage from './LabeledImage.vue'
+import AdjustmentsGrid from './AdjustmentsGrid.vue'
 import ImageTransform from './ImageTransform.vue'
 export default {
   ...DefaultTheme,
@@ -25,6 +26,7 @@ export default {
     //app.component('RepoAndButtons', RepoAndButtons)
     app.component('output-formats', OutputFormats)
     app.component('image-transform', ImageTransform)
+    app.component('adjustments-grid', AdjustmentsGrid)
     app.component('labeled-image', LabeledImage)
     app.component('ShowCase', ShowCase)
   }

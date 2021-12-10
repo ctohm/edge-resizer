@@ -20,14 +20,15 @@ module.exports = {
     return   [
           { text: '🍬 About', link: '/about.html' },
           { text: '🔌 Routing Strategy', link: 'routing.html' },
-          { text: '📡 Usage modes',children:[
-          { text: '🔗 Hotlink at will', link: 'hotlinking.html' },
-          { text: '🌎 Deploy your own', link: 'deploy.html' },
-          { text: '📙 Use it as a library', link: 'library.html' }
-          ]},
-          { text: '♻️ Transformations', link: 'transformations.html' },
+          
+          { text: '🔳 Resize and Crop',link:'resizing_and_cropping.html'},
           { text: '🔃 Conversion',link:'conversion.html'},
           { text: '🚀 Caching', link: 'caching.html' },
+          { text: '♻️ Transformations', link: 'transformations.html' },
+          { text: '📡 Deploy your own', link: 'deploy.html',children:[
+          { text: '🔗 Hotlink at will', link: 'hotlinking.html' },
+          { text: '📙 Use it as a library', link: 'library.html' }
+          ]},
           { text: '⛳ Use Cases', link: 'use_cases.html' },
           { text: '💥 Troubleshooting', link: 'troubleshooting.html' }
         ]

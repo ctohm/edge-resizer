@@ -11,9 +11,9 @@ zone_id = ""
   WORKER_ENV = "production"
   DEBUG = true
   ROUTE_PREFIX='/' # e.g. /thumbnails
-  RELEASE = "cc44a2a"
+  RELEASE = "7d2427a"
   TIMESTAMP = ""
-
+  MAX_AGE = "1y"
 
 [build]
   command = "[ -z \"$ROUTE_PREFIX\" ] && npx esbuild src/index.ts --bundle --format=cjs --outfile=dist/worker.js || npx esbuild src/index.ts --bundle --format=cjs --outfile=dist/worker.js  --define:ROUTE_PREFIX=$ROUTE_PREFIX"
