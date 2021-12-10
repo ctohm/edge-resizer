@@ -8,6 +8,8 @@ import MyLayout from './MyLayout.vue'
 import LabeledImage from './LabeledImage.vue'
 import AdjustmentsGrid from './AdjustmentsGrid.vue'
 import ImageTransform from './ImageTransform.vue'
+import AvailableParameters from './AvailableParameters.vue'
+import AliasesTable from './AliasesTable.vue'
 export default {
   ...DefaultTheme,
   // override the Layout with a wrapper component that injects the slots
@@ -26,8 +28,10 @@ export default {
     //app.component('RepoAndButtons', RepoAndButtons)
     app.component('output-formats', OutputFormats)
     app.component('image-transform', ImageTransform)
+    app.component('available-parameters', AvailableParameters)
     app.component('adjustments-grid', AdjustmentsGrid)
     app.component('labeled-image', LabeledImage)
+    app.component('aliases-table', AliasesTable)
     app.component('ShowCase', ShowCase)
   }
 }

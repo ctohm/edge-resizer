@@ -2,7 +2,7 @@
 //import { version } from '../package.json';
 import { json, ThrowableRouter } from 'itty-router-extras';
 
-import { EnvWithBindings, ResizerRouter, fallbackSvg } from 'edge-resizer/ResizerRouter'
+import { EnvWithBindings, ResizerRouter, fallbackSvg, AvailableTransforms } from 'edge-resizer/ResizerRouter'
 
 /**
  * Ensure leading slash and no trailing slash for non empty prefixes.
@@ -27,6 +27,9 @@ const exportDefault = {
         worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
         timestamp: env.TIMESTAMP,
         route_prefix: NORMALIZED_ROUTE_PREFIX
+      }))
+      .get('/transforms', () => json({
+        AvailableTransforms
       }))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
         resizerRouter.handle)

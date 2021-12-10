@@ -1,9 +1,15 @@
-import { Router, RouterOptions } from 'itty-router';
+import { RouterOptions } from 'itty-router';
 interface IWaitableObject {
     waitUntil: (promise: Promise<any>) => void;
 }
 export declare type TImageParameters = {
     transforms: Record<string & keyof IdefaultSearchParams, string>;
+    defaults: {
+        fit: string;
+        n: string;
+        maxage: string;
+    };
+    discarded: Record<string, string>;
 } & {
     [s: string]: string;
 };
@@ -17,6 +23,9 @@ export interface EnvWithBindings {
     DEBUG: boolean;
     WORKER_ENV: string;
     ROUTE_PREFIX: string;
+    RELEASE: string;
+    TIMESTAMP?: number;
+    MAX_AGE?: string;
 }
 export interface IdefaultSearchParams {
     cbg: string;
@@ -48,6 +57,10 @@ export interface IdefaultSearchParams {
     blur?: number;
     filt?: string;
     con?: number;
+    mod?: string;
+    sat?: string;
+    gam?: number;
+    tint?: string;
 }
 export interface IOutputFormats {
     jpg?: string;
@@ -55,14 +68,36 @@ export interface IOutputFormats {
     gif?: string;
     tiff?: string;
     webp?: string;
+    jpeg?: string;
     auto?: string;
 }
-export declare const AvailableFormats: Record<keyof IOutputFormats, string>;
-export declare const AvailableTransforms: Record<keyof IdefaultSearchParams, string>;
-export declare function defaultRoutes<Q extends Request | RequestWithParams, R extends Router<Q>>(router: R): R;
-export declare function fallbackSvg(): string;
+interface IFitModes {
+    contain?: string;
+    cover?: string;
+    fill?: string;
+    inside?: string;
+    outside?: string;
+}
+export declare const AlignmentAliases: {
+    'top-left': string;
+    top: string;
+    'top-right': string;
+    left: string;
+    center: string;
+    right: string;
+    'bottom-left': string;
+    bottom: string;
+    'bottom-right': string;
+};
+export declare const FitAliases: Record<keyof IFitModes, string>;
+export declare const FormatAliases: Record<keyof IOutputFormats, string>;
+export declare const AvailableTransforms: Record<keyof IdefaultSearchParams, {
+    title: string;
+    docs?: string;
+}>;
 export declare class ResizerRouter {
     handle: (request: Request, ...extra: any) => any;
     constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>);
 }
+export declare function fallbackSvg(): string;
 export {};

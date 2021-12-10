@@ -1,25 +1,15 @@
 
 
-* ['🍬 About](https://resizer.pictures/about.html)
-* ['🔌 Routing Strategy](https://resizer.pictures/routing.html)
-* ['🔗 Hotlink at will](https://resizer.pictures/hotlinking.html)
-* ['🌎 Deploy your own](https://resizer.pictures/deploy.html)
-* ['📙 Use it as a library](https://resizer.pictures/library.html)
-* ['♻️ Transformations](https://resizer.pictures/transformations.html)
-* ['🔃 Conversion](https://resizer.pictures/conversion.html)
-* ['🚀 Caching](https://resizer.pictures/caching.html)
-* ['⛳ Use Cases](https://resizer.pictures/use_cases.html)
-* ['💥 Troubleshooting'](https://resizer.pictures/troubleshooting.html)
+
 
 # What is Edge-Resizer ?
 
-Edge Resizer acts as a caching, optimization and transform proxy for image requests to your own or third party stored images.
+Edge Resizer was conceived as a way to generate long thumbnails on demand for a given collection of publicly visible images, for which it would be overkill to pregenerate potentially unneded variations. Basically, the first time a given thumbnail size is requested, it's generated and cached on the edge.
 
 Images are transformed and/or optimized through [**images.weserv.nl**](https://images.weserv.nl/)'s API, while caching is done using Cloudflare Workers's [fine control of the Cache API](https://developers.cloudflare.com/workers/runtime-apis/cache). 
 
-With both services, plus our own [routing logic](routing.html) and sensible defaults, long lived image variations will be generated on demand with compact and clean urls (no searchParams whatsoever) and (optionally) served from [your own subdomain](deploy.html). 
+With both services, plus our own [routing logic](routing.html), feature detection, syntactic sugar and sensible defaults, you basically have every possible transformation of (size, ting, hue, blur, and more) one request away. **Long lived image variations** will be generated on demand with compact and clean urls (no searchParams whatsoever) and (optionally) served from [your own subdomain](deploy.html). 
 
-### TL/DR
 
 <ShowCase class="bordered">
 <template v-slot:first_paragraph>
@@ -50,8 +40,7 @@ Internally translates to
 
 <template v-slot:table>
 
-![150x150](https://resizer.pictures/contain_a=top-right_w=180_h=140_jpg_bg=eee/riff.one/img/dice_200.png)
-![150x150](https://resizer.pictures/contain_a=bottom-left_w=180_h=160_jpg_bg=eee/riff.one/img/dice_200.png)
+![150x150](https://resizer.pictures/contain_ro=90_w=180_h=140_jpg_bg=eee/riff.one/img/dice_200.png)
 
 </template>
 </ShowCase>

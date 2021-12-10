@@ -26,18 +26,23 @@ import { ref } from 'vue';
 
 /*const formats=[`jpg`, `png`, `gif`, `webp`],
 image="https://riff.one/images/designcue-unsplash.jpg"*/
-const { formats, image } = defineProps<{
-    formats: string[];
+const {  image } = defineProps<{
     image: string;
 }>();
+
+import {FormatAliases } from 'edge-resizer/ResizerRouter'
+const formats=Object.entries(FormatAliases).map(([alias,canonical])=>{
+    return {alias,canonical}
+})
 const extension = image.split('.').pop();
 const list = ref(
-    formats.map((format) => {
+    formats.map(({alias:format,canonical}) => {
         const  transform= `output=${format}`,
         url=image.split('//').pop(),
          pathname = `w=150_${transform}/${url}`;
 
         return {
+            canonical,
             extension,
             pathname,
             url,

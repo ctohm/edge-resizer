@@ -1,31 +1,5 @@
 # ♻️ Transformations
 
-Our routing logic expects the transformation part to come right before the target image hostname. This part of the variation url will be translated -under the hood- to searchParams as expected by [images.weserv.nl API](https://images.weserv.nl/). 
-
-e.g resize to 150x150
-
-```html
-https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg
-```
-
-<ShowCase>
-<template v-slot:first_paragraph>
-Except for the very first time they are requested (and inmediately cached), variations will answer from the edge at blazing speed, and will even survive for a few months if the original image is deleted. The image to the right doesn't exist but in Cloudflare's Cache.
-</template>
-<template v-slot:second_paragraph>The response headers will also hint the browser not to request this same asset for a year. While this isn't much of a feature, your browser will hopefully not need requesting it anytime soon and that will shave a couple of ms off.
-
-</template>
-<template v-slot:table>
-
- | w=150 h=150 |
-|----------|
-|![150x150](https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg)
-
-</template>
-</ShowCase>
-
-----
-
 In this section we enumerate supported transformations such as resizing, optimizing, compression, changing format, cropping and changing hue. Other transformations can be passed directly as searchParams to the variation URL (not ideal, but :shrug:)
 
 ----------
@@ -50,7 +24,7 @@ In this section we enumerate supported transformations such as resizing, optimiz
  - trim:  [🔗 Trim](https://images.weserv.nl/docs/adjustment.html#trim) 
 
 
-<adjustments-grid :adjustments="{hue:160,blur:2,sharp:3,con:7,mod:1.4,sat:0.3,gam:2,flip:'',flop:'',tint:'red',ro:40,bg:'19C'}" :default_width="210" default_tx=""  :default_height="210" image="riff.one/dice_200.png"/>
+<adjustments-grid :adjustments="{hue:160,blur:2,sharp:3,con:7,mod:1.4,sat:0.3,gam:2,flip:'',flop:'',tint:'red',ro:90,bg:'19C'}" :default_width="210" default_tx="we"  :default_height="210" image="riff.one/dice_200.png"/>
 
 
 

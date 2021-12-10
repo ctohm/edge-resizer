@@ -3,7 +3,7 @@
 
 ### Supported input formats
 
-As stated elsewhere, Edge-Resizer delegates to [**images.weserv.nl**](https://images.weserv.nl/)'s API, and because of that, we're able to read from [quite a few formats](https://github.com/weserv/images/issues/105#issuecomment-327497304) including, but not limited to, JPG, PNG, AVIF, GIF, TIFF, PDF, SVG, ICO, WEBP.
+As stated elsewhere, (but we can't stress it enough) Edge-Resizer delegates to [**images.weserv.nl**](https://images.weserv.nl/)'s API, and because of that, we're able to read from [quite a few formats](https://github.com/weserv/images/issues/105#issuecomment-327497304) including, but not limited to, JPG, PNG, AVIF, GIF, TIFF, PDF, SVG, ICO, WEBP.
 
 The following formats can be safely read, but you cannot use them as output:
 
@@ -11,7 +11,7 @@ The following formats can be safely read, but you cannot use them as output:
 
 |ICO | PDF |   HEIC   | SVG | AVIF |
 |----------|------|---------|  --  | --  |
-|![ico](https://resizer.pictures/w=150/riff.one/img/multi_res.ico) |![pdf](https://resizer.pictures/w=150_n=1/riff.one/img/sample_3pages.pdf) |  ![heig](https://resizer.pictures/w=150/riff.one/img/sample1.heic) |  ![svg](https://resizer.pictures/w=128/riff.one/favicon.svg) | ![avif](https://resizer.pictures/w=150/riff.one/img/fox.avif) 
+|![ico](https://resizer.pictures/w=150_page=2/riff.one/img/multi_res.ico) |![pdf](https://resizer.pictures/w=150_n=1/riff.one/img/sample_3pages.pdf) |  ![heig](https://resizer.pictures/w=150/riff.one/img/sample1.heic) |  ![svg](https://resizer.pictures/w=128/riff.one/favicon.svg) | ![avif](https://resizer.pictures/w=150/riff.one/img/fox.avif) 
 
 </span>
 

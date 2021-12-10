@@ -86,7 +86,7 @@ export interface IOutputFormats {
     gif?: string;
     tiff?: string;
     webp?: string;
-
+    jpeg?: string;
     auto?: string;
 }
 interface IFitModes {
@@ -96,60 +96,84 @@ interface IFitModes {
     inside?: string;
     outside?: string;
 }
-const AvailableFits: Record<keyof IFitModes, string> = {
-    contain: 'Short for fit=contain',
-    cover: 'Short for fit=cover',
-    fill: 'Short for fit=fill',
-    inside: 'Short for fit=inside',
-    outside: 'Short for fit=outside',
+export const AlignmentAliases = {
+    'top-left': 'a=top-left',
+    'top': 'a=top',
+    'top-right': 'a=top-right',
+    'left': 'a=left',
+    'center': 'a=center',
+    'right': 'a=right',
+    'bottom-left': 'a=bottom-left',
+    'bottom': 'a=bottom',
+    'bottom-right': 'a=bottom-right',
 }
-const AvailableFormats: Record<keyof IOutputFormats, string> = {
-    jpg: 'Short for output=jpg',
-    png: 'Short for output=png',
-    tiff: 'Short for output=tiff',
-    gif: 'Short for output=gif',
-    webp: 'Short for output=webp',
+export const FitAliases: Record<keyof IFitModes, string> = {
+    contain: 'fit=contain',
+    cover: 'fit=cover',
+    fill: 'fit=fill',
+    inside: 'fit=inside',
+    outside: 'fit=outside',
+}
+export const FormatAliases: Record<keyof IOutputFormats, string> = {
+    jpg: 'output=jpg',
+    jpeg: 'output=jpg',
+    png: 'output=png',
+    tiff: 'output=tiff',
+    gif: 'output=gif',
+    webp: 'output=webp',
 
     auto: `check the accept header  for webp support and use it if affirmative`
 }
-export const AvailableTransforms: Record<keyof IdefaultSearchParams, string> = {
-    cbg: 'Background Color for Fit=Contain',
-    bg: 'Background Color', //https://images.weserv.nl/docs/adjustment.html#background
-    fit: 'Fit', //https://images.weserv.nl/docs/fit.html#inside
-
-    af: 'Adaptative Filter', //https://images.weserv.nl/docs/format.html#adaptive-filter
-    l: 'Compression Level', //https://images.weserv.nl/docs/format.html#compression-level
-    w: 'Width',
-    h: 'Height',
-    page: 'Page',//https://images.weserv.nl/docs/format.html#page
-    a: 'Alignment',
-    output: 'Output', //https://images.weserv.nl/docs/format.html#output
-    //  filename: 'Filename', //https://images.weserv.nl/docs/format.html#filename
-    q: 'Quality', //https://images.weserv.nl/docs/format.html#quality
-    n: 'Number of Pages', //https://images.weserv.nl/docs/format.html#number-of-pages
-    il: 'Interlaced/Progressive',
-    sharp: 'Sharpen', //https://images.weserv.nl/docs/adjustment.html#sharpen
-    //h:tps://images.weserv.nl/docs/crop.html#rectangle-crop
-    cw: 'Crop width',
-    cy: 'Crop y',
-    cx: 'Crop x',
-    gam: 'Gamma',
-    ch: 'Crop height',
-    precrop: 'Crop applied before resizing',
-    hue: 'Hue',
-    dpr: 'Device Pixel Ratio', //https://images.weserv.nl/docs/size.html#device-pixel-ratio
+export const AvailableTransforms: Record<keyof IdefaultSearchParams, { title: string, docs?: string, example: string, section?: string, sectionLink?: string }> = {
+    w: { title: 'Width', example: 'w=250', section: 'Resize', sectionLink: 'https://images.weserv.nl/docs/size.html', docs: 'https://images.weserv.nl/docs/size.html#width' },
+    h: { title: 'Height', example: 'h=150', docs: 'https://images.weserv.nl/docs/size.html#height' },
+    we: { title: 'Without Enlargement', example: 'we', docs: 'https://images.weserv.nl/docs/fit.html#without-enlargement' },
+    dpr: { title: 'Device Pixel Ratio', docs: 'https://images.weserv.nl/docs/size.html#device-pixel-ratio', example: 'dpr=2' },
+    ro: { title: 'Rotate', example: 'ro=45' },
+    //  filename: 'Filename', docs:'https://images.weserv.nl/docs/format.html#filename',
     // Added on version 1.2.0
-    we: 'Without Enlargement',
-    blur: 'Blur',
-    flip: 'Flip',
-    flop: 'Flop',
-    ro: 'Rotate',
-    mod: 'Brightness',
-    sat: 'Sat',
-    tint: 'Tint',
-    con: 'Contrast',
-    filt: 'Filter',
-    trim: 'Trim',
+    //h:tps://images.weserv.nl/docs/crop.html#rectangle-crop
+    il: { title: 'Interlaced/Progressive', example: 'il', section: 'Optimization/Conversion', sectionLink: 'https://images.weserv.nl/docs/format.html#adaptive-filter' },
+    af: { title: 'Adaptative Filter', docs: 'https://images.weserv.nl/docs/format.html#adaptive-filter', example: 'af' },
+    q: { title: 'Quality', docs: 'https://images.weserv.nl/docs/format.html#quality', example: 'q=80' },
+    l: { title: 'Compression Level', docs: 'https://images.weserv.nl/docs/format.html#compression-level', example: 'l=6' },
+    n: { title: 'Number of Pages', docs: 'https://images.weserv.nl/docs/format.html#number-of-pages', example: 'n=0' },
+    page: { title: 'Page', docs: 'https://images.weserv.nl/docs/format.html#page', example: 'page=1' },
+    output: { title: 'Output', docs: 'https://images.weserv.nl/docs/format.html#output', example: 'output=png' },
+
+
+    cw: { title: 'Crop width', example: 'cw=200', section: 'Crop', sectionLink: 'https://images.weserv.nl/docs/crop.html#rectangle-crop' },
+    ch: { title: 'Crop height', example: 'ch=100' },
+    cx: { title: 'Crop x', example: 'cx=10' },
+    cy: { title: 'Crop y', example: 'cy=10' },
+    a: { title: 'Alignment', example: 'a=center', docs: 'https://images.weserv.nl/docs/crop.html#alignment-position' },
+    precrop: { title: 'Crop applied before resizing', example: 'precrop' },
+    cbg: { title: 'Background Color for Fit=Contain', example: 'cbg=AA00CC' },
+    trim: { title: 'Trim', example: 'trim', docs: 'https://images.weserv.nl/docs/crop.html#trim' },
+
+    con: { title: 'Contrast', example: 'con=3', section: 'Filters' },
+    bg: { title: 'Background Color', docs: 'https://images.weserv.nl/docs/adjustment.html#background', example: 'bg=CCAA00' },
+    blur: { title: 'Blur', example: 'blur=2' },
+
+    filt: { title: 'Filter', example: 'filt=sepia' },
+    fit: { title: 'Fit', docs: 'https://images.weserv.nl/docs/fit.html#inside', example: 'fit=contain' },
+    flip: { title: 'Flip', example: 'flip' },
+    flop: { title: 'Flop', example: 'flop' },
+    gam: { title: 'Gamma', example: 'gam=1' },
+    hue: { title: 'Hue', example: 'hue=180' },
+    mod: { title: 'Brightness', example: 'mod=2' },
+    sat: { title: 'Saturation', example: 'sat=50' },
+    sharp: { title: 'Sharpen', docs: 'https://images.weserv.nl/docs/adjustment.html#sharpen', example: 'sharp=2' },
+    tint: { title: 'Tint', example: 'tint=red' },
+
+
+
+
+
+
+
+
+
 
 
 }
@@ -162,8 +186,8 @@ export class ResizerRouter {
         const pathNameGroup = `(?<pathname>(.*))`;
         const validXFormKeys = Object.keys(AvailableTransforms)
             .concat(
-                Object.keys(AvailableFormats),
-                Object.keys(AvailableFits),
+                Object.keys(FormatAliases),
+                Object.keys(FitAliases),
                 ['http', 'https', 'images', 'img', 'vw']
             );
         const transformationsGroup = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^_/]*)*)*)`;
@@ -261,6 +285,7 @@ function handleMatchingRoute(
             });
             // Compute the searchparams equivalent of the transform slug that came in the request
             const pathSearchParams = new URLSearchParams(req.params.transformations.replace(/[+_/,]/g, '&'))
+
             // append the actual searchParams
             for (let [key, value] of url.searchParams.entries()) {
                 pathSearchParams.set(key, value)
@@ -270,10 +295,10 @@ function handleMatchingRoute(
                     req.params.protocol = key;
                 } else if (Object.keys(AvailableTransforms).includes(key)) {
                     req.params.transforms[key as keyof IdefaultSearchParams] = value ?? true;
-                } else if (Object.keys(AvailableFormats).includes(key)) {
+                } else if (Object.keys(FormatAliases).includes(key)) {
                     debug({ output: key });
                     req.params.transforms.output = key;
-                } else if (Object.keys(AvailableFits).includes(key)) {
+                } else if (Object.keys(FitAliases).includes(key)) {
                     debug({ fit: key });
                     req.params.transforms.fit = key;
                 } else if (key === 'vw' && req.headers.has('viewport-width')) {
