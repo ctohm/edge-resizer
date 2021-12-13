@@ -92,12 +92,39 @@ export declare const AlignmentAliases: {
 export declare const FitAliases: Record<keyof IFitModes, string>;
 export declare const FormatAliases: Record<keyof IOutputFormats, string>;
 export declare const AvailableTransforms: Record<keyof IdefaultSearchParams, {
+    regex: string;
     title: string;
     docs?: string;
+    example: string;
+    section?: string;
+    sectionLink?: string;
+    note?: string;
 }>;
 export declare class ResizerRouter {
     handle: (request: Request, ...extra: any) => any;
     constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>);
+    /**
+     * Process route params in order to extract transformations as an Object
+     * to pass to the next handler
+     * Shorthand syntax for output formats is translated to its canonical form (output=<format>)
+     * Shorthand syntax for fit types is translated to its canonical form (fit=<fit type>)
+    *
+    * Searchparams, if they are among the supported transformations, will be merged into the Object, overriding route params
+    * When they aren't a recognizable transformation, they are stored (and passed to the next handler) as a separate object
+    * That object will be ultimately added to the request to WeServe, but won't be part of the canonical nice URL we use as
+    * cache-key.
+     * @returns
+     */
+    static handleMatchingRoute(debugFn?: {
+        (...attrs: any[]): void;
+    }, defaultSearchParams?: {
+        fit: string;
+        n: string;
+        maxage: string;
+    }): {
+        (req: RequestWithParams, ctx: Context): Promise<Response>;
+    };
+    static normalizeRequestParams(req: RequestWithParams, pathSearchParams: URLSearchParams): TImageParameters;
 }
 export declare function fallbackSvg(): string;
 export {};
