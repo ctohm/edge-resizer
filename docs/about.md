@@ -4,65 +4,43 @@
 
 # What is Edge-Resizer ?
 
-Edge Resizer was conceived as a way to generate long thumbnails on demand for a given collection of publicly visible images, for which it would be overkill to pregenerate potentially unneded variations. Basically, the first time a given thumbnail size is requested, it's generated and cached on the edge.
+Edge Resizer was conceived as a routing middleware translating **tidy, compact and self-contained URLs** to the (potentially) complex request needed to [dinamically generate variations](https://images.weserv.nl/) of a source image. E.g. a 256x192 thumbnail:
 
-Images are transformed and/or optimized through [**images.weserv.nl**](https://images.weserv.nl/)'s API, while caching is done using Cloudflare Workers's [fine control of the Cache API](https://developers.cloudflare.com/workers/runtime-apis/cache). 
+> **original img**: [*https://* **riff.one/designcue-unsplash.jpg**](https://riff.one/designcue-unsplash.jpg)
+> 
+> **thumbnail** : [*https://resizer.pictures/w=256_h=192/* **riff.one/designcue-unsplash.jpg**](https://resizer.pictures/w=256_h=192/riff.one/designcue-unsplash.jpg)
 
-With both services, plus our own [routing logic](routing.html), feature detection, syntactic sugar and sensible defaults, you basically have every possible transformation of (size, ting, hue, blur, and more) one request away. **Long lived image variations** will be generated on demand with compact and clean urls (no searchParams whatsoever) and (optionally) served from [your own subdomain](deploy.html). 
+These **long lived variations** are created through [**images.weserv.nl**](https://images.weserv.nl/)'s API only when (and if) they are first requested, having further requests answer from  [Cloudflare's Edge Cache](https://developers.cloudflare.com/workers/runtime-apis/cache) at blazing speeds. 
 
+Deploy to Cloudflare to use it with your custom domains:
 
-<ShowCase class="bordered">
-<template v-slot:first_paragraph>
-Given the image at 
-</template>
-<template v-slot:second_paragraph>
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ctohm/edge-resizer) 
 
-> https://riff.one/img/dice.png
+### No Edge and No Resizer
 
-</template>
-<template v-slot:table >
+Edge Resizer doesn't perform image manipulation nor persistence. It depends on 
 
-![150x150](https://riff.one/img/dice_200.png)
+- ![Cloudflare Workers](https://resizer.pictures/auto/deploy.workers.cloudflare.com/favicon.ico) [Cloudflare's Edge Cache](https://developers.cloudflare.com/workers/runtime-apis/cache) to do the "Edge" part
+- ![images.weserve.nk](https://resizer.pictures/w=30/images.weserv.nl/logo.svg) [**images.weserv.nl**](https://images.weserv.nl/)'s API for the "Resizer" part. 
 
-</template>
-</ShowCase>
-
-<ShowCase>
-<template v-slot:first_paragraph>
-Requesting 
-
-https://resizer.pictures/fill_h=200_gif/riff.one/img/dice_200.png
-
-<br><br>
-Internally translates to 
-
-</template>
-
-<template v-slot:table>
-
-![150x150](https://resizer.pictures/contain_ro=90_w=180_h=140_jpg_bg=eee/riff.one/img/dice_200.png)
-
-</template>
-</ShowCase>
-
-```html
-https://images.weserv.nl/?fit=fill&h=200&output=gif&url=ssl%3Ariff.one%2Fimg%2Fdice_200.png
-```
+Without them, Edge Resizer would be pointless. Thank you guys, you're da real MVP 🙏.
 
 
-Besides it being a tidier URL, the [caching](caching.html) layer on top of the response will use the nice URL as cache key
+### What does Edge Resizer bring to the table
 
+- 🔌 [Compact & tidy URLs](https://resizer.pictures/routing)
+- 👃 Feature detection through [Client Hints](https://developer.mozilla.org/en-US/docs/Glossary/Client_hints) and other headers
+- 🧠 sensible defaults and syntactic sugar
+- 🚀 Finer control of caches
+- :blush: ...*A cheap and amateurish version of [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing)*
 
+## Explore the Docs:
 
-::: warning 
-Please note **images.weserv.nl** and Cloudflare must be able to access the source URL in order to cache, proxy or generate variations.  The outcome, if successful, will be **publicly readable** regardless of the original image restrictions unless you implement access control yourself (for example, using Cloudflare Access).
-::: 
-
-
-
-
-
------
-
-:blush: ...*Besides the above explanation, in all honesty you could also say it's a cheap version of [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing)*
-
+ - [🔌 Routing Strategy](https://resizer.pictures/routing)
+ - [🔳 Resize, Crop, Align](https://resizer.pictures/resizing_and_cropping)
+ - [🔃 Format Conversion](https://resizer.pictures/conversion)
+ - [♻️ Transformations](https://resizer.pictures/transformations)
+ - [💊 Feature Detection](https://resizer.pictures/feature_detection)
+ - [🚀 Caching](https://resizer.pictures/caching)
+ - [📡 Deploying](https://resizer.pictures/deploy)
+ - [💥 Troubleshooting](https://resizer.pictures/troubleshooting)

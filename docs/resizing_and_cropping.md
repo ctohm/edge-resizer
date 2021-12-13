@@ -93,4 +93,12 @@ When the `precrop` parameter is passed, the image is cropped first and then resi
 
 --------------
 
+You can achieve neat effects by keeping a constant cw and ch, and playing with cx and cy:
+
+|    |    |   |
+|----------|------|---------|
+|  <image-transform class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cw=200_ch=150_cover"/> |<image-transform  class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cx=200_cw=200_ch=150_cover"/> |<image-transform  class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cx=400_cw=200_ch=150_cover"/> |
+|  <image-transform class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cw=200_ch=150_cy=150_cover"/> |<image-transform  class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cx=200_cw=200_ch=150_cy=150_cover"/> |<image-transform  class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cx=400_cw=200_ch=150_cy=150_cover"/> |
+|  <image-transform class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cw=200_ch=150_cy=300_cover"/> |<image-transform  class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cx=200_cw=200_ch=150_cy=300_cover"/> |<image-transform  class="no_caption no_shadow" image="riff.one/designcue-unsplash.jpg" transform="w=600_h=450_webp_cx=400_cw=200_ch=150_cy=300_cover"/> |
+
 

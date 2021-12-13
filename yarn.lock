@@ -936,6 +936,11 @@ cjstoesm@^1.1.4:
     reserved-words "^0.1.2"
     resolve "^1.20.0"
 
+classnames@^2.2.6:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
+  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
+
 clean-stack@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
@@ -1143,6 +1148,11 @@ date-time@^3.1.0:
   dependencies:
     time-zone "^1.0.0"
 
+debounce@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
+  integrity sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==
+
 debug@^4.0.1, debug@^4.1.1, debug@^4.3.1:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"
@@ -1235,6 +1245,11 @@ duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
   integrity sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI=
+
+easy-bem@^1.0.2:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/easy-bem/-/easy-bem-1.1.1.tgz#1bfcc10425498090bcfddc0f9c000aba91399e03"
+  integrity sha512-GJRqdiy2h+EXy6a8E6R+ubmqUM08BK0FWNq41k24fup6045biQ8NXxoXimiwegMQvFFV3t1emADdGNL1TlS61A==
 
 "edge-resizer@link:./lib":
   version "0.0.0"
@@ -3511,6 +3526,15 @@ vitepress@^0.20.1:
     prismjs "^1.25.0"
     vite "^2.6.5"
     vue "^3.2.19"
+
+vue-advanced-cropper@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/vue-advanced-cropper/-/vue-advanced-cropper-2.7.0.tgz#37495e450af17ebd6076819737b8d5e1142a5591"
+  integrity sha512-rXzUCCdSQswZ5b/w2qyDSb9Bce8xD+vw7RtOreVnbz+dV1AVMFHcVDHxrkeNaO6LTBcgG/agnjZgnmB3oN2vJg==
+  dependencies:
+    classnames "^2.2.6"
+    debounce "^1.2.0"
+    easy-bem "^1.0.2"
 
 vue@^3.2.19:
   version "3.2.22"

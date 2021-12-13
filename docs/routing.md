@@ -1,67 +1,109 @@
 # 🔌 Routing Strategy
 
-<ShowCase>
-<template v-slot:first_paragraph>
-Except for the very first time they are requested (and inmediately cached), variations will answer from the edge at blazing speed, and will even survive for a few months if the original image is deleted. The image to the right doesn't exist but in Cloudflare's Cache.
-</template>
-<template v-slot:second_paragraph>The response headers will also hint the browser not to request this same asset for a year. While this isn't much of a feature, your browser will hopefully not need requesting it anytime soon and that will shave a couple of ms off.
+Given a source image URL, visible to cloudflare and images.weserve.nl:
 
-</template>
-<template v-slot:table>
-
- | w=150 h=150 |
-|----------|
-|![150x150](https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg)
-
-</template>
-</ShowCase>
-Given a real image, visible to cloudflare and images.weserve.nl:
-
-> **https://riff.one/img/designcue-unsplash.jpg**
+> **https://riff.one/designcue-unsplash.jpg**
 
 If you wanted to generate a 300x200 thumbnail, on the fly, you would request
 
-> **https://resizer.pictures/w=300_h=200/riff.one/img/designcue-unsplash.jpg**
+> **https://resizer.pictures/w=300_h=200/riff.one/designcue-unsplash.jpg**
 
 Edge Resizer parses that URL as
 
 |`{transformations}` | `/{source hostname}` | `/{source pathname}`|
 |------|---------|  --- |
-| `w=300_h=200` | `/riff.one` | `/img/designcue-unsplash.jpg`|
+| `w=300_h=200/` | `riff.one` | `/designcue-unsplash.jpg`|
 
- try to infer the source image's URL by taking into account, in the first place, an optional route prefix (see [deploy](deploy.html)),  then a regular expression matching the pattern of [available transformations](transformations.html). 
+### 1. Transformations are mandatory
 
-In the following scenarios, the source image is:
+Edge resizer will only proxy those routes whose pathname matches the pattern of [available transformations](transformations.html). 
+
+::: tip
+If you don't want to apply any transformation, but still want Edge-Resizer handle the route (for example, for caching or to avoid mixed content) pass an underscore as dummy prefix:
+```html
+https://resizer.pictures/_/riff.one/img/dice.png
+```
+::: 
 
 
 
-### Scenario: prefix + transformation
+--- 
 
-When both are present, **make sure the prefix comes before  the transformation part**
+### 2. Using prefixes or namespaces
 
-| *worker subdomain* |*prefix or transformation*| *origin hostname*| *origin pathname*|
-|----------|------|---------|  --- |
-|`zone/` |`img/w=300_h=200` | `/riff.one` | `/img/designcue-unsplash.jpg`|
-|`zone/` |`img` | `/riff.one` | `/img/designcue-unsplash.jpg`|
-|`zone/` |`w=300_h=200` | `/riff.one` | `/img/designcue-unsplash.jpg`|
-|`zone/` |`w=300_h=200/img` | `/riff.one` |  <span style="color:red"><span style="margin:-0.5em 1em -0.2em 0 ;font-size:2em;padding:0;float:left">:cry:</span> won't work</span> |
 
-The last URL wouldn't work. The prefix must come before the transformation part. Otherwise it would be **postfix**.
+Whatever comes *before* the transformations is not considered to compute the source image, so it's safe to deploy Edge Resizer on particular routes instead of `*`. Any of the following
+would have Edge Resizer handle the request and yield the same thumbnail:
 
-### Scenario: no prefix, no transformation
+> [*https://resizer.pictures*/w=300_h=200/*riff.one/designcue-unsplash.jpg*](https://resizer.pictures/w=300_h=200/riff.one/designcue-unsplash.jpg)
+> 
+> [*https://resizer.pictures*/thumbnails/w=300_h=200/*riff.one/designcue-unsplash.jpg*](https://resizer.pictures/thumbnails/w=300_h=200/riff.one/designcue-unsplash.jpg)
+> 
+> [*https://resizer.pictures*/foo/bar/w=300_h=200/*riff.one/designcue-unsplash.jpg*](https://resizer.pictures/foo/bar/w=300_h=200/riff.one/designcue-unsplash.jpg)
 
-If neither is found, Edge Resizer will ultimately forward the request, unmodified. This might be ok if you're using Edge-Resizer as part of an existing site. If this is unintended, you can ensure the URL is treated as an image by passing an underscore as dummy prefix:
+::: tip
+This is particularly useful to avoid Edge Resizer being used blindly across all the zone, and instead restrict its operation to specific namespaces or prefixes.
+:::
 
-| *worker subdomain* |*prefix or transformation*| *origin hostname*| *origin pathname*|
-|----------|------|---------|  --- |
-|`zone/` |`_` | `/riff.one` | `/images/designcue-unsplash.jpg`|
+### 3. Protocol is optional 
 
+To compute the source hostname, it's indifferent to Edge Resizer if you pass the protocol in the URL. The following are equivalent:
+
+> [*https://resizer.pictures/w=300_h=200*/riff.one/*designcue-unsplash.jpg*](https://resizer.pictures/w=300_h=200/riff.one/designcue-unsplash.jpg)
+> 
+> [*https://resizer.pictures/w=300_h=200*/https://riff.one/*designcue-unsplash.jpg*](https://resizer.pictures/w=300_h=200/https://riff.one/designcue-unsplash.jpg)
+
+
+### 4. Source host on the same zone
+
+If the original image was in the same zone as the worker, eg:
+
+> https://resizer.pictures/images/cloudflare_workers.svg
+
+A thumbnail URL should normally contain the source hostname
+ 
+ > [*https://* resizer.pictures/*w=200_h=200*/resizer.pictures/*images/cloudflare_workers.svg*](https://resizer.pictures/w=200_h=200/resizer.pictures/images/cloudflare_workers.svg)
+
+Which would be parsed as
+
+| zone | t. params | source host | source pathname |
+|-|-|-|-|
+| // resizer.pictures/ | *w=200_h=200* | /resizer.pictures | /images/cloudflare_workers.svg |
+
+
+The `source host` part needs to at least look like a domain. 
+
+**Option 1**. Skip the source hostname entirely and hope for the best
+
+The following URL yields the same result as the long one above. 
+
+>   https://resizer.pictures/w=200/images/cloudflare_workers.svg
+
+Internally, the router cannot detect a valid source hostname in there, but its second best choice is taking `images` as a dummy source hostname and normalize it in the next step to compute the correct result.
+
+::: WARN
+There has to be something between the transformations and the filename 
+ 
+However, this won't work if you try to proxy an image in the zone's root folder. There's simply not enough 
+
+> This one won't work. 
+>   https://resizer.pictures/w=200/favicon.svg
+
+**Option 2**. Use `0.0` as dummy hostname:
+> 
+
+ If you want to avoid passing a source host for the original image, 
 
 
 ### Alternative transformation separators
 
 The transformation part of the URL you request through Edge-Resizer uses an underscore to separate parameters from each other.
-Though we don't aim to offer feature parity with Cloudflare Images, using commas instead of underscores will work too, meaning there are some URLs for which 
+Though we don't aim to offer feature parity with Cloudflare Images, using commas instead of underscores will work too
 
 
+```html
+<img src="http://img.cdn4dd.com/cdn-cgi/image/w=300,format=auto/https://riff.one/designcue-unsplash.jpg">
+``` 
+
+<img src="https://resize.pictures/w=300,format=auto/riff.one/designcue-unsplash.jpg">
 

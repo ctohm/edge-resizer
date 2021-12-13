@@ -14,17 +14,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 const documentationLink={
-        blur:'https://images.weserv.nl/docs/orientation.html#blur',
+        blur:'https://images.weserv.nl/docs/adjustment.html#blur',
     flip:'https://images.weserv.nl/docs/orientation.html#flip',
     flop:'https://images.weserv.nl/docs/orientation.html#flop',
     ro:'https://images.weserv.nl/docs/orientation.html#ro',
-    mod:'https://images.weserv.nl/docs/orientation.html#mod',
-    sat:'https://images.weserv.nl/docs/orientation.html#sat',
-    tint:'https://images.weserv.nl/docs/orientation.html#tint',
-    con:'https://images.weserv.nl/docs/orientation.html#con',
-    filt:'https://images.weserv.nl/docs/orientation.html#filt',
+    mod:'https://images.weserv.nl/docs/adjustment.html#mod',
+    sat:'https://images.weserv.nl/docs/adjustment.html#sat',
+    tint:'https://images.weserv.nl/docs/adjustment.html#tint',
+    con:'https://images.weserv.nl/docs/adjustment.html#con',
+    filt:'https://images.weserv.nl/docs/adjustment.html#filter',
     trim:'https://images.weserv.nl/docs/orientation.html#trim',
-    sharp:'https://images.weserv.nl/docs/orientation.html#sharp',
+    sharp:'https://images.weserv.nl/docs/adjustment.html#sharp',
     hue:'https://images.weserv.nl/docs/adjustment.html#hue-rotation'
 
 }

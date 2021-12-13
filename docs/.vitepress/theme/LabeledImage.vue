@@ -23,6 +23,12 @@ const { src } = defineProps<{
     box-shadow:5px 5px 6px 0px rgba(0,0,0,0.43);
 
  }
+ .labeledImageContainer.no_shadow {
+     box-shadow:unset;
+ }
+ .labeledImageContainer.no_caption .captioncell {
+     display:none;
+ }
  .labeledImageContainer .imagecell {
      flex: 1 1 0px;
      

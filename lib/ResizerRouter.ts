@@ -1,4 +1,5 @@
 import { Router, RouterOptions } from 'itty-router';
+import { json } from 'itty-router-extras'
 
 interface IWaitableObject {
     waitUntil: (promise: Promise<any>) => void;
@@ -124,84 +125,197 @@ export const FormatAliases: Record<keyof IOutputFormats, string> = {
 
     auto: `check the accept header  for webp support and use it if affirmative`
 }
-export const AvailableTransforms: Record<keyof IdefaultSearchParams, { title: string, docs?: string, example: string, section?: string, sectionLink?: string }> = {
-    w: { title: 'Width', example: 'w=250', section: 'Resize', sectionLink: 'https://images.weserv.nl/docs/size.html', docs: 'https://images.weserv.nl/docs/size.html#width' },
-    h: { title: 'Height', example: 'h=150', docs: 'https://images.weserv.nl/docs/size.html#height' },
-    we: { title: 'Without Enlargement', example: 'we', docs: 'https://images.weserv.nl/docs/fit.html#without-enlargement' },
-    dpr: { title: 'Device Pixel Ratio', docs: 'https://images.weserv.nl/docs/size.html#device-pixel-ratio', example: 'dpr=2' },
-    ro: { title: 'Rotate', example: 'ro=45' },
-    //  filename: 'Filename', docs:'https://images.weserv.nl/docs/format.html#filename',
-    // Added on version 1.2.0
-    //h:tps://images.weserv.nl/docs/crop.html#rectangle-crop
-    il: { title: 'Interlaced/Progressive', example: 'il', section: 'Optimization/Conversion', sectionLink: 'https://images.weserv.nl/docs/format.html#adaptive-filter' },
-    af: { title: 'Adaptative Filter', docs: 'https://images.weserv.nl/docs/format.html#adaptive-filter', example: 'af' },
-    q: { title: 'Quality', docs: 'https://images.weserv.nl/docs/format.html#quality', example: 'q=80' },
-    l: { title: 'Compression Level', docs: 'https://images.weserv.nl/docs/format.html#compression-level', example: 'l=6' },
-    n: { title: 'Number of Pages', docs: 'https://images.weserv.nl/docs/format.html#number-of-pages', example: 'n=0' },
-    page: { title: 'Page', docs: 'https://images.weserv.nl/docs/format.html#page', example: 'page=1' },
-    output: { title: 'Output', docs: 'https://images.weserv.nl/docs/format.html#output', example: 'output=png' },
+export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
+    regex: string,
+    title: string, docs?: string, example: string, section?: string, sectionLink?: string, note?: string
+}> = {
+    w: {
+        regex: 'w=[0-9.-]+',
+        title: 'Width', example: 'w=250', section: 'Resize', sectionLink: 'https://images.weserv.nl/docs/size.html', docs: 'https://images.weserv.nl/docs/size.html#width'
+    },
+    h: {
+        regex: 'h=[0-9.-]+',
+        title: 'Height', example: 'h=150', docs: 'https://images.weserv.nl/docs/size.html#height'
+    },
+    we: {
+        regex: 'we',
+        title: 'Without Enlargement', example: 'we', docs: 'https://images.weserv.nl/docs/fit.html#without-enlargement'
+    },
+    dpr: {
+        regex: 'dpr=[0-9]+',
+        title: 'Device Pixel Ratio', docs: 'https://images.weserv.nl/docs/size.html#device-pixel-ratio', example: 'dpr=2'
+    },
+    ro: {
+        regex: 'ro=[0-9.-]+',
+        title: 'Rotate', example: 'ro=45', docs: 'https://images.weserv.nl/docs/orientation.html#ro'
+    },
+    flip: {
+        regex: 'flip',
+        title: 'Flip', example: 'flip', note: '', docs: 'https://images.weserv.nl/docs/orientation.html#flip'
+    },
+    flop: {
+        regex: 'flop',
+        title: 'Flop', example: 'flop', note: '', docs: 'https://images.weserv.nl/docs/orientation.html#flop'
+    },
+
+    il: {
+        regex: 'il',
+        title: 'Interlaced/Progressive', example: 'il', section: 'Optimization/Conversion', sectionLink: 'https://images.weserv.nl/docs/format.html#adaptive-filter'
+    },
+    af: {
+        regex: 'af',
+        title: 'Adaptative Filter', docs: 'https://images.weserv.nl/docs/format.html#adaptive-filter', example: 'af'
+    },
+    q: {
+        regex: 'q=[0-9]+',
+        title: 'Quality', docs: 'https://images.weserv.nl/docs/format.html#quality', example: 'q=80'
+    },
+    l: {
+        regex: 'l=[0-9]',
+        title: 'Compression Level', docs: 'https://images.weserv.nl/docs/format.html#compression-level', example: 'l=6'
+    },
+    n: {
+        regex: 'n=[0-9]+',
+        title: 'Number of Pages', docs: 'https://images.weserv.nl/docs/format.html#number-of-pages', example: 'n=0'
+    },
+    page: {
+        regex: 'page=[0-9]+',
+        title: 'Page', docs: 'https://images.weserv.nl/docs/format.html#page', example: 'page=1'
+    },
+    output: {
+        regex: 'output=(auto|json|png|jpg|gif|tiff|webp|jpeg)',
+        title: 'Output', docs: 'https://images.weserv.nl/docs/format.html#output', example: 'output=png'
+    },
 
 
-    cw: { title: 'Crop width', example: 'cw=200', section: 'Crop', sectionLink: 'https://images.weserv.nl/docs/crop.html#rectangle-crop' },
-    ch: { title: 'Crop height', example: 'ch=100' },
-    cx: { title: 'Crop x', example: 'cx=10' },
-    cy: { title: 'Crop y', example: 'cy=10' },
-    a: { title: 'Alignment', example: 'a=center', docs: 'https://images.weserv.nl/docs/crop.html#alignment-position' },
-    precrop: { title: 'Crop applied before resizing', example: 'precrop' },
-    cbg: { title: 'Background Color for Fit=Contain', example: 'cbg=AA00CC' },
-    trim: { title: 'Trim', example: 'trim', docs: 'https://images.weserv.nl/docs/crop.html#trim' },
+    cw: {
+        regex: 'cw=[0-9]+',
+        title: 'Crop width', example: 'cw=200', section: 'Crop', sectionLink: 'https://images.weserv.nl/docs/crop.html#rectangle-crop'
+    },
+    ch: {
+        regex: 'ch=[0-9]+',
+        title: 'Crop height', example: 'ch=100'
+    },
+    cx: {
+        regex: 'cx=[0-9]+',
+        title: 'Crop x', example: 'cx=10'
+    },
+    cy: {
+        regex: 'cy=[0-9]+',
+        title: 'Crop y', example: 'cy=10'
+    },
+    a: {
+        regex: 'a=[a-z-]+',
+        title: 'Alignment', example: 'a=center', docs: 'https://images.weserv.nl/docs/crop.html#alignment-position'
+    },
+    precrop: {
+        regex: 'precrop',
+        title: 'Crop applied before resizing', example: 'precrop'
+    },
+    cbg: {
+        regex: 'cbg=[a-z0-9A-Z]+',
+        title: 'Background Color', example: 'cbg=AA00CC', note: 'Applies to "cropped" space when fit=Contain'
+    },
+    trim: {
+        regex: 'trim(=[0-9]+)?',
+        title: 'Trim', example: 'trim', docs: 'https://images.weserv.nl/docs/crop.html#trim'
+    },
 
-    con: { title: 'Contrast', example: 'con=3', section: 'Filters' },
-    bg: { title: 'Background Color', docs: 'https://images.weserv.nl/docs/adjustment.html#background', example: 'bg=CCAA00' },
-    blur: { title: 'Blur', example: 'blur=2' },
+    con: {
+        regex: 'con=[0-9]+',
+        title: 'Contrast', example: 'con=3', section: 'Filters', note: ''
+    },
+    bg: {
+        regex: 'bg=[a-z0-9A-Z]+',
+        title: 'Background Color', docs: 'https://images.weserv.nl/docs/adjustment.html#background', example: 'bg=CCAA00', note: ''
+    },
+    blur: {
+        regex: 'blur(=[0-9]+)?',
+        title: 'Blur', example: 'blur=2', docs: 'https://images.weserv.nl/docs/adjustment.html#blur', note: ''
+    },
+    filt: {
+        regex: 'filt=[a-z]+',
+        title: 'Filter', example: 'filt=sepia', note: ''
+    },
+    fit: {
+        regex: 'fit=(contain,cover,fill,inside,outsize)',
+        title: 'Fit', docs: 'https://images.weserv.nl/docs/fit.html#inside', example: 'fit=contain', note: ''
+    },
+    gam: {
+        regex: 'gam=[0-9.-]+',
+        title: 'Gamma', example: 'gam=1', docs: 'https://images.weserv.nl/docs/adjustment.html#gam', note: ''
+    },
+    hue: {
+        regex: 'hue=[0-9.-]+',
+        title: 'Hue', example: 'hue=180', docs: 'https://images.weserv.nl/docs/adjustment.html#hue', note: ''
+    },
+    mod: {
+        regex: 'mod=[0-9.-]+',
+        title: 'Brightness', example: 'mod=2', docs: 'https://images.weserv.nl/docs/adjustment.html#mod', note: ''
+    },
+    sat: {
+        regex: 'sat=[0-9.-]+',
+        title: 'Saturation', example: 'sat=50', docs: 'https://images.weserv.nl/docs/adjustment.html#sat', note: ''
+    },
+    sharp: {
+        regex: 'sharp(=[0-9]+)?',
+        title: 'Sharpen', docs: 'https://images.weserv.nl/docs/adjustment.html#sharpen', example: 'sharp=2', note: ''
+    },
+    tint: {
+        regex: 'tint=[a-z0-9A-Z]+',
+        title: 'Tint', example: 'tint=red', docs: 'https://images.weserv.nl/docs/adjustment.html#tint', note: ''
+    },
+}
 
-    filt: { title: 'Filter', example: 'filt=sepia' },
-    fit: { title: 'Fit', docs: 'https://images.weserv.nl/docs/fit.html#inside', example: 'fit=contain' },
-    flip: { title: 'Flip', example: 'flip' },
-    flop: { title: 'Flop', example: 'flop' },
-    gam: { title: 'Gamma', example: 'gam=1' },
-    hue: { title: 'Hue', example: 'hue=180' },
-    mod: { title: 'Brightness', example: 'mod=2' },
-    sat: { title: 'Saturation', example: 'sat=50' },
-    sharp: { title: 'Sharpen', docs: 'https://images.weserv.nl/docs/adjustment.html#sharpen', example: 'sharp=2' },
-    tint: { title: 'Tint', example: 'tint=red' },
-
-
-
-
-
-
-
-
-
-
-
+const deviceHints: Record<'vw' | 'vh' | 'dpr', { title: string, regex: string, note?: string }> = {
+    vw: { title: 'viewport width', regex: 'vw(=[0-9.]+)?' },
+    vh: { title: 'viewport height', regex: 'vh(=[0-9.]+)?' },
+    dpr: { title: 'Device Pixel Ratio', regex: 'dpr', note: 'Passing `dpr` without value will use hinted DPR from client' }
 }
 
 export class ResizerRouter {
     handle: (request: Request, ...extra: any) => any
     constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>) {
-        const debug = (options || {}).DEBUG ? console.log.bind('ResizerRouter:') : () => { return null; };
-        const domainGroup = `(?<domain>([a-z0-9._-]+))`;
-        const pathNameGroup = `(?<pathname>(.*))`;
-        const validXFormKeys = Object.keys(AvailableTransforms)
-            .concat(
-                Object.keys(FormatAliases),
-                Object.keys(FitAliases),
-                ['http', 'https', 'images', 'img', 'vw']
-            );
-        const transformationsGroup = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^_/]*)*)*)`;
-        const groupRegex = `\/${transformationsGroup}\/${domainGroup}\/${pathNameGroup}?`,
+        const debug = (options || {}).DEBUG ? console.log.bind('ResizerRouter:') : () => { return null; },
             defaultSearchParams = {
                 fit: 'contain',
                 n: '-1',
                 maxage: options.MAX_AGE || '1y'
             } as { fit: string, n: string, maxage: string }
+        const validXFormKeys = Object.keys(AvailableTransforms)
+            .concat(
+                Object.keys(FormatAliases),
+                Object.keys(FitAliases),
+                Object.keys(deviceHints),
+                // these are accepted just for RC
+                ['http', 'https']
+            ),
+            validTransforms = Object.values(AvailableTransforms).map(tx => tx.regex)
+                .concat(Object.values(deviceHints).map(hint => hint.regex),
+                    Object.keys(FitAliases),
+                    Object.keys(FormatAliases),
+                    // these are accepted just for RC
+                    ['http', 'https', '_']
+                ).join('|');
+        const transformationsGroupOld = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^:_/]*)*)+)`,
+            transformationsGroup = `(?<transformations>(${validTransforms})(([_,](${validTransforms}))*)+)`,
+            originhostGroup = '(?<originhost>(self|([a-z0-9:@_-]+)(\\.[a-z0-9_-]+)(\\.[a-z0-9_-]+)?(\\:\\d+)?))',
+            pathNameGroup = `(?<pathname>(.*))`;
+
+        const groupRegex = `\/${transformationsGroup}\/(https?:\/\/)?${originhostGroup}\/${pathNameGroup}`,
+            /**
+             * Handle the case in which no domain group could be matched. Assume its pointing to the same origin.
+             * The "dummy host" is just part of the image pathname
+             */
+            domainlessRegex = `\/${transformationsGroup}\/(?<dummyhost>([a-z0-9_-][^/]*))\/${pathNameGroup}`
+
+
         const ittyRouter = Router<RequestWithParams>({
             base: options.ROUTE_PREFIX || options.base,
 
             routes: [
-                ['GET', new RegExp(groupRegex), [handleMatchingRoute(debug, defaultSearchParams)]],
+                ['GET', new RegExp(groupRegex), [ResizerRouter.handleMatchingRoute(debug, defaultSearchParams)]],
+                ['GET', new RegExp(domainlessRegex), [ResizerRouter.handleMatchingRoute(debug, defaultSearchParams)]],
             ]
         }) as Router<RequestWithParams>
 
@@ -234,6 +348,121 @@ export class ResizerRouter {
             }
         })
     }
+
+    /**
+     * Process route params in order to extract transformations as an Object
+     * to pass to the next handler
+     * Shorthand syntax for output formats is translated to its canonical form (output=<format>)
+     * Shorthand syntax for fit types is translated to its canonical form (fit=<fit type>)
+    * 
+    * Searchparams, if they are among the supported transformations, will be merged into the Object, overriding route params 
+    * When they aren't a recognizable transformation, they are stored (and passed to the next handler) as a separate object
+    * That object will be ultimately added to the request to WeServe, but won't be part of the canonical nice URL we use as 
+    * cache-key. 
+     * @returns 
+     */
+    static handleMatchingRoute(
+        debugFn: { (...attrs: any[]): void } = (...attrs: any[]) => { return attrs },
+        defaultSearchParams: { fit: string, n: string, maxage: string } = {
+            fit: 'contain',
+            n: '-1',
+            maxage: '1y'
+        }
+    ): { (req: RequestWithParams, ctx: Context): Promise<Response> } {
+        return (
+            req: RequestWithParams,
+
+            ctx: Context
+        ): Promise<Response> => {
+            const url = new URL(req.url),
+                debug = debugFn
+            req.params = req.params || {} as TImageParameters;
+
+            req.params.origin = url.origin;
+            if (req.params.dummyhost) {
+                req.params.pathname = `${req.params.dummyhost}/${req.params.pathname}`
+                req.params.originhost = url.host
+            }
+            if (['self', '0.0'].includes(req.params.originhost)) {
+                req.params.originhost = url.host
+            }
+            try {
+                debug({
+                    //cf: cf, referrerPolicy, origin: url.origin, host: url.host, hostname: url.hostname,
+                    originhost: req.params.originhost,
+                    pathname: req.params.pathname,
+                    transformations: req.params.transformations,
+                    // headers: Object.fromEntries(req.headers)
+                });
+                // Compute the searchparams equivalent of the transform slug that came in the request
+                const pathSearchParams = new URLSearchParams(req.params.transformations.replace(/[+_/,]/g, '&'))
+
+                // append the actual searchParams
+                for (let [key, value] of url.searchParams.entries()) {
+                    pathSearchParams.set(key, value)
+                }
+                req.params = ResizerRouter.normalizeRequestParams(req, pathSearchParams)
+                req.params.defaults = defaultSearchParams
+                req.params.protocol = req.params.protocol || 'https';
+
+                if (!req.params.originhost) {
+                    return Promise.resolve(json(req.params))
+                }
+                return computeWeserveRequest(req, ctx, debug);
+            } catch (e) {
+                console.error(e);
+                return Promise.resolve(new Response((e as Error).message, { status: 500 }))
+            }
+        }
+
+    }
+    static normalizeRequestParams(req: RequestWithParams, pathSearchParams: URLSearchParams): TImageParameters {
+        let params = req.params as TImageParameters
+        params.discarded = {} as Record<string, string>;
+        params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>;
+
+        for (let [key, value] of pathSearchParams.entries()) {
+            key = key.replace('format', 'output').replace('width', 'w').replace('height', 'h')
+            if (['http', 'https'].includes(key)) {
+                params.protocol = key;
+            } else if (Object.keys(AvailableTransforms).includes(key)) {
+                params.transforms[key as keyof IdefaultSearchParams] = value ?? true;
+            } else if (Object.keys(FormatAliases).includes(key)) {
+                //    debug({ output: key });
+                params.transforms.output = key;
+            } else if (Object.keys(FitAliases).includes(key)) {
+                //    debug({ fit: key });
+                params.transforms.fit = key;
+            } else if (key === 'vw') {
+
+                const vw = Number(req.headers.get('viewport-width'))
+                if (!vw || isNaN(vw)) continue;
+                let multiplier = Number(value)
+                multiplier = Math.min(Math.max(0, !multiplier || isNaN(multiplier) ? 1 : multiplier))
+                //  debug({ vw, multiplier })
+                params.transforms.w = String(Math.ceil(multiplier * vw)) // 10 px interval
+
+
+            } else if (key === 'vh') {
+                const vh = Number(req.headers.get('sec-ch-viewport-height'))
+                if (!vh || isNaN(vh)) continue;
+                let multiplier = Number(value)
+                multiplier = Math.min(Math.max(0, !multiplier || isNaN(multiplier) ? 1 : multiplier))
+                //  debug({ vh, multiplier })
+                params.transforms.h = String(Math.ceil(multiplier * vh)) // 10 px interval
+
+            } else {
+                params.discarded[key as string] = value
+            }
+        }
+        if (params.transforms['dpr'] === '' && req.headers.has('dpr')) {
+            params.transforms['dpr'] = String(Number(req.headers.get('dpr')) || 1)
+        }
+        if (params.transforms['trim'] === '') {
+            params.transforms['trim'] = "10";
+        }
+        return params as TImageParameters
+    }
 }
 
 
@@ -248,101 +477,29 @@ export function fallbackSvg(): string {
 </svg>`;
 }
 
-/**
- * Process route params in order to extract transformations as an Object
- * to pass to the next handler
- * Shorthand syntax for output formats is translated to its canonical form (output=<format>)
- * Shorthand syntax for fit types is translated to its canonical form (fit=<fit type>)
-* 
-* Searchparams, if they are among the supported transformations, will be merged into the Object, overriding route params 
-* When they aren't a recognizable transformation, they are stored (and passed to the next handler) as a separate object
-* That object will be ultimately added to the request to WeServe, but won't be part of the canonical nice URL we use as 
-* cache-key. 
- * @returns 
- */
-function handleMatchingRoute(
-    debugFn: { (...attrs: any[]): void },
-    defaultSearchParams: { fit: string, n: string, maxage: string }
-): { (req: RequestWithParams, ctx: Context): Promise<Response> } {
-    return (
-        req: RequestWithParams,
-
-        ctx: Context
-    ): Promise<Response> => {
-        const url = new URL(req.url),
-            debug = debugFn
-        req.params = req.params || {} as TImageParameters;
-        req.params.discarded = {} as Record<string, string>;
-        req.params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>;
-        req.params.origin = url.origin;
-        try {
-            debug({
-                //cf: cf, referrerPolicy, origin: url.origin, host: url.host, hostname: url.hostname,
-                domain: req.params.domain,
-                pathname: req.params.pathname,
-                transformations: req.params.transformations,
-                // headers: Object.fromEntries(req.headers)
-            });
-            // Compute the searchparams equivalent of the transform slug that came in the request
-            const pathSearchParams = new URLSearchParams(req.params.transformations.replace(/[+_/,]/g, '&'))
-
-            // append the actual searchParams
-            for (let [key, value] of url.searchParams.entries()) {
-                pathSearchParams.set(key, value)
-            }
-            for (let [key, value] of pathSearchParams.entries()) {
-                if (['http', 'https'].includes(key)) {
-                    req.params.protocol = key;
-                } else if (Object.keys(AvailableTransforms).includes(key)) {
-                    req.params.transforms[key as keyof IdefaultSearchParams] = value ?? true;
-                } else if (Object.keys(FormatAliases).includes(key)) {
-                    debug({ output: key });
-                    req.params.transforms.output = key;
-                } else if (Object.keys(FitAliases).includes(key)) {
-                    debug({ fit: key });
-                    req.params.transforms.fit = key;
-                } else if (key === 'vw' && req.headers.has('viewport-width')) {
-                    const vw = Number(req.headers.get('viewport-width'))
-                    if (isNaN(vw)) continue;
-                    req.params.transforms.w = String(Math.ceil(vw / 10) * 10) // 10 px interval
-
-                } else {
-                    req.params.discarded[key as string] = value
-                }
-            }
-
-            req.params.defaults = defaultSearchParams
-            req.params.protocol = req.params.protocol || 'https';
-            return thirdParty(req, ctx, debug);
-        } catch (e) {
-            console.error(e);
-            return Promise.resolve(new Response((e as Error).message, { status: 500 }))
-        }
-    }
-
-}
-async function thirdParty(
+async function computeWeserveRequest(
     request: RequestWithParams,
 
     ctx: Context,
     debug: { (...attrs: any[]): void }
 ): Promise<Response> {
-    const { transforms, defaults, discarded, domain, protocol, pathname, origin } = request.params || {} as TImageParameters,
+    const { transforms, defaults, discarded, originhost, protocol, pathname, origin } = request.params || {} as TImageParameters,
         { maxage, ...otherDefaults } = defaults
 
     let url = new URL(request.url)
 
     url.pathname = pathname
-    url.hostname = domain
-    let accepts: string = request.headers.get('accept') || ''
+    url.host = originhost
+    let accepts: string = request.headers.get('accept') || '',
+        fetchDest = request.headers.get('Sec-Fetch-Dest') || ''
+
 
 
 
 
     let { fileName, extension } = getFileName(url)
-    let nocache = url.searchParams.has('nocache')
+    let skipCache = url.searchParams.has('nocache')
 
-    debug({ nocache, fileName, extension },)
 
     let urlParam = `${url.hostname}${url.pathname}`,
         weservUrl = new URL('https://images.weserv.nl/'),
@@ -371,7 +528,7 @@ async function thirdParty(
     }
 
 
-    debug(JSON.stringify({ computedSearchParams }))
+
     for (let [paramName, paramValue] of Object.entries(computedSearchParams)) {
         weservUrl.searchParams.set(paramName, paramValue);
     }
@@ -384,136 +541,198 @@ async function thirdParty(
      * This is the clean, canonical and tidy URL string that we will look for in the cache,
      * and use it to persist to it when not found already
      */
-    let cacheEntry = `${origin}/${transform_slug}/${domain}/${pathname}`
+    let canonicalVariationURL = `${origin}/${transform_slug}/${originhost}/${pathname}`
     /**
      * !experimental
-     * append unknown searchparams to the canonical cacheEntry to check or set 
+     * append unknown searchparams to the canonical canonicalVariationURL to check or set 
      * in the Cache API, since they may alter the final result, and we shouldn't
      * have more than one possible outcome given a canonical cached request
      */
     if (discarded_entries !== '') {
-        cacheEntry = [
-            cacheEntry,
+        canonicalVariationURL = [
+            canonicalVariationURL,
             decodeURIComponent(discarded_entries)
         ].join('?')
 
     }
 
-    const cache = caches.default;
-
-    debug({ discarded_entries, cacheEntry, fileName, protocol })
-    /**
-     * Canonical cached URL doesn't have weserv parameters `url` nor `filename`. 
-     * The former is already present in the original URL.  The latter is unrelated to the image's
-     * binary contents
-     * @todo The protocol isn't considered either. Shoudl it be?
-     */
-    let response = !nocache && await cache.match(new Request(cacheEntry))
-
-    if (response) {
-        const contentType = response.headers.get('Content-Type') || '',
-            age = response.headers.get('age') || '0';
-        debug({ cacheHit: true, contentType, age });
-        return response;
-    }
-    weservUrl.searchParams.set('filename', fileName);
     urlParam = decodeURIComponent(urlParam)
-
     weservUrl.searchParams.set('url', urlParam);
-    if (['https', 'ssl'].includes(protocol)) weservUrl.searchParams.set('url', `ssl:${urlParam}`);
-    if (computedSearchParams.output && computedSearchParams.output !== extension) {
-        let renamedFilename = fileName.replace(`${extension}`, `${computedSearchParams.output}`);
-        weservUrl.searchParams.set('filename', renamedFilename);
-    }
-    weservUrl.searchParams.set('maxage', maxage)
-    weservUrl.searchParams.sort()
-    if (nocache) weservUrl.searchParams.set('maxage', '1d') // this is the bare minimum. Sorry about that.
-    let {
-        "accept": accept,
-        "accept-encoding": accept_encoding,
-        "accept-language": accept_language,
-        "user-agent": user_agent,
-        "cache-control": cache_control,
-        //Cookie
-    } = Object.fromEntries(request.headers.entries())
+
+    return getFromCacheOrThrow({ canonicalVariationURL, weservUrl, skipCache, fetchDest, debug })
+        /**
+         * If the variation isn't already in cache, we enter the `catch` block.
+         */
+        .catch((err: Error) => {
+
+
+            debug({ errMessage: err.message, skipCache, fileName, extension, computedSearchParams, discarded_entries, canonicalVariationURL, protocol, fetchDest, urlParam })
+            /**
+             * Add some extra parameters to weserveUrl that don't interact with cache canonicalization
+             */
+            if (['https', 'ssl'].includes(protocol)) weservUrl.searchParams.set('url', `ssl:${urlParam}`);
+            weservUrl.searchParams.set('filename', fileName);
+            if (computedSearchParams.output && computedSearchParams.output !== extension) {
+                let renamedFilename = fileName.replace(`${extension}`, `${computedSearchParams.output}`);
+                weservUrl.searchParams.set('filename', renamedFilename);
+            }
+            weservUrl.searchParams.set('maxage', maxage)
+            weservUrl.searchParams.sort()
+            if (skipCache) weservUrl.searchParams.set('maxage', '1d') // this is the bare minimum. Sorry about that.
 
 
 
 
-    /**
-     * !experimental
-     * Pass any unknown searchparams unchanged to weserve
-    */
-    if (discarded_entries !== '') {
-        for (let [paramName, paramValue] of Object.entries(discarded)) {
-            weservUrl.searchParams.set(paramName, paramValue)
-        }
-    }
 
-    const weserveUrlStr = weservUrl.toString().replace(/%2C/g, ',')
-    console.log({ weserveUrlStr })
-    return computeCachedResponse(
-        new Request(weserveUrlStr, {
-            headers: {
-                fileName,
+            /**
+             * !experimental
+             * Pass any unknown searchparams to weserve, verbatim
+            */
+            if (discarded_entries !== '') {
+                for (let [paramName, paramValue] of Object.entries(discarded)) {
+                    weservUrl.searchParams.set(paramName, paramValue)
+                }
+            }
+            /**
+             * WeServe understands comma separated values. Make sure we don't escape them
+             */
+            const weserveUrlStr = weservUrl.toString().replace(/%2C/g, ',')
+            /**
+             * These headers are passed verbatim to WeServe
+             */
+            let {
                 accept,
-
                 "accept-encoding": accept_encoding,
                 "accept-language": accept_language,
                 "user-agent": user_agent,
                 "cache-control": cache_control,
-                "X-sourceUrl": request.url,
-                "X-inputExtension": extension,
-                "X-cacheEntry": cacheEntry
-            }
-        }), ctx).catch(() => {
-            return fetch(`https://${urlParam}`)
+
+                //Cookie
+            } = Object.fromEntries(request.headers.entries())
+            return computeCachedResponse(
+                new Request(weserveUrlStr, {
+                    headers: {
+                        fileName,
+                        accept,
+
+                        "accept-encoding": accept_encoding,
+                        "accept-language": accept_language,
+                        "user-agent": user_agent,
+                        "cache-control": cache_control,
+                        "x-er-source-url": `https://${urlParam}`,
+                        "x-er-input-extension": extension,
+                        "x-er-canonical-variation-url": canonicalVariationURL
+                    }
+                }), ctx, debug)
+                .catch(() => {
+                    return fetch(`https://${urlParam}`)
+                })
         })
-
 }
-async function computeCachedResponse(imageRequest: Request, ctx: Context): Promise<Response> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let cacheEntry = imageRequest.headers.get('X-cacheEntry'),
-        fileName = imageRequest.headers.get('fileName'),
-        inputExtension = imageRequest.headers.get('X-inputExtension') || fileName?.split('.').pop() || ''
-    const cache = caches.default;
+async function computeCachedResponse(imageRequest: Request, ctx: Context, debug: (...args: any[]) => void): Promise<Response> {
 
-    let resizedUrlStr = imageRequest.url
-    console.info({ cacheEntry, resizedUrlStr })
+    const weServeResponse = await fetch(imageRequest);
 
-
-
-    let response = await fetch(resizedUrlStr);
-
-    const contentType = response.headers.get('Content-Type') || '';
+    const contentType = weServeResponse.headers.get('Content-Type') || '';
     // debug({ cacheMiss: response, event, contentType });
-    if (!response.ok || !contentType.startsWith('image')) {
-        console.log({ ok: response.ok, contentType, statusText: response.statusText, status: response.status })
-        return response
+    if (!weServeResponse.ok || !contentType.startsWith('image')) {
+        console.warn({ ok: weServeResponse.ok, contentType, statusText: weServeResponse.statusText, status: weServeResponse.status })
+        return weServeResponse
     }
-    let newExtension = contentType.split('/').pop()?.replace('jpeg', 'jpg')
-    response = new Response(response.body, response);
-    let sourceUrl = imageRequest.headers.get('X-sourceUrl')
-    //Set cache control headers to cache on browser for 1 year
-    response.headers.set('Accept-CH', 'Viewport-Width');
-    response.headers.append('Accept-CH', 'Width');
-    response.headers.set('Vary', 'Viewport-Width, Width, Accept, Accept-Encoding');
+    /**
+     * we got an image from weServe: let's perform some response manipulation and caching before returning its contents
+     */
+    const canonicalVariationURL = imageRequest.headers.get('x-er-canonical-variation-url'),
+        fileName = imageRequest.headers.get('fileName'),
+        sourceUrl = imageRequest.headers.get('x-er-source-url'),
+        inputExtension = imageRequest.headers.get('x-er-input-extension') || fileName?.split('.').pop() || '',
+        weserveUrlStr = imageRequest.url
+
+    console.info({ canonicalVariationURL, weserveUrlStr, sourceUrl, fileName })
+    let newExtension = contentType.split('/').pop()?.replace('jpeg', 'jpg'),
+        response = new Response(weServeResponse.body, weServeResponse);
+
+    const acceptCh = [
+        'Viewport-Height', 'Sec-CH-Viewport-Height',
+        'Viewport-Width', 'Sec-CH-Viewport-Width',
+        'DPR', 'Sec-CH-DPR',
+        'Width', 'Sec-CH-Width',
+    ]
+        .join(', ')
+
+    response.headers.set('Accept-CH', acceptCh);
+    response.headers.set('Vary', `${acceptCh}, Accept, Accept-Encoding`);
 
     response.headers.delete('cf-cache-status');
     response.headers.set('Cache-Control', 'public, max-age=' + String(31536000));
-    response.headers.set('X-Cached-On', String(Date.now()));
+    response.headers.set('x-er-cached-On', String(Date.now()));
     response.headers.set('last-modified', new Date(Date.now() - 180000).toUTCString());
-    if (sourceUrl) response.headers.set('X-sourceUrl', sourceUrl);
-    response.headers.set('X-resizedUrl', resizedUrlStr);
+    if (sourceUrl) response.headers.set('x-er-source-url', sourceUrl);
+    response.headers.set('x-er-weserve-url', weserveUrlStr);
 
     if (fileName) {
-        response.headers.set('Content-Disposition', `inline; filename=${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension)).trim()}`);
+        response.headers.set('Content-Disposition', `inline; filename = ${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension)).trim()} `);
     }
-    let cacheRequest = cacheEntry ? new Request(cacheEntry) : imageRequest
-    response.headers.set('link', `<${cacheRequest.url}>; rel="canonical"`)
+    let cacheRequest = canonicalVariationURL ? new Request(canonicalVariationURL) : imageRequest
+    response.headers.set('link', `< ${cacheRequest.url}>; rel = "canonical"`)
+    const cache = caches.default;
+    debug({
+        cacheHit: false,
+        contentType,
+
+        sourceUrl,
+        weserveUrlStr,
+        fileName,
+        canonicalVariationURL
+        // headers: Object.fromEntries(response.headers)
+    });
+
     ctx.waitUntil(cache.put(cacheRequest, response.clone()));
     return response;
 
 }
 
 
+
+async function getFromCacheOrThrow({ canonicalVariationURL, weservUrl, skipCache, debug
+}: {
+    canonicalVariationURL: string, weservUrl: URL, fetchDest: string, skipCache: boolean, debug: { (...attrs: any[]): void }
+}): Promise<Response> {
+    if (skipCache) return Promise.reject(new Error('skipping cache'))
+    /**
+     * Canonical cached URL doesn't have weserv parameters `url` nor `filename`. 
+     * The former is already present in the original URL.  The latter is unrelated to the image's
+     * binary contents
+     * @todo The protocol isn't considered either. Shoudl it be?
+     */
+    let response = await caches.default.match(new Request(canonicalVariationURL))
+
+    if (!response) {
+        return Promise.reject(new Error('variation not cached'))
+    }
+    if (!response.ok) {
+        return Promise.reject(new Error(response.statusText))
+    }
+    const contentType = response.headers.get('Content-Type') || '';
+    if (!contentType.startsWith('image/')) {
+        return Promise.reject(new Error('non-image contentType: ' + contentType))
+    }
+
+    const cachedOn = response.headers.get('x-er-cached-on') || String(Date.now()),
+        cachedSourceUrl = response.headers.get('x-er-source-url') || decodeURIComponent(`https://${weservUrl.searchParams.get('url')}`),
+        cachedWeserveurl = decodeURIComponent(response.headers.get('x-er-weserve-url') || weservUrl.toString()),
+        cachedContentDisposition = response.headers.get('Content-Disposition'),
+        cachedLink = response.headers.get('link'),
+        ageSeconds = Math.ceil((Date.now() - Number(cachedOn)) / 1000)
+    debug({
+        cacheHit: true,
+        contentType,
+        ageSeconds,
+        cachedSourceUrl,
+        cachedWeserveurl,
+        cachedContentDisposition,
+        cachedLink
+        // headers: Object.fromEntries(response.headers)
+    });
+    return response;
+}

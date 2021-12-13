@@ -23,20 +23,7 @@
         </tr>
     </tbody>
 </table>
-    <!--<div v-for="item in alignments" :key="item.alias" style="display: flex; align-items: baseline;border-top:1px solid #ccc">
-        <div style="flex: 1; padding: 1em; align-self: center">
-             <code >
-                &lt;zone&gt;/</code><code class="boldcode">{{
-                    item.alias
-                }}</code><code>/&lt;image source&gt;</code>
-        </div>
-        <div style="align-self: center">
-             <code >
-                &lt;zone&gt;/</code><code class="boldcode">{{
-                    item.canonical
-                }}</code><code>/&lt;image source&gt;</code>
-        </div>
-    </div>-->
+ 
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';

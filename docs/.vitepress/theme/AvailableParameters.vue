@@ -19,9 +19,12 @@
         <tr v-for="item in transforms" :key="item.name">
         <th colspan="3" v-if="item.section" style="padding-top:1em"><a class="sectionLink" :href="item.sectionLink">📑 {{item.section}}</a></th>
         <template v-else>
-        <td>  {{item.name}}</td>
+        <td class="tx_cell">  {{item.name}}</td>
               
-                <td><a :href="item.link">{{item.title}}</a></td>
+                <td class="tx_link">
+                    <a v-if="item.link" :href="item.link">🔗 {{item.title}}</a>
+                    <span v-else>{{item.title}}</span>
+                    <sub v-if="item.note">{{item.note}}</sub></td>
                 <td>
                       <code >
                 &lt;zone&gt;/</code><code class="boldcode">{{
@@ -47,15 +50,16 @@ const fits=ref(Object.entries(FitAliases).map(([alias,canonical])=>{
 const transforms=computed(()=>{
     let tfArray=[]
     Object.entries(AvailableTransforms).forEach(([name,value])=>{
-        let {docs:link,title,example,section,sectionLink}=value
+        let {docs:link,title,example,section,sectionLink,note}=value
         if(section) 
         tfArray.push({
             name:section,
             section,
             sectionLink
+            
             })
     tfArray.push( {
-        name,title,link,example:example||`${name}`
+        name,title,link,example:example||`${name}`,note
     })
     })
     return tfArray
@@ -67,6 +71,9 @@ code {
     font-family: monospace; font-size: 0.8em;
         padding-right: 0;
     padding-left: 0;
+}
+.tx_link sub {
+    display:block;font-size:0.75em;
 }
 code.boldcode {
     color:#000;

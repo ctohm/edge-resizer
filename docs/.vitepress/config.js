@@ -18,19 +18,20 @@ module.exports = {
 
   function getGuideSidebar() {
     return   [
-          { text: '🍬 About', link: '/about.html' },
-          { text: '🔌 Routing Strategy', link: 'routing.html' },
+          { text: '🍬 About', link: 'about' },
+          { text: '🔌 Routing Strategy', link: 'routing' },
           
-          { text: '🔳 Resize and Crop',link:'resizing_and_cropping.html'},
-          { text: '🔃 Conversion',link:'conversion.html'},
-          { text: '🚀 Caching', link: 'caching.html' },
-          { text: '♻️ Transformations', link: 'transformations.html' },
-          { text: '📡 Deploy your own', link: 'deploy.html',children:[
-          { text: '🔗 Hotlink at will', link: 'hotlinking.html' },
-          { text: '📙 Use it as a library', link: 'library.html' }
+          { text: '🔳 Resize, Crop, Align',link:'resizing_and_cropping'},
+          { text: '🔃 Format Conversion',link:'conversion'},
+          { text: '♻️ Effects & Filters', link: 'transformations' },
+          { text: '💊 Feature Detection',link:'feature_detection'},
+          { text: '🚀 Caching', link: 'caching' },
+          { text: '📡 Deploying', link: 'deploy',children:[
+          { text: '🔗 Hotlink at will', link: 'hotlinking' },
+          { text: '📙 Use it as a library', link: 'library' }
           ]},
-          { text: '⛳ Use Cases', link: 'use_cases.html' },
-          { text: '💥 Troubleshooting', link: 'troubleshooting.html' }
+          { text: '⛳ Use Cases', link: 'use_cases' },
+          { text: '💥 Troubleshooting', link: 'troubleshooting' }
         ]
      /* },
       {

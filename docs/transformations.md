@@ -1,15 +1,13 @@
-# ♻️ Transformations
+# ♻️ Effects & Filters
 
 In this section we enumerate supported transformations such as resizing, optimizing, compression, changing format, cropping and changing hue. Other transformations can be passed directly as searchParams to the variation URL (not ideal, but :shrug:)
 
 ----------
-## Available Transformations
 
 
 ### Colorize, Blur, Sharpen
 
- - bg:  [🔗 Background Color](https://images.weserv.nl/docs/adjustment.html#background) (eg  fit=contain&cbg=0f0)
- - ro:  [🔗 Rotate](https://images.weserv.nl/docs/adjustment.html#rotate)
+ - bg:  [🔗 Background Color](https://images.weserv.nl/docs/adjustment.html#background)
  - modulate:
    - hue:   (0 to 360) [🔗 Hue Rotation](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
    - mod: [🔗 Brightness](https://images.weserv.nl/docs/adjustment.html#brightness)
@@ -17,25 +15,34 @@ In this section we enumerate supported transformations such as resizing, optimiz
  - sharp:  [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
  - gam:  [🔗 Gamma](https://images.weserv.nl/docs/adjustment.html#gamma)
  - blur:  [🔗 Blur](https://images.weserv.nl/docs/adjustment.html#blur)
- - flip:  [🔗 Flip](https://images.weserv.nl/docs/adjustment.html#flip)
- - flop:  [🔗 Flop](https://images.weserv.nl/docs/adjustment.html#flop)
  - con:  [🔗 Contrast](https://images.weserv.nl/docs/adjustment.html#contrast)
- - filt:  [🔗 Filter](https://images.weserv.nl/docs/adjustment.html#filter)
- - trim:  [🔗 Trim](https://images.weserv.nl/docs/adjustment.html#trim) 
+ 
 
+<p>
+&nbsp;
+</p>
+<adjustments-grid :adjustments="{hue:160,blur:2,sharp:3,con:7,mod:1.4,sat:0.3,gam:2,tint:'red',bg:'19C'}" :default_width="210" default_tx="we"  :default_height="210" image="riff.one/dice_200.png"/>
 
-<adjustments-grid :adjustments="{hue:160,blur:2,sharp:3,con:7,mod:1.4,sat:0.3,gam:2,flip:'',flop:'',tint:'red',ro:90,bg:'19C'}" :default_width="210" default_tx="we"  :default_height="210" image="riff.one/dice_200.png"/>
+### Rotation, Flip, Flop 
 
+- ro:  [🔗 Rotate](https://images.weserv.nl/docs/adjustment.html#rotate)
+- flip:  [🔗 Flip](https://images.weserv.nl/docs/adjustment.html#flip)
+- flop:  [🔗 Flop](https://images.weserv.nl/docs/adjustment.html#flop)
 
+<adjustments-grid :adjustments="{flip:'',flop:'',ro:270}" :default_width="210" default_tx="we"  :default_height="210" image="resizer.pictures/we_h=300_ch=270_cx=130_cw=300_cover/riff.one/designcue-unsplash.jpg"/>
 
 ----
 #### Filters 
 
-Filters are passed though the `filt` parameter. 
+Filters are passed though the `filt` parameter.  (See [🔗 Filter](https://images.weserv.nl/docs/adjustment.html#filter))
 
-| |   |   | |
-|----------|------|---------|  -- |
-| <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=greyscale">greyscale</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=sepia">sepia</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=negate">negate</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=duotone">duotone</image-transform> |
+| |   |   | 
+|----------|------|---------|
+| <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=greyscale">/filt=greyscale/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=sepia">/filt=sepia/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=negate">/filt=negate/</image-transform> | 
+
+|start=900&stop=090|start=0C0&stop=00C|start=00C&stop=C00| 
+|----------|------|---------|
+| <image-transform image="riff.one/designcue-unsplash.jpg?start=900&stop=090" transform="w=200_filt=duotone">/filt=duotone/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg?start=0C0&stop=00C" transform="w=200_filt=duotone">/filt=duotone/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg?start=00C&stop=C00" transform="w=200_filt=duotone">/filt=duotone/</image-transform> | 
  
 ### Pages and Frames
 
@@ -85,8 +92,12 @@ On **multi resolution .ico files**, the `page` parameter is used to pick a parti
 - il: [Interlaced/Progressive](https://images.weserv.nl/docs/format.html#interlace-progressive)
 
 
-| dpr=2 w=200 l=0 | dpr=2 w=200 l=6 af | dpr=2 w=200 q=100   | dpr=2 w=200 q=5 il |
-|----------|------|---------|  --  |
-| png 481kB | png 102kB | jpg 148kB| jpg 3.8kB  |
-|![original](https://resizer.pictures/dpr=2_w=200_png_l=0/riff.one/images/dice.png) |![jpg](https://resizer.pictures/dpr=2_w=200_png_l=6_af/riff.one/images/dice.png) |  ![af](https://resizer.pictures/dpr=2_w=200_jpg_q=100/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://resizer.pictures/dpr=2_w=200_jpg_q=5/riff.one/images/designcue-unsplash.jpg) |  
+
+
+
+| png  | jpg  | webp |
+|----------|------|---------|
+| <image-transform image="riff.one/dice.png" transform="w=400_l=0">w=400 l=0 **481kB**</image-transform>  | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=400_q=100">w=400 q=100 **147kB** </image-transform>  | <image-transform image="riff.one/designcue-unsplash.jpg" transform="cx=700_cy=500_precrop_w=400_h=300_fill_q=100_webp_flop_hue=260">webp w=400 q=100 **60kB**</image-transform> |
+|  <image-transform image="riff.one/dice.png" transform="w=400_l=6_af">w=400 l=6 af  **102kB**</image-transform> |<image-transform image="riff.one/designcue-unsplash.jpg" transform="w=400 q=10">w=400 q=10 **22kB**</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="cx=700_cy=500_precrop_w=400_h=300_fill_q=10_webp_flop_hue=260">webp w=400 q=10 **5.2kB**</image-transform> |
+
 

@@ -10,6 +10,7 @@ import AdjustmentsGrid from './AdjustmentsGrid.vue'
 import ImageTransform from './ImageTransform.vue'
 import AvailableParameters from './AvailableParameters.vue'
 import AliasesTable from './AliasesTable.vue'
+import Playground from './Playground.vue'
 export default {
   ...DefaultTheme,
   // override the Layout with a wrapper component that injects the slots
@@ -33,5 +34,6 @@ export default {
     app.component('labeled-image', LabeledImage)
     app.component('aliases-table', AliasesTable)
     app.component('ShowCase', ShowCase)
+    app.component('Playground', Playground)
   }
 }
