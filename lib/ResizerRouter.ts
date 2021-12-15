@@ -289,8 +289,9 @@ const transformKey = Object.keys(AvailableTransforms)
         ).join('|');
 const transformationsGroupOld = `(?<transformations>(_?(${transformKey.join('|')})?(=[^:,_/]*)*)+)`,
     transformationsGroup = `(?<transformations>((${validTransforms})([_,;:]\\1)*)+)`,
-    originhostGroup = '(?<originhost>(self|([a-z0-9:@_-]+)(\\.[a-z0-9_-]+)(\\.[a-z0-9_-]+)?(\\:\\d+)?))',
+    originhostGroup = '(?<originhost>(self|([a-z0-9:@_-]+)(\\.[a-z0-9_-]+){1,2}(\\.[a-z0-9_-]+)?(\\:\\d+)?))',
     pathNameGroup = `(?<pathname>(.*))`;
+
 
 export class ResizerRouter {
     handle: (request: Request, ...extra: any) => any
@@ -429,29 +430,9 @@ export class ResizerRouter {
             } else if (Object.keys(AvailableTransforms).includes(key)) {
                 params.transforms[key as keyof IdefaultSearchParams] = value ?? true;
             } else if (Object.keys(FormatAliases).includes(key)) {
-                //    debug({ output: key });
                 params.transforms.output = key;
             } else if (Object.keys(FitAliases).includes(key)) {
-                //    debug({ fit: key });
                 params.transforms.fit = key;
-            } else if (key === 'vw') {
-
-                const vw = Number(req.headers.get('viewport-width'))
-                if (!vw || isNaN(vw)) continue;
-                let multiplier = Number(value)
-                multiplier = Math.min(Math.max(0, !multiplier || isNaN(multiplier) ? 1 : multiplier))
-                //  debug({ vw, multiplier })
-                params.transforms.w = String(Math.ceil(multiplier * vw)) // 10 px interval
-
-
-            } else if (key === 'vh') {
-                const vh = Number(req.headers.get('sec-ch-viewport-height'))
-                if (!vh || isNaN(vh)) continue;
-                let multiplier = Number(value)
-                multiplier = Math.min(Math.max(0, !multiplier || isNaN(multiplier) ? 1 : multiplier))
-                //  debug({ vh, multiplier })
-                params.transforms.h = String(Math.ceil(multiplier * vh)) // 10 px interval
-
             } else {
                 params.discarded[key as string] = value
             }
@@ -461,6 +442,30 @@ export class ResizerRouter {
         }
         if (params.transforms['trim'] === '') {
             params.transforms['trim'] = "10";
+        }
+        if (params.discarded.vw !== undefined) {
+
+            const vw = Number(req.headers.get('viewport-width') || req.headers.get('sec-ch-viewport-width') || req.headers.get('sec-ch-width') || req.headers.get('width'))
+            if (vw || !isNaN(vw)) {
+                let multiplier = Number(params.discarded.vw) || 1
+                multiplier = Math.min(0, Math.max(1, multiplier))
+                //  debug({ vw, multiplier })
+                params.transforms.w = String(Math.ceil(multiplier * vw)) // 10 px interval
+            }
+
+
+        }
+        if (params.discarded.vh !== undefined) {
+
+            const vh = Number(req.headers.get('sec-ch-viewport-height'))
+            if (vh && !isNaN(vh)) {
+                let multiplier = Number(params.discarded.vh) || 1
+                multiplier = Math.min(0, Math.max(1, multiplier))
+                //  debug({ vh, multiplier })
+                params.transforms.h = String(Math.ceil(multiplier * vh)) // 10 px interval
+            }
+
+
         }
         return params as TImageParameters
     }

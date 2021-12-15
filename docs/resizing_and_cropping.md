@@ -1,10 +1,12 @@
-## Resizing
+## 🔳 Resize, Crop, Align
+
+Edge-Resizer was conceived as a thumbnail generation tool (more like, a middleware to harness the power of those tools)
 
 Pass w, h
 
-- w: [🔗 Width](https://images.weserv.nl/docs/size.html#width),
-- h: [🔗 Height](https://images.weserv.nl/docs/size.html#height)
-- dpr: [🔗 Device Pixel Ratio](https://images.weserv.nl/docs/size.html#device-pixel-ratio)
+- w: positive integer [🔗 Width](https://images.weserv.nl/docs/size.html#width),
+- h: positive integer [🔗 Height](https://images.weserv.nl/docs/size.html#height)
+- dpr: positive integer [🔗 Device Pixel Ratio](https://images.weserv.nl/docs/size.html#device-pixel-ratio) (defaults to 1)
 
 ```html
 https://resizer.pictures/w=150_h=150/riff.one/images/dice.png
@@ -13,6 +15,11 @@ https://resizer.pictures/w=150_h=150/riff.one/images/dice.png
 | dpr=2 w=200 | dpr=4 w=200 | dpr=2 w=200   | dpr=3 w=200 |
 |----------|------|---------|  --  |
 |![original](https://resizer.pictures/dpr=2_w=200/riff.one/images/dice.png) |![jpg](https://resizer.pictures/dpr=4_w=200/riff.one/images/dice.png) |  ![af](https://resizer.pictures/dpr=2_w=200/riff.one/images/designcue-unsplash.jpg)  |  ![webp](https://resizer.pictures/dpr=3_w=200/riff.one/images/designcue-unsplash.jpg) |  
+
+<er-feature class="end" ></er-feature>
+
+In parallel to width, height and setting a specific DPR, you can use [vw](feature_detection#vw), [vh](feature_detection#vh) to have Edge Resizer size the image according to your Client Hints headers (Sec-CH-Viewport-[width,height]). Likewise, using  [dpr](feature_detection#dpr) without a value means "check my Sec-CH-DPR header to pick the best one for me".
+
 
 
 
@@ -25,8 +32,6 @@ https://resizer.pictures/w=150_h=150/riff.one/images/dice.png
 <adjustments-grid :adjustments="{'w=200_h=150':'',contain:'',cover:'',fill:'',inside:'',outside:''}" :default_width="180" :default_height="210" default_tx="" image="riff.one/dice_200.png"/>
 
 
-
- - cbg: Background Color for Fit=Contain (eg  fit=contain&cbg=0f0)
  - a: alignment. One of
     - top-left
     - top
