@@ -183,7 +183,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Page', docs: 'https://images.weserv.nl/docs/format.html#page', example: 'page=1'
     },
     output: {
-        regex: 'output=(auto|json|png|jpg|gif|tiff|webp|jpeg)',
+        regex: 'output=(?:auto|json|png|jpg|gif|tiff|webp|jpeg)',
         title: 'Output', docs: 'https://images.weserv.nl/docs/format.html#output', example: 'output=png'
     },
 
@@ -217,7 +217,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Background Color', example: 'cbg=AA00CC', note: 'Applies to "cropped" space when fit=Contain'
     },
     trim: {
-        regex: 'trim(=[0-9]+)?',
+        regex: 'trim(?:=[0-9]+)?',
         title: 'Trim', example: 'trim', docs: 'https://images.weserv.nl/docs/crop.html#trim'
     },
 
@@ -230,7 +230,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Background Color', docs: 'https://images.weserv.nl/docs/adjustment.html#background', example: 'bg=CCAA00', note: ''
     },
     blur: {
-        regex: 'blur(=[0-9]+)?',
+        regex: 'blur(?:=[0-9]+)?',
         title: 'Blur', example: 'blur=2', docs: 'https://images.weserv.nl/docs/adjustment.html#blur', note: ''
     },
     filt: {
@@ -238,7 +238,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Filter', example: 'filt=sepia', note: ''
     },
     fit: {
-        regex: 'fit=(contain,cover,fill,inside,outsize)',
+        regex: 'fit=(?:contain|cover|fill|inside|outsize)',
         title: 'Fit', docs: 'https://images.weserv.nl/docs/fit.html#inside', example: 'fit=contain', note: ''
     },
     gam: {
@@ -258,7 +258,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Saturation', example: 'sat=50', docs: 'https://images.weserv.nl/docs/adjustment.html#sat', note: ''
     },
     sharp: {
-        regex: 'sharp(=[0-9]+)?',
+        regex: 'sharp(?:=[0-9]+)?',
         title: 'Sharpen', docs: 'https://images.weserv.nl/docs/adjustment.html#sharpen', example: 'sharp=2', note: ''
     },
     tint: {
@@ -272,9 +272,31 @@ const deviceHints: Record<'vw' | 'vh' | 'dpr', { title: string, regex: string, n
     vh: { title: 'viewport height', regex: 'vh(=[0-9.]+)?' },
     dpr: { title: 'Device Pixel Ratio', regex: 'dpr', note: 'Passing `dpr` without value will use hinted DPR from client' }
 }
+const transformKey = Object.keys(AvailableTransforms)
+    .concat(
+        Object.keys(FormatAliases),
+        Object.keys(FitAliases),
+        Object.keys(deviceHints),
+        // these are accepted just for RC
+        ['http', 'https']
+    ),
+    validTransforms = Object.values(AvailableTransforms).map(tx => tx.regex)
+        .concat(Object.values(deviceHints).map(hint => hint.regex),
+            Object.keys(FitAliases),
+            Object.keys(FormatAliases),
+            // these are accepted just for RC
+            ['http', 'https', '_']
+        ).join('|');
+const transformationsGroupOld = `(?<transformations>(_?(${transformKey.join('|')})?(=[^:_/]*)*)+)`,
+    transformationsGroup = `(?<transformations>((${validTransforms})([_,]\\1)*)+)`,
+    originhostGroup = '(?<originhost>(self|([a-z0-9:@_-]+)(\\.[a-z0-9_-]+)(\\.[a-z0-9_-]+)?(\\:\\d+)?))',
+    pathNameGroup = `(?<pathname>(.*))`;
 
 export class ResizerRouter {
     handle: (request: Request, ...extra: any) => any
+    public static transformationsGroupRegex = new RegExp(`\/${transformationsGroup}\/(https?:\/\/)?${originhostGroup}\/${pathNameGroup}`)
+    public static transformationsGroupOldRegex = new RegExp(`\/${transformationsGroupOld}\/(https?:\/\/)?${originhostGroup}\/${pathNameGroup}`)
+    public static transformationsGroupNoDomainRegex = new RegExp(`\/${transformationsGroup}\/(?<dummyhost>([a-z0-9_-][^/]*))\/${pathNameGroup}`)
     constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>) {
         const debug = (options || {}).DEBUG ? console.log.bind('ResizerRouter:') : () => { return null; },
             defaultSearchParams = {
@@ -282,40 +304,19 @@ export class ResizerRouter {
                 n: '-1',
                 maxage: options.MAX_AGE || '1y'
             } as { fit: string, n: string, maxage: string }
-        const validXFormKeys = Object.keys(AvailableTransforms)
-            .concat(
-                Object.keys(FormatAliases),
-                Object.keys(FitAliases),
-                Object.keys(deviceHints),
-                // these are accepted just for RC
-                ['http', 'https']
-            ),
-            validTransforms = Object.values(AvailableTransforms).map(tx => tx.regex)
-                .concat(Object.values(deviceHints).map(hint => hint.regex),
-                    Object.keys(FitAliases),
-                    Object.keys(FormatAliases),
-                    // these are accepted just for RC
-                    ['http', 'https', '_']
-                ).join('|');
-        const transformationsGroupOld = `(?<transformations>(_?(${validXFormKeys.join('|')})?(=[^:_/]*)*)+)`,
-            transformationsGroup = `(?<transformations>(${validTransforms})(([_,](${validTransforms}))*)+)`,
-            originhostGroup = '(?<originhost>(self|([a-z0-9:@_-]+)(\\.[a-z0-9_-]+)(\\.[a-z0-9_-]+)?(\\:\\d+)?))',
-            pathNameGroup = `(?<pathname>(.*))`;
-
-        const groupRegex = `\/${transformationsGroup}\/(https?:\/\/)?${originhostGroup}\/${pathNameGroup}`,
-            /**
-             * Handle the case in which no domain group could be matched. Assume its pointing to the same origin.
-             * The "dummy host" is just part of the image pathname
-             */
-            domainlessRegex = `\/${transformationsGroup}\/(?<dummyhost>([a-z0-9_-][^/]*))\/${pathNameGroup}`
-
 
         const ittyRouter = Router<RequestWithParams>({
             base: options.ROUTE_PREFIX || options.base,
 
             routes: [
-                ['GET', new RegExp(groupRegex), [ResizerRouter.handleMatchingRoute(debug, defaultSearchParams)]],
-                ['GET', new RegExp(domainlessRegex), [ResizerRouter.handleMatchingRoute(debug, defaultSearchParams)]],
+                ['GET', ResizerRouter.transformationsGroupRegex, [ResizerRouter.handleMatchingRoute(debug, defaultSearchParams)]],
+                ['GET', ResizerRouter.transformationsGroupOldRegex, [ResizerRouter.handleMatchingRoute(debug, defaultSearchParams)]],
+                /**
+                 * Handle the case in which no domain group could be matched. Assume its pointing to the same origin.
+                 * The "dummy host" is just part of the image pathname
+                 */
+
+                ['GET', ResizerRouter.transformationsGroupNoDomainRegex, [ResizerRouter.handleMatchingRoute(debug, defaultSearchParams)]],
             ]
         }) as Router<RequestWithParams>
 

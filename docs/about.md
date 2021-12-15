@@ -38,7 +38,7 @@ Without them, Edge Resizer would be pointless. Thank you guys, you're da real MV
 
  - [🔌 Routing Strategy](https://resizer.pictures/routing)
  - [🔳 Resize, Crop, Align](https://resizer.pictures/resizing_and_cropping)
- - [🔃 Format Conversion](https://resizer.pictures/conversion)
+ - [🔃 Format Conversion](https://resizer.pictures/format)
  - [♻️ Transformations](https://resizer.pictures/transformations)
  - [💊 Feature Detection](https://resizer.pictures/feature_detection)
  - [🚀 Caching](https://resizer.pictures/caching)

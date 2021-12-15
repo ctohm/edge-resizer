@@ -5,16 +5,19 @@
                 &lt;zone&gt;/w=150_</code><code class="boldcode">{{
                     item.transform
                 }}</code><code>/{{item.url}}</code>
-            <p style="text-align:center">
-            or
-            </p>
-            <p v-if="item.extension !== item.format">
+           
+            
+             <p class="use_the_shorthand">
+                <b>✔️</b>
+                 shorthand syntax
+                 </p>
+            
                 <code >
                 &lt;zone&gt;/w=150_</code><code class="boldcode">{{
                     item.format
                 }}</code><code>/{{item.url}}</code>
-            </p>
-            <p v-else>...actually not setting an output format</p>
+            
+           
         </div>
         <div style="align-self: center">
             <img :src="item.image" />
@@ -24,14 +27,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-/*const formats=[`jpg`, `png`, `gif`, `webp`],
-image="https://riff.one/images/designcue-unsplash.jpg"*/
-const {  image } = defineProps<{
+const {  image ,onlyFormats} = defineProps<{
     image: string;
+    onlyFormats:string[];
 }>();
-
+console.log({onlyFormats})
 import {FormatAliases } from 'edge-resizer/ResizerRouter'
-const formats=Object.entries(FormatAliases).map(([alias,canonical])=>{
+const formats=Object.entries(FormatAliases).filter(([key])=>onlyFormats.includes(key)).map(([alias,canonical])=>{
     return {alias,canonical}
 })
 const extension = image.split('.').pop();
@@ -66,5 +68,34 @@ code {
 code.boldcode {
     color:#000;
     font-weight:bold;
+}
+.use_the_shorthand {
+    color:#060;
+    
+    
+    padding:0 4px ;
+    display:inline-block;
+    font-size:0.9em;
+    margin-bottom:0;
+    display:block;
+
+}
+.use_the_shorthand + p  {
+    margin-top:0.1em;  
+} 
+.use_the_shorthand code {
+    clear:both;
+}
+.use_the_shorthand + code +code.boldcode{
+    color:#060;
+}
+.use_the_shorthand b {
+    font-size:1em;
+    font-weight:bolder;
+    padding:0;
+    margin-right:0.2em;
+     background-color:#090;border-radius:0.9em;padding:0.1em 0.4em;
+
+     color:white;
 }
 </style>

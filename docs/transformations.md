@@ -7,21 +7,20 @@ In this section we enumerate supported transformations such as resizing, optimiz
 
 ### Colorize, Blur, Sharpen
 
- - bg:  [🔗 Background Color](https://images.weserv.nl/docs/adjustment.html#background)
- - modulate:
-   - hue:   (0 to 360) [🔗 Hue Rotation](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
-   - mod: [🔗 Brightness](https://images.weserv.nl/docs/adjustment.html#brightness)
-   - sat: [🔗 Saturation](https://images.weserv.nl/docs/adjustment.html#saturation)
- - sharp:  [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
- - gam:  [🔗 Gamma](https://images.weserv.nl/docs/adjustment.html#gamma)
  - blur:  [🔗 Blur](https://images.weserv.nl/docs/adjustment.html#blur)
+ - sharp:  [🔗 Sharpen](https://images.weserv.nl/docs/adjustment.html#sharpen)
  - con:  [🔗 Contrast](https://images.weserv.nl/docs/adjustment.html#contrast)
+ - hue:   (0 to 360) [🔗 Hue Rotation](https://images.weserv.nl/docs/adjustment.html#hue-rotation)
+ - mod: [🔗 Brightness](https://images.weserv.nl/docs/adjustment.html#brightness)
+ - sat: [🔗 Saturation](https://images.weserv.nl/docs/adjustment.html#saturation)
+ - gam:  [🔗 Gamma](https://images.weserv.nl/docs/adjustment.html#gamma)
+ - bg:  [🔗 Background Color](https://images.weserv.nl/docs/adjustment.html#background)
  
 
 <p>
 &nbsp;
 </p>
-<adjustments-grid :adjustments="{hue:160,blur:2,sharp:3,con:7,mod:1.4,sat:0.3,gam:2,tint:'red',bg:'19C'}" :default_width="210" default_tx="we"  :default_height="210" image="riff.one/dice_200.png"/>
+<adjustments-grid :adjustments="{blur:2,sharp:3,con:7,hue:160,mod:1.4,sat:0.3,gam:2,tint:'red',bg:'19C'}" :default_width="210" default_tx="we"  :default_height="210" image="riff.one/dice_200.png"/>
 
 ### Rotation, Flip, Flop 
 
@@ -40,9 +39,12 @@ Filters are passed though the `filt` parameter.  (See [🔗 Filter](https://imag
 |----------|------|---------|
 | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=greyscale">/filt=greyscale/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=sepia">/filt=sepia/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=negate">/filt=negate/</image-transform> | 
 
-|start=900&stop=090|start=0C0&stop=00C|start=00C&stop=C00| 
+Duotone filters have, by default, `start=C83658` and `stop=D8E74F`.
+
+
+| | | |
 |----------|------|---------|
-| <image-transform image="riff.one/designcue-unsplash.jpg?start=900&stop=090" transform="w=200_filt=duotone">/filt=duotone/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg?start=0C0&stop=00C" transform="w=200_filt=duotone">/filt=duotone/</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg?start=00C&stop=C00" transform="w=200_filt=duotone">/filt=duotone/</image-transform> | 
+| <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=200_filt=duotone">default duotone </image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg?>start=C60&stop=96F" transform="w=200_filt=duotone">start=C60&stop=96F</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg?start=06C&stop=0C6" transform="w=200_filt=duotone">start=06C&stop=0C6</image-transform> | 
  
 ### Pages and Frames
 
@@ -80,24 +82,5 @@ On **multi resolution .ico files**, the `page` parameter is used to pick a parti
 | page=1 72x72 | page=2 96x96 | page=3 128x128 |
 |----------|------|---------|  
 |![original](https://resizer.pictures/page=1/riff.one/img/multi_res.ico) |![5 frames](https://resizer.pictures/page=2/riff.one/img/multi_res.ico) | ![3 frames](https://resizer.pictures/page=3/riff.one/img/multi_res.ico) |  
-
-
-
-
- ### Compression/Optimization
-
-- af: [Adaptative Filter](https://images.weserv.nl/docs/format.html#adaptive-filter) (only works on *png*)
-- l: [Compression Level](https://images.weserv.nl/docs/format.html#compression-level) (number between 0 and 9. Only works on *png*, default 6)
-- q: [Quality](https://images.weserv.nl/docs/format.html#quality) (only works on *jpg*, *tiff* and *webp*. number between 0 and 100, default 80)
-- il: [Interlaced/Progressive](https://images.weserv.nl/docs/format.html#interlace-progressive)
-
-
-
-
-
-| png  | jpg  | webp |
-|----------|------|---------|
-| <image-transform image="riff.one/dice.png" transform="w=400_l=0">w=400 l=0 **481kB**</image-transform>  | <image-transform image="riff.one/designcue-unsplash.jpg" transform="w=400_q=100">w=400 q=100 **147kB** </image-transform>  | <image-transform image="riff.one/designcue-unsplash.jpg" transform="cx=700_cy=500_precrop_w=400_h=300_fill_q=100_webp_flop_hue=260">webp w=400 q=100 **60kB**</image-transform> |
-|  <image-transform image="riff.one/dice.png" transform="w=400_l=6_af">w=400 l=6 af  **102kB**</image-transform> |<image-transform image="riff.one/designcue-unsplash.jpg" transform="w=400 q=10">w=400 q=10 **22kB**</image-transform> | <image-transform image="riff.one/designcue-unsplash.jpg" transform="cx=700_cy=500_precrop_w=400_h=300_fill_q=10_webp_flop_hue=260">webp w=400 q=10 **5.2kB**</image-transform> |
 
 

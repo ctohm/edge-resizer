@@ -22,7 +22,7 @@ module.exports = {
           { text: '🔌 Routing Strategy', link: 'routing' },
           
           { text: '🔳 Resize, Crop, Align',link:'resizing_and_cropping'},
-          { text: '🔃 Format Conversion',link:'conversion'},
+          { text: '🔃 Format Conversion',link:'format'},
           { text: '♻️ Effects & Filters', link: 'transformations' },
           { text: '💊 Feature Detection',link:'feature_detection'},
           { text: '🚀 Caching', link: 'caching' },
