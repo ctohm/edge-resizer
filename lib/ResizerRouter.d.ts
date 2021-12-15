@@ -102,6 +102,9 @@ export declare const AvailableTransforms: Record<keyof IdefaultSearchParams, {
 }>;
 export declare class ResizerRouter {
     handle: (request: Request, ...extra: any) => any;
+    static transformationsGroupRegex: RegExp;
+    static transformationsGroupOldRegex: RegExp;
+    static transformationsGroupNoDomainRegex: RegExp;
     constructor(options: RouterOptions<Request> & Partial<EnvWithBindings>);
     /**
      * Process route params in order to extract transformations as an Object

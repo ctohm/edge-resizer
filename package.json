@@ -24,8 +24,9 @@
     "eslint": "eslint --ext js --ext ts --ignore-path .eslintignore {src,test}/*.{js,ts}",
     "build:prod": " wrangler   -c ./wrangler.develop.toml build",
     "build:lib": "cd lib && yarn build && cd -",
+    "publish:lib": "cd lib && yarn build && cd -",
     "write_commit": "export CURRENT=`cat wrangler.develop.toml | grep RELEASE | head -1 | cut -d'\"' -f2` ; sed -i \"s/$CURRENT/$COMMIT/g\" wrangler.develop.toml; sed -i \"s/$CURRENT/$COMMIT/g\" wrangler.toml",
-    "test": "rm -rf .mf/cache/default  && node  --experimental-vm-modules `yarn bin`/ava -s   test/handler.test.mjs  --silent --quiet ",
+    "test": "rm -rf .mf/cache/default  && node  --experimental-vm-modules `yarn bin`/ava -s   test/*.test.mjs  --silent --quiet ",
     "transpile": "tsc --project ."
   },
   "author": "Felipe Figueroa <ffigueroa@ctohm.com>",

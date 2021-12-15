@@ -167,7 +167,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Adaptative Filter', docs: 'https://images.weserv.nl/docs/format.html#adaptive-filter', example: 'af'
     },
     q: {
-        regex: 'q=[0-9]+',
+        regex: 'q=[0-9.]+',
         title: 'Quality', docs: 'https://images.weserv.nl/docs/format.html#quality', example: 'q=80'
     },
     l: {
@@ -287,8 +287,8 @@ const transformKey = Object.keys(AvailableTransforms)
             // these are accepted just for RC
             ['http', 'https', '_']
         ).join('|');
-const transformationsGroupOld = `(?<transformations>(_?(${transformKey.join('|')})?(=[^:_/]*)*)+)`,
-    transformationsGroup = `(?<transformations>((${validTransforms})([_,]\\1)*)+)`,
+const transformationsGroupOld = `(?<transformations>(_?(${transformKey.join('|')})?(=[^:,_/]*)*)+)`,
+    transformationsGroup = `(?<transformations>((${validTransforms})([_,;:]\\1)*)+)`,
     originhostGroup = '(?<originhost>(self|([a-z0-9:@_-]+)(\\.[a-z0-9_-]+)(\\.[a-z0-9_-]+)?(\\:\\d+)?))',
     pathNameGroup = `(?<pathname>(.*))`;
 
