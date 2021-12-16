@@ -1,7 +1,7 @@
 import { ResizerRouter } from '../lib/ResizerRouter.mjs'
 
 import test from "ava";
-import { join } from 'path/posix';
+
 const urls = [
     //"https://resizer.pictures/_/riff.one/images/banner_lysto.png",
     //"https://resizer.pictures/_/riff.one/images/banner_lysto.png?ch=250",

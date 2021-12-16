@@ -33,12 +33,12 @@ export interface EnvWithBindings {
     MAX_AGE?: string
 }
 
-
 function getFileName(url: URL): { fileName: string; extension: string } {
     const { pathname } = url,
-        fileName = ((pathname || '').split('/').pop() || '').split('.'),
-        extension = (fileName.pop() || '').toLowerCase();
-    return { fileName: [...fileName, extension].join('.'), extension };
+        lastPart = (decodeURIComponent(pathname || '').split('?')[0] || '').replace(/\/$/, '').split('/').pop()
+    const { groups } = /(?<fileName>([^/]+))(?<extension>(\.(apng|avif|gif|jpg|png|svg|webp|bmp|ico|tif|tiff|jpeg))?)/i.exec(lastPart) || { groups: { fileName: '', extension: '' } }
+
+    return { fileName: groups?.fileName || '', extension: groups?.extension || '' };
 }
 
 
@@ -680,7 +680,7 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context, debug:
         response.headers.set('Content-Disposition', `inline; filename = ${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension)).trim()} `);
     }
     let cacheRequest = canonicalVariationURL ? new Request(canonicalVariationURL) : imageRequest
-    response.headers.set('link', `< ${cacheRequest.url}>; rel = "canonical"`)
+    response.headers.set('link', `<${cacheRequest.url}>; rel = "canonical"`)
     const cache = caches.default;
     debug({
         cacheHit: false,
