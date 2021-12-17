@@ -1,4 +1,4 @@
-import { ResizerRouter } from '../lib/ResizerRouter.mjs'
+import { ResizerRouter } from '../../lib/ResizerRouter.mjs'
 
 import test from "ava";
 

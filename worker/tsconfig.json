@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "ES2020",
+    "module": "CommonJS",
+    "lib": ["ES2020", "WebWorker"],
+
+    "alwaysStrict": true,
+    "strict": true,
+    "preserveConstEnums": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "types": ["@cloudflare/workers-types", "@types/node"],
+    "rootDir": "./src",
+    "noImplicitAny": true,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "./types",
+    "noImplicitThis": true
+  },
+  "include": [
+    "./src/*.ts",
+    "./src/**/*.ts",
+    "./src/**/*.d.ts",
+    "./node_modules/@cloudflare/workers-types/index.d.ts"
+  ],
+  "exclude": ["node_modules/", "dist/"]
+}

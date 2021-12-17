@@ -10,12 +10,13 @@
           >/&lt;source img&gt;
           </template>
         </div>
-      </image-transform>
       <a v-if="item.documentation" :href="item.documentation">
         <sup style="margin-top: 0.7em; display: block; font-size: 0.8em">
           📘 See documentation: "{{ item.transform_type }}"</sup
         ></a
       >
+     </image-transform>
+     
     </div>
   </div>
 </template>

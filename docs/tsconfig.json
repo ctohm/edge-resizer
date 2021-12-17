@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "outDir": "./.vitepress/dist",
+    "target": "ES2020",
+    "module": "CommonJS",
+    "lib": ["ES2020", "WebWorker"],
+
+    "alwaysStrict": true,
+    "strict": true,
+    "preserveConstEnums": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "types": ["@cloudflare/workers-types", "@types/node"],
+    "rootDir": ".",
+    "noImplicitAny": true,
+    
+    "noEmit": true,
+    "noImplicitThis": true
+  },
+  "include": [
+    "./functions/*.ts",
+    "./functions/**/*.ts",
+    "./node_modules/@cloudflare/workers-types/index.d.ts"
+  ],
+  "exclude": ["node_modules/", ".vitepress/dist"]
+}

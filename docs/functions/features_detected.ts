@@ -13,5 +13,6 @@ export async function onRequest(context) {
     const vh = Number(request.headers.get('sec-ch-viewport-height')) || 'N/A'
     const dpr = Number(request.headers.get('dpr') || request.headers.get('sec-ch-dpr')) || 'N/A'
     const webp = request.headers.get('accept')?.includes('webp') ? 'yes' : 'nope'
+    console.log(env.ASSETS)
     return new Response(JSON.stringify({ vw, vh, dpr, webp, env, params }), { headers: { 'content-type': 'application/json' } });
 }

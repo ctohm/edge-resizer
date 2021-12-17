@@ -27,17 +27,26 @@ Without them, Edge Resizer would be pointless. Thank you guys, you're da real MV
 
 ----
 
-<er-feature class="end" >
-### What does Edge Resizer bring to the table?
-</er-feature>
 
-When you see a ribbon like this one, it means the docs are describing a feature, parameter, default or shortcut that is non-standard to images.weserve.nl.
+
+### What does Edge Resizer bring to the table?
+
 
 - 🔌 [Compact & tidy URLs](https://resizer.pictures/routing)
 - 💊 [Feature detection](https://resizer.pictures/feature_detection) through [Client Hints](https://developer.mozilla.org/en-US/docs/Glossary/Client_hints) and other headers
 - 🧠 sensible defaults and syntactic sugar
 - 🚀 Finer control of caches
 - :blush: ...*A cheap and amateurish version of [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing)*
+
+
+
+<div style="float:right;margin-right:-1em;">
+
+![edge-resizer-feature](https://resizer.pictures/images/er-feature.png)
+
+</div>
+
+Throughout the documentation, a ribbon like the one to the right will be used to distinguish a feature, parameter, default or shortcut that is non-standard to images.weserve.nl.
 
 ## Explore the Docs:
 

@@ -117,3 +117,12 @@
     border-bottom-left-radius:inherit;
     transform: rotate(-40deg);
   }
+  .custom-block {
+    font-size:15px;
+  }
+  .custom-block   .custom-block-title {
+  margin:0.3rem 0;
+}
+.home-hero .figure .image {
+  width:550px;
+}

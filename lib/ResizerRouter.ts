@@ -385,7 +385,7 @@ export class ResizerRouter {
                 req.params.pathname = `${req.params.dummyhost}/${req.params.pathname}`
                 req.params.originhost = url.host
             }
-            if (['self', '0.0'].includes(req.params.originhost)) {
+            if (['self', '0.0'].includes(req.params.originhost) || req.params.originhost.length < 4) {
                 req.params.originhost = url.host
             }
             try {

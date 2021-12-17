@@ -1,7 +1,7 @@
 dist
 node_modules
 transpiled
-worker/worker
+
 .vscode
 
 

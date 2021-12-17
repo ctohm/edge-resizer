@@ -1,0 +1,27 @@
+name = "ctohm-edge-resizer"
+type = "javascript"
+workers_dev = true
+compatibility_date = "2021-10-05"
+route = ""
+account_id = ""
+api_token = ""
+zone_id = ""
+
+[vars]
+  WORKER_ENV = "production"
+  DEBUG = true
+  ROUTE_PREFIX='/' # e.g. /thumbnails
+  RELEASE = ""
+  TIMESTAMP = ""
+  MAX_AGE = "1y"
+
+
+
+[build]
+  command = "yarn docs:build && export RELEASE=`git rev-parse --short HEAD`;export TIMESTAMP=`date +%s`; npx esbuild functions/module.ts --bundle --format=esm --outfile=.vitepress/dist/_worker.js  --define:TIMESTAMP='\"'$TIMESTAMP'\"' --define:RELEASE='\"'$RELEASE'\"'"
+  watch_dir = "functions"
+
+  [build.upload]
+    format = "modules"
+    dir = ".vitepress/dist"
+    main = "./_worker.js"
