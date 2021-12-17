@@ -18,7 +18,7 @@ zone_id = ""
 
 
 [build]
-  command = "yarn docs:build && export RELEASE=`git rev-parse --short HEAD`;export TIMESTAMP=`date +%s`; npx esbuild functions/module.ts --bundle --format=esm --outfile=.vitepress/dist/_worker.js  --define:TIMESTAMP='\"'$TIMESTAMP'\"' --define:RELEASE='\"'$RELEASE'\"'"
+  command = "npm run docs:build && export RELEASE=`git rev-parse --short HEAD`;export TIMESTAMP=`date +%s`; npx esbuild functions/module.ts --bundle --format=esm --outfile=.vitepress/dist/_worker.js  --define:TIMESTAMP='\"'$TIMESTAMP'\"' --define:RELEASE='\"'$RELEASE'\"'"
   watch_dir = "functions"
 
   [build.upload]
