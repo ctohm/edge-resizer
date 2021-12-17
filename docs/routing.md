@@ -112,5 +112,5 @@ Though we don't aim to offer feature parity with Cloudflare Images, using commas
 <img src="http://img.cdn4dd.com/cdn-cgi/image/w=300,format=auto/https://riff.one/designcue-unsplash.jpg">
 ``` 
 
-<img src="https://resize.pictures/w=300_format=auto/riff.one/designcue-unsplash.jpg">
+<img src="https://resizer.pictures/w=300_format=auto/riff.one/designcue-unsplash.jpg">
 

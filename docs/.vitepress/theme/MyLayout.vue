@@ -2,7 +2,7 @@
     <Layout>
    <template #home-hero>
      <!-- My custom sidebar top content-->
-     <crop-grid :w="1200" :h="900" :rows="3" :cols="5"  image="riff.one/designcue-unsplash.jpg?flop"   :cw="180" :ch="150"/>
+     <crop-table :w="1200" :h="900" :rows="3" :cols="5"  image="riff.one/designcue-unsplash.jpg?flop"   :cw="180" :ch="150"/>
     </template>
        <template #home-features>
      <!-- My custom sidebar top content-->

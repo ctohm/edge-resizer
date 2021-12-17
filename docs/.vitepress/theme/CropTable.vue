@@ -20,7 +20,7 @@ import { AlignmentAliases,FitAliases ,AvailableTransforms,FormatAliases} from 'e
 
 
 
-const { rows,cols,ch,cw,image,huex,huey,hue0} = defineProps ({
+const {w,h, rows,cols,ch,cw,image,huex,huey,hue0} = defineProps ({
      rows:{type:Number},
     cols:{type:Number},
     ch:{type:Number},
@@ -29,6 +29,8 @@ const { rows,cols,ch,cw,image,huex,huey,hue0} = defineProps ({
     huex:{type:Number,default:0},
     huey:{type:Number,default:0},
     hue0:{type:Number,default:0},
+    w:{type:Number,default:0},
+    h:{type:Number,default:0},
 }); 
 const scale=1
 const croplist=computed(()=>{
@@ -37,7 +39,7 @@ const croplist=computed(()=>{
     for(let irow=0;irow<rows;irow++) {
         let appendrow=[]
         for(let icol=0;icol<cols;icol++) {
-            appendrow.push({transform:`w=${cols*cw*scale}_h=${rows*ch*scale}_auto_cw=${cw*scale}_ch=${ch*scale}_cx=${icol*cw*scale}_cy=${irow*ch*scale}_cover_hue=${hue0+icol*huex+irow*huey}_q=80` })
+            appendrow.push({transform:`w=${w||cols*cw*scale}_h=${h||rows*ch*scale}_auto_cw=${cw*scale}_ch=${ch*scale}_cx=${icol*cw*scale}_cy=${irow*ch*scale}_cover_q=80` })
         }
         croplistarr.push(appendrow)
     }
@@ -50,8 +52,17 @@ console.log( { rows,cols,ch,cw,croplist,image,huex,huey,hue0} )
 .croptable {
     display:table;
     margin:0 auto;
+    max-width:900px;
 }
 .croptable td {
     padding:0.2em 0.5em;
+}
+.home .croptable {
+   position:absolute;
+    top:5em;
+    z-index:-1000;
+    opacity: 0.6;
+    left:0;
+    right:0;
 }
 </style>
