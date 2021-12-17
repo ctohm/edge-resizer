@@ -13,6 +13,8 @@ import AliasesTable from './AliasesTable.vue'
 import Playground from './Playground.vue'
 import FeatureDrections from './FeatureDetections.vue'
 import ErFeature from './ErFeature.vue'
+import CropTable from './CropTable.vue'
+import ShortHand from './ShortHand.vue'
 export default {
   ...DefaultTheme,
   // override the Layout with a wrapper component that injects the slots
@@ -38,6 +40,8 @@ export default {
     app.component('ShowCase', ShowCase)
     app.component('feature-detections', FeatureDrections)
     app.component('er-feature', ErFeature)
+    app.component('crop-table', CropTable)
     app.component('Playground', Playground)
+    app.component('short-hand', ShortHand)
   }
 }

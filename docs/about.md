@@ -25,16 +25,24 @@ Edge Resizer doesn't perform image manipulation nor persistence. It depends on
 
 Without them, Edge Resizer would be pointless. Thank you guys, you're da real MVP 🙏.
 
+----
 
-### What does Edge Resizer bring to the table
+<er-feature class="end" >
+### What does Edge Resizer bring to the table?
+</er-feature>
+
+When you see a ribbon like this one, it means the docs are describing a feature, parameter, default or shortcut that is non-standard to images.weserve.nl.
 
 - 🔌 [Compact & tidy URLs](https://resizer.pictures/routing)
-- 👃 Feature detection through [Client Hints](https://developer.mozilla.org/en-US/docs/Glossary/Client_hints) and other headers
+- 💊 [Feature detection](https://resizer.pictures/feature_detection) through [Client Hints](https://developer.mozilla.org/en-US/docs/Glossary/Client_hints) and other headers
 - 🧠 sensible defaults and syntactic sugar
 - 🚀 Finer control of caches
 - :blush: ...*A cheap and amateurish version of [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing)*
 
 ## Explore the Docs:
+
+
+
 
  - [🔌 Routing Strategy](https://resizer.pictures/routing)
  - [🔳 Resize, Crop, Align](https://resizer.pictures/resizing_and_cropping)

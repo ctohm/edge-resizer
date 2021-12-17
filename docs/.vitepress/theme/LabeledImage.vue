@@ -17,7 +17,7 @@ const { src } = defineProps<{
  <style>
  .labeledImageContainer {
   display:flex;flex-direction:column;align-items: center;
-  width: fit-content;
+  
     margin: 0 auto;
     
     box-shadow:5px 5px 6px 0px rgba(0,0,0,0.43);
@@ -31,6 +31,7 @@ const { src } = defineProps<{
  }
  .labeledImageContainer .imagecell {
      flex: 1 1 0px;
+
      
  }
  .bordered.labeledImageContainer .imagecell {

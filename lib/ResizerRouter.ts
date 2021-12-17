@@ -123,7 +123,7 @@ export const FormatAliases: Record<keyof IOutputFormats, string> = {
     gif: 'output=gif',
     webp: 'output=webp',
 
-    auto: `check the accept header  for webp support and use it if affirmative`
+    auto: `output=webp (if supported)`
 }
 export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
     regex: string,

@@ -16,3 +16,5 @@ features:
   - title: 🔗 Your own, compact URLs
     details: Compact URLs, no searchParams, no urldecoding. Just your own domain. (Or ours, we're ok with that)
 ---
+
+<crop-table :rows="3" :cols="4"  image="riff.one/designcue-unsplash.jpg"   :cw="225" :ch="225"/>
