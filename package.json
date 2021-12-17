@@ -52,10 +52,13 @@
     "miniflare": "^1.3.3",
     "prettier": "^2.2.1",
     "typescript": "^4",
-    "vitepress": "^0.20.1",
-    "vue-advanced-cropper": "^2.7.0",
-    "worktop": "^0.7.3",
+    "vitepress": "^0.20.1"
+  },
+  "dependencies": {},
+  "peerDependencies": {
     "wrangler": "^0.0.0-beta.6"
   },
-  "dependencies": {}
+  "optionalDependencies": {
+    "vue-advanced-cropper": "^1.9.0"
+  }
 }
