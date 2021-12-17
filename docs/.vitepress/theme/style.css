@@ -124,5 +124,9 @@
   margin:0.3rem 0;
 }
 .home-hero .figure .image {
-  width:550px;
+  width:450px;
+}
+.home-hero #main-title {
+  
+  margin-top:1.5rem;
 }

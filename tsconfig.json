@@ -21,9 +21,7 @@
     "noImplicitThis": true
   },
   "include": [
-    "./src/*.ts",
-    "./src/**/*.ts",
-    "./src/**/*.d.ts",
+    
     "./node_modules/@cloudflare/workers-types/index.d.ts"
   ],
   "exclude": ["node_modules/", "dist/"]

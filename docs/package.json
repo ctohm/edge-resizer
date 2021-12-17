@@ -12,7 +12,7 @@
   "docs:build": "vitepress build . && cp -R images .vitepress/dist/images && cp favicon.svg .vitepress/dist/ ",
   "docs:dev": "vitepress dev . -p 3000",
   "docs:deploy": "npm run docs:build  && npm run pages",
-  "build":"wrangler1 build",
+  "build":"node -v && exit 0",
   "docs": "npx wrangler@beta pages dev -- npm run docs:dev",
   "pages": "npm run docs:build && gh-pages -d .vitepress/dist"
  },

@@ -14,9 +14,9 @@
     "test"
   ],
   "scripts": {
-    "deploy": " cd worker && yarn deploy",
+    "deploy": " cd worker && wrangler publish",
     "start": "cd worker && yarn miniflare ",
-    "build:prod": "cd worker && wrangler   -c ./wrangler.develop.toml build",
+    "build:dev": "cd worker && wrangler1   -c ./wrangler.develop.toml build",
     "build:lib": "cd lib && yarn build && cd -",
     "publish:lib": "cd lib && yarn build && yarn publish && cd -",
     "write_commit": "cd worker && yarn write_commit",

@@ -8,19 +8,22 @@ If you wanted to generate a 300x200 thumbnail, on the fly, you would request
 
 > **https://resizer.pictures/w=300_h=200/riff.one/designcue-unsplash.jpg**
 
-Edge Resizer parses that URL as
+(I'm using our hostname just for the example). Edge Resizer parses the pathname as:
 
 |`{transformations}` | `/{source hostname}` | `/{source pathname}`|
 |------|---------|  --- |
 | `w=300_h=200/` | `riff.one` | `/designcue-unsplash.jpg`|
+
+In this section we'll explain the logic and constraints that define if a request will be handled (and therefore if the underlying image will be proxied) or it will pass through unaltered.
 
 ### 1. Transformations are mandatory
 
 Edge resizer will only proxy those routes whose pathname matches the [pattern of available transformations](parameters.html). 
 
 ::: tip
-If you don't want to apply any transformation, but still want Edge-Resizer handle the route (for example, for caching or to avoid mixed content) pass an underscore as dummy prefix:
-```html
+If you don't want to apply any transformation, but still want Edge-Resizer handle the route (for example, for caching or to avoid mixed content) pass an underscore as dummy transform:
+
+```erlang
 https://resizer.pictures/_/riff.one/img/dice.png
 ```
 ::: 
@@ -32,7 +35,7 @@ https://resizer.pictures/_/riff.one/img/dice.png
 ### 2. Using prefixes or namespaces
 
 
-Whatever comes *before* the transformations is not considered to compute the source image, so it's safe to deploy Edge Resizer on particular routes instead of `*`. Any of the following
+Whatever comes *before* the transformations segment is not considered to compute the source image, so it's safe to deploy Edge Resizer on particular routes instead of `*`. Any of the following
 would have Edge Resizer handle the request and yield the same thumbnail:
 
 > [*https://resizer.pictures*/w=300_h=200/*riff.one/designcue-unsplash.jpg*](https://resizer.pictures/w=300_h=200/riff.one/designcue-unsplash.jpg)

@@ -41,6 +41,8 @@ const croplist=computed(()=>{
     return croplistarr
 })
 console.log( {h,w, rows,cols,ch,cw,croplist,image,huex,huey,hue0} )
+
+  
 </script>
 <style>
 .croptable {
@@ -54,6 +56,7 @@ console.log( {h,w, rows,cols,ch,cw,croplist,image,huex,huey,hue0} )
    position:absolute;
     top:5em;
     z-index:-1000;
+    opacity: 0.6;
 }
 .cropgrid {
         display: flex;

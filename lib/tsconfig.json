@@ -1,19 +1,36 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-        "outDir": ".",
-        "target": "ES2020",
-        "declaration": true,
-        "module": "CommonJS",
-        "lib": ["ES2020", "WebWorker"],
-    
-          "rootDir": ".",
-          //
-         "declarationDir": ".",
-          "emitDeclarationOnly": true,
-        
-      },
-      "include": [
-        "./*.ts"
-      ]
+  "compilerOptions": {
+    "outDir": ".",
+    "target": "ES2020",
+    "declaration": true,
+    "module": "CommonJS",
+    "lib": [
+      "ES2020",
+      "WebWorker"
+    ],
+    "rootDir": ".",
+    //
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "alwaysStrict": true,
+    "strict": true,
+    "preserveConstEnums": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "types": [
+      "@cloudflare/workers-types",
+      "@types/node"
+    ],
+    "noImplicitAny": true,
+    "noImplicitThis": true
+  },
+  "include": [
+    "./*.ts",
+    "./node_modules/@cloudflare/workers-types/index.d.ts"
+  ],
+  "exclude": [
+    "node_modules/"
+  ]
 }

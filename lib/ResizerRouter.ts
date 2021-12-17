@@ -35,7 +35,7 @@ export interface EnvWithBindings {
 
 function getFileName(url: URL): { fileName: string; extension: string } {
     const { pathname } = url,
-        lastPart = (decodeURIComponent(pathname || '').split('?')[0] || '').replace(/\/$/, '').split('/').pop()
+        lastPart = (decodeURIComponent(pathname || '').split('?')[0] || '').replace(/\/$/, '').split('/').pop() || ''
     const { groups } = /(?<fileName>([^/]+))(?<extension>(\.(apng|avif|gif|jpg|png|svg|webp|bmp|ico|tif|tiff|jpeg))?)/i.exec(lastPart) || { groups: { fileName: '', extension: '' } }
 
     return { fileName: groups?.fileName || '', extension: groups?.extension || '' };
@@ -130,11 +130,11 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
     title: string, docs?: string, example: string, section?: string, sectionLink?: string, note?: string
 }> = {
     w: {
-        regex: 'w=[0-9.-]+',
+        regex: '(?:width|w)=[0-9.-]+',
         title: 'Width', example: 'w=250', section: 'Resize', sectionLink: 'https://images.weserv.nl/docs/size.html', docs: 'https://images.weserv.nl/docs/size.html#width'
     },
     h: {
-        regex: 'h=[0-9.-]+',
+        regex: '(?:height|h)=[0-9.-]+',
         title: 'Height', example: 'h=150', docs: 'https://images.weserv.nl/docs/size.html#height'
     },
     we: {
@@ -183,7 +183,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Page', docs: 'https://images.weserv.nl/docs/format.html#page', example: 'page=1'
     },
     output: {
-        regex: 'output=(?:auto|json|png|jpg|gif|tiff|webp|jpeg)',
+        regex: '(?:output|format)=(?:auto|json|png|jpg|gif|tiff|webp|jpeg)',
         title: 'Output', docs: 'https://images.weserv.nl/docs/format.html#output', example: 'output=png'
     },
 
