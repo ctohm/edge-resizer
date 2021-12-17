@@ -12,6 +12,7 @@
   "docs:build": "vitepress build . && cp -R images .vitepress/dist/images && cp favicon.svg .vitepress/dist/ ",
   "docs:dev": "vitepress dev . -p 3000",
   "docs:deploy": "yarn docs:build  && yarn pages",
+  "build":"wrangler1 build",
   "docs": "npx wrangler@beta pages dev -- yarn docs:dev",
   "pages": "yarn docs:build && gh-pages -d .vitepress/dist"
  },
@@ -20,6 +21,7 @@
  "private": false,
  "devDependencies": {
   "@cloudflare/workers-types": "^3.2.0",
+  "@cloudflare/wrangler": "^1.19.6",
   "@types/node": "^14",
   "esbuild": "^0.14.5",
   "gh-pages": "^3.2.3",
