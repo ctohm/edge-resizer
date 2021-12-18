@@ -2,7 +2,7 @@
 //import { version } from '../package.json';
 import { json, ThrowableRouter } from 'itty-router-extras';
 
-import { EnvWithBindings, ResizerRouter, fallbackSvg, AvailableTransforms, RequestWithParams } from 'edge-resizer/ResizerRouter'
+import { EnvWithBindings, ResizerRouter, fallbackSvg, AvailableTransforms, RequestWithParams, IWaitableObject } from 'edge-resizer/ResizerRouter'
 function printHeaders({ vw, vh, dpr, webp }: { vw: string, vh: string, dpr: string, webp: string }): Response {
 
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>
@@ -45,7 +45,7 @@ function checkHeaders(req: RequestWithParams): Promise<Response> {
 const normalizePrefix = (prefix = '') => `/${(prefix).replace(/^\/?(.*?)\/?$/g, '$1')}`.replace(/^\/$/, '')
 
 export default {
-  fetch: async (request: Request, env: EnvWithBindings, ctx: FetchEvent): Promise<Response> => {
+  fetch: async (request: Request, env: EnvWithBindings, ctx: IWaitableObject): Promise<Response> => {
     const NORMALIZED_ROUTE_PREFIX = normalizePrefix(env.ROUTE_PREFIX),
       url = new URL(request.url)
     const options = { ROUTE_PREFIX: `${NORMALIZED_ROUTE_PREFIX}/`, DEBUG: env.DEBUG || url.searchParams.has('debug') }
@@ -73,9 +73,14 @@ export default {
         AvailableTransforms
       }))
       .get('/detected_features', (req: RequestWithParams) => checkHeaders(req))
-      .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
-        resizerRouter.handle)
-      .get('/detected_features/:webp/:vw/:vh/:dpr', (req: RequestWithParams) => printHeaders(req.params as unknown as { vw: string, vh: string, dpr: string, webp: string }))
+      .get(
+        `${NORMALIZED_ROUTE_PREFIX}/*`,
+        resizerRouter.handle
+      )
+      .get(
+        '/detected_features/:webp/:vw/:vh/:dpr',
+        (req: RequestWithParams) => printHeaders(req.params as unknown as { vw: string, vh: string, dpr: string, webp: string })
+      )
       .all('*', (req: Request) => {
         /**
          * Prevent infinite favicon loop

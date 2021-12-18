@@ -1,7 +1,7 @@
 <template>
 
-    
-    <table v-if="croplist.length" class="croptable">
+    <div class="croptable">
+    <table v-if="croplist.length" >
     
     <tbody>
         <tr v-for="(row,index) in croplist" :key="index">
@@ -11,6 +11,8 @@
         </tr>
     </tbody>
 </table>
+    <slot></slot>
+    </div>
 
 </template>
 <script setup lang="ts">
@@ -59,7 +61,7 @@ console.log( { rows,cols,ch,cw,croplist,image,huex,huey,hue0} )
 }
 .home .croptable {
    position:absolute;
-    top:5em;
+    top:4em;
     z-index:-1000;
     opacity: 0.6;
     left:0;

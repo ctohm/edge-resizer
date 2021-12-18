@@ -18,7 +18,7 @@ zone_id = ""
 
 
 [build]
-  command = "npm run docs:build && export RELEASE=`git rev-parse --short HEAD`;export TIMESTAMP=`date +%s`; npx esbuild functions/module.ts --bundle --format=esm --outfile=.vitepress/dist/_worker.js  --define:TIMESTAMP='\"'$TIMESTAMP'\"' --define:RELEASE='\"'$RELEASE'\"'"
+  command = "RELEASE=`git rev-parse --short HEAD` node esbuild.mjs"
   watch_dir = "functions"
 
   [build.upload]

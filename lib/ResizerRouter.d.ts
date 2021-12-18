@@ -1,5 +1,6 @@
+/// <reference types="@cloudflare/workers-types" />
 import { RouterOptions } from 'itty-router';
-interface IWaitableObject {
+export interface IWaitableObject {
     waitUntil: (promise: Promise<any>) => void;
 }
 export declare type TImageParameters = {
@@ -25,6 +26,7 @@ export interface EnvWithBindings {
     ROUTE_PREFIX: string;
     RELEASE: string;
     TIMESTAMP?: number;
+    ASSETS: KVNamespace;
     MAX_AGE?: string;
 }
 export interface IdefaultSearchParams {

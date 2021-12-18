@@ -63,54 +63,32 @@ If the original image was in the same zone as the worker, eg:
 
 > https://resizer.pictures/images/cloudflare_workers.svg
 
-Normally, a thumbnail URL should contain the source host
- 
- > [*https://* resizer.pictures/*w=200_h=200*/resizer.pictures/*images/cloudflare_workers.svg*](https://resizer.pictures/w=200_h=200/resizer.pictures/images/cloudflare_workers.svg)
-
-Which would be parsed as
-
-| zone | t. params | source host | source pathname |
-|-|-|-|-|
-| resizer.pictures/ | *w=200_h=200* | /resizer.pictures | /images/cloudflare_workers.svg |
-
-In case you wanted to avoid repeating the hostname, there are two workarounds that you can try:
-
-#### **Option 1**. Skip the source hostname entirely and hope for the best
-
-The following URL yields the same result as the long one above. 
-
->   https://resizer.pictures/w=200/images/cloudflare_workers.svg
-
-Internally, the router cannot detect a valid source hostname in there, but its second best choice is taking `images` as a dummy source hostname and replace it with the origin host in the next step.
-
-However, **this won't work if you try to proxy an image in the zone's root folder**. There's simply not enough "parts" to parse and route 
-
-> This one won't work. 
->   https://resizer.pictures/w=200/favicon.svg
-
-In that case, use option 2.
-
-#### **Option 2**. Use `0.0` as dummy hostname:
-
-We use a simplified regex to identify the source image hostname as such. Since there are no hostnames shorter than 4 characters (`g.cn`) passing `0.0` or `x.x` as a dummy hostname will satisfy the route pattern and, at the same time, its length will prompt us to replace the dummy with the current request origin. Therefore:
-
-> [*https://* resizer.pictures/*w=200_h=200*/0.0/*favicon.svg*](https://resizer.pictures/w=200_h=200/0.0/favicon.svg)
-
-is translated to
+Wouldn't it be nice if we could save us some keystrokes and avoid having to type the hostname twice as in
 
  > [*https://* resizer.pictures/*w=200_h=200*/resizer.pictures/*images/cloudflare_workers.svg*](https://resizer.pictures/w=200_h=200/resizer.pictures/images/cloudflare_workers.svg)
 
+Sure, you can. See [Worker and image in the same host](use_cases.html#worker-and-image-in-the-same-host)
 
+---
 
 ### 5. Alternative transformation separators
 
-The transformation part of the URL you request through Edge-Resizer uses an underscore to separate parameters from each other.
-Though we don't aim to offer feature parity with Cloudflare Images, using commas instead of underscores will work too
-
+As mentioned, underscores are used as separators to compute which transformations were requested:
 
 ```html
-<img src="http://img.cdn4dd.com/cdn-cgi/image/w=300,format=auto/https://riff.one/designcue-unsplash.jpg">
+<img src="/w=300_h=250_fit=cover/https://riff.one/designcue-unsplash.jpg">
 ``` 
 
-<img src="https://resizer.pictures/w=300_format=auto/riff.one/designcue-unsplash.jpg">
+However, the router will also accept commas as separators because... why not?
 
+```erlang
+/w=300,h=250,fit=cover/https://riff.one/designcue-unsplash.jpg
+``` 
+
+You would notice this format is somewhat similar to [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing/url-format)'s:
+
+```erlang
+/cdn-cgi/image/w=300,h=250,fit=cover/https://riff.one/designcue-unsplash.jpg
+``` 
+
+Well yes, this enables (to a very limited extent) switching back and forth between Edge-Resizer and Cloudflare Image Resizing. In the same line we support aliasing `w` as `width`, `h` as `height`,  `q` as `quality` and `output` as `format`. However, no further efforts are planned to extend this syntax compatibility, and it's not feasible to think about feature parity since even operations that  existing both in [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing/url-format) and images.weserv.nl, do often expect values from different sets, or have different meanings.

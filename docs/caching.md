@@ -1,21 +1,22 @@
-# 🚀 Caching
+---
+title: 🚀 Caching
+editLink: true
+---
 
-
+# {{ $frontmatter.title }}
  
+---
 
 <ShowCase>
 <template v-slot:first_paragraph>
-Except for the very first time they are requested (and inmediately cached), variations will answer from the edge at blazing speed, and will even survive for a few months if the original image is deleted. The image to the right doesn't exist but in Cloudflare's Cache.
+<br>
+Variations are generated on demand, at which point they are stored in Cloudflare's Edge Cache. <b>Ephemeral but long lived</b>, further requests will receive a cached response at blazing speed.
 </template>
-<template v-slot:second_paragraph>The response headers will also hint the browser not to request this same asset for a year. While this isn't much of a feature, your browser will hopefully not need requesting it anytime soon and that will shave a couple of ms off.
+<template v-slot:second_paragraph>Populating the edge cache this way 
 
 </template>
 <template v-slot:table>
-
- | w=150 h=150 |
-|----------|
-|![150x150](https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg)
-
+    <labeled-image src="https://resizer.pictures/w=150_h=150/riff.one/images/designcue-unsplash.jpg">w=150_h=150</labeled-image>
 </template>
 </ShowCase>
 
@@ -26,7 +27,7 @@ The order of the search parameters doesn't affect the final outcome. However, th
 
 The next two URLs are equivalent
 
-```html
+```erlang
 https://resizer.pictures/il_w=150_h=150/riff.one/images/designcue-unsplash.jpg
 
 https://resizer.pictures/h=150_il_w=150/riff.one/images/designcue-unsplash.jpg

@@ -1,7 +1,7 @@
 import { Router, RouterOptions } from 'itty-router';
 import { json } from 'itty-router-extras'
 
-interface IWaitableObject {
+export interface IWaitableObject {
     waitUntil: (promise: Promise<any>) => void;
 }
 export type TImageParameters = {
@@ -30,6 +30,7 @@ export interface EnvWithBindings {
     ROUTE_PREFIX: string;
     RELEASE: string;
     TIMESTAMP?: number;
+    ASSETS: KVNamespace;
     MAX_AGE?: string
 }
 
@@ -167,7 +168,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Adaptative Filter', docs: 'https://images.weserv.nl/docs/format.html#adaptive-filter', example: 'af'
     },
     q: {
-        regex: 'q=[0-9.]+',
+        regex: '(?:q|quality)=[0-9.]+',
         title: 'Quality', docs: 'https://images.weserv.nl/docs/format.html#quality', example: 'q=80'
     },
     l: {
@@ -275,6 +276,7 @@ const deviceHints: Record<'vw' | 'vh' | 'dpr', { title: string, regex: string, n
 const transformKey = Object.keys(AvailableTransforms)
     .concat(
         Object.keys(FormatAliases),
+        Object.keys(AlignmentAliases),
         Object.keys(FitAliases),
         Object.keys(deviceHints),
         // these are accepted just for RC
@@ -424,7 +426,7 @@ export class ResizerRouter {
         params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>;
 
         for (let [key, value] of pathSearchParams.entries()) {
-            key = key.replace('format', 'output').replace('width', 'w').replace('height', 'h')
+            key = key.replace('format', 'output').replace('width', 'w').replace('height', 'h').replace('quality', 'q')
             if (['http', 'https'].includes(key)) {
                 params.protocol = key;
             } else if (Object.keys(AvailableTransforms).includes(key)) {
@@ -433,6 +435,8 @@ export class ResizerRouter {
                 params.transforms.output = key;
             } else if (Object.keys(FitAliases).includes(key)) {
                 params.transforms.fit = key;
+            } else if (Object.keys(AlignmentAliases).includes(key)) {
+                params.transforms.a = key;
             } else {
                 params.discarded[key as string] = value
             }
@@ -515,9 +519,7 @@ async function computeWeserveRequest(
 
     if (accepts.includes('webp') && computedSearchParams.output === 'auto') {
         computedSearchParams.output = 'webp';
-        if (!computedSearchParams.q) {
-            computedSearchParams.q = '75'
-        }
+        //if (!computedSearchParams.q) {            computedSearchParams.q = '75'        }
     } else if (!['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(computedSearchParams.output)) {
      /**
       *  Remove output parameter if it's not supported

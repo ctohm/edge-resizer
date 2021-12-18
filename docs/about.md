@@ -4,11 +4,19 @@
 
 # What is Edge-Resizer ?
 
-Edge Resizer was conceived as a routing middleware translating **tidy, compact and self-contained URLs** to the (potentially) complex request needed to [dinamically generate variations](https://images.weserv.nl/) of a source image. E.g. a 256x192 thumbnail:
+Edge Resizer was conceived as a routing middleware offering tidy URLs to complex transformations.
+
+
+ translating **tidy, compact and self-contained URLs** to the (potentially) complex request needed to [dinamically generate variations](https://images.weserv.nl/) of a source image. E.g. a 256x192 thumbnail:
 
 > **original img**: [*https://* **riff.one/designcue-unsplash.jpg**](https://riff.one/designcue-unsplash.jpg)
 > 
 > **thumbnail** : [*https://resizer.pictures/w=256_h=192/* **riff.one/designcue-unsplash.jpg**](https://resizer.pictures/w=256_h=192/riff.one/designcue-unsplash.jpg)
+
+| | 
+|-|
+|![](https://resizer.pictures/w=196_we_a=right_contain_jpg_bg=cfc_cbg=ffa/riff.one/img/dice_128.png)|
+
 
 These **long lived variations** are created through [**images.weserv.nl**](https://images.weserv.nl/)'s API only when (and if) they are first requested, having further requests answer from  [Cloudflare's Edge Cache](https://developers.cloudflare.com/workers/runtime-apis/cache) at blazing speeds. 
 
@@ -27,7 +35,7 @@ Without them, Edge Resizer would be pointless. Thank you guys, you're da real MV
 
 ----
 
-
+ https://resizer.pictures/w=256_h=192/ riff.one/designcue-unsplash.jpg
 
 ### What does Edge Resizer bring to the table?
 
