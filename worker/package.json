@@ -14,10 +14,11 @@
     "test"
   ],
   "scripts": {
-    "deploy": " export COMMIT=`git rev-parse --short HEAD`;yarn write_commit && wrangler    publish -c ./wrangler.develop.toml",
+    "get_commit":"export COMMIT=`git rev-parse --short HEAD`",
+    "deploy": " yarn write_commit && wrangler    publish -c ./wrangler.develop.toml",
     "miniflare": "NODE_ENV=development miniflare  dist/worker.js -c ./wrangler.develop.toml -w  -d --wrangler-env=develop ",
     "build:prod": " wrangler   -c ./wrangler.develop.toml build",
-    "write_commit": "export CURRENT=`cat wrangler.develop.toml | grep RELEASE | head -1 | cut -d'\"' -f2` ; sed -i \"s/$CURRENT/$COMMIT/g\" wrangler.develop.toml; sed -i \"s/$CURRENT/$COMMIT/g\" wrangler.toml",
+    "write_commit": "npm run get_commit;echo COMMIT is $COMMIT;export CURRENT=`cat wrangler.develop.toml | grep RELEASE | head -1 | cut -d'\"' -f2` ; sed -i \"s/$CURRENT/$COMMIT/g\" wrangler.develop.toml; sed -i \"s/$CURRENT/$COMMIT/g\" wrangler.toml",
     "test": "rm -rf .mf/cache/default  && node  --experimental-vm-modules `yarn bin`/ava -s   test/*.test.mjs  --silent --quiet ",
     "transpile": "tsc --project ."
   },
