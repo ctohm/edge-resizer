@@ -1,7 +1,7 @@
 import esbuild from 'esbuild'
 
 const mode = process.env.NODE_ENV || 'production';
-const RELEASE=process.env.RELEASE
+const RELEASE=process.env.RELEASE||process.env.CF_PAGES_COMMIT_SHA
 
 const define={
   TIMESTAMP:Date.now(),

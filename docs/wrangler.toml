@@ -18,7 +18,7 @@ zone_id = ""
 
 
 [build]
-  command = "RELEASE=`git rev-parse --short HEAD` node esbuild.mjs"
+  command = "node esbuild.mjs"
   watch_dir = "functions"
 
   [build.upload]
