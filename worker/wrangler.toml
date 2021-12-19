@@ -16,7 +16,7 @@ zone_id = ""
   MAX_AGE = "1y"
 
 [build]
-  command = "export RELEASE=`git rev-parse --short HEAD`;export TIMESTAMP=`date +%s`; npx esbuild src/index.ts --bundle --format=cjs --outfile=dist/worker.js  --define:ROUTE_PREFIX='\"'$ROUTE_PREFIX'\"'  --define:TIMESTAMP='\"'$TIMESTAMP'\"' --define:RELEASE='\"'$RELEASE'\"'"
+  command = "export RELEASE=`git rev-parse --short HEAD`;node esbuild.mjs"
 
   [build.upload]
     format = "service-worker"
