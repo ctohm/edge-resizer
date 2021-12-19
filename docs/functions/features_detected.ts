@@ -15,7 +15,7 @@ export async function onRequest(context: EventContext<EnvWithBindings, 'route', 
     const vh = Number(request.headers.get('sec-ch-viewport-height')) || 'N/A'
     const dpr = Number(request.headers.get('dpr') || request.headers.get('sec-ch-dpr')) || 'N/A'
     const webp = request.headers.get('accept')?.includes('webp') ? 'yes' : 'nope'
-    console.log({ ...env, destination, mode, referrer, integrity, url })
+    console.log({ ...env, destination, mode, referrer, integrity, url, data })
 
     return json({ vw, vh, dpr, webp, env, params })
 }

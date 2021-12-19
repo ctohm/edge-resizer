@@ -14,7 +14,7 @@
   
   "docs:dev": "vitepress dev . -p 3000",
   
-  "build": "npm run docs:build && npm run worker:build",
+  "build": "npm run docs:build && npx wrangler1 build",
   "docs": "npx wrangler@beta pages dev -- npm run docs:dev",
   "pages": "npm run docs:build && gh-pages -d .vitepress/dist"
  },

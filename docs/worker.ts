@@ -88,7 +88,7 @@ export default {
         if (req.headers.get('referer')?.includes('favicon.ico')) {
           return new Response(fallbackSvg())
         }
-        console.log({ catchAll: req.url })
+        //console.log({ catchAll: req.url })
         return env.ASSETS.fetch(req)
       })
 

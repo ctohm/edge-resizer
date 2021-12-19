@@ -15,7 +15,7 @@ Edge Resizer was conceived as a routing middleware offering tidy URLs to complex
 
 | | 
 |-|
-|![](https://resizer.pictures/w=196_we_a=right_contain_jpg_bg=cfc_cbg=ffa/riff.one/img/dice_128.png)|
+|![](https://resizer.pictures/w=196_we_right_contain_jpg/riff.one/img/dice_128.png)|
 
 
 These **long lived variations** are created through [**images.weserv.nl**](https://images.weserv.nl/)'s API only when (and if) they are first requested, having further requests answer from  [Cloudflare's Edge Cache](https://developers.cloudflare.com/workers/runtime-apis/cache) at blazing speeds. 

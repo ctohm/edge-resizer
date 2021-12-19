@@ -18,7 +18,7 @@ export async function onRequest(context: EventContext<EnvWithBindings, 'route', 
     context.data = { ...context.data, vw, vh, dpr, webp }
     let placeholder = encodeURIComponent(`000?text=Viewport-Height:+${vw}%0AViewport-Width:+${vh}%0ADPR:+${dpr}%0AWebp%20support:+${webp}&font_size=21&font=museo`),
         requested = `https://resizer.pictures/auto_dpr/fakeimg.pl/300x145/fff/${placeholder}`
-    console.log({ contextData: context.data })
+    //  console.log({ contextData: context.data })
     try {
         // wait for the next function to finish
         return await context.next()

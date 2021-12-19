@@ -9,7 +9,7 @@ const define={
 }
 esbuild
   .build({
-    entryPoints: ['module.ts'],
+    entryPoints: ['worker.ts'],
     bundle: true,
     outfile: '.vitepress/dist/_worker.js',
     sourcemap: 'inline',
