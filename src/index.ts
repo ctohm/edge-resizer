@@ -3,7 +3,7 @@
 import { json, ThrowableRouter } from 'itty-router-extras';
 
 import { EnvWithBindings, ResizerRouter, fallbackSvg, AvailableTransforms, RequestWithParams } from 'edge-resizer/ResizerRouter'
-export function printHeaders({ vw, vh, dpr, webp }): Response {
+function printHeaders({ vw, vh, dpr, webp }): Response {
 
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>
 <svg width="300px" height="100px" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
@@ -18,7 +18,7 @@ export function printHeaders({ vw, vh, dpr, webp }): Response {
 
 </svg>`);
 }
-export function checkHeaders(req: RequestWithParams): Promise<Response> {
+function checkHeaders(req: RequestWithParams): Promise<Response> {
   const vw = Number(req.headers.get('viewport-width') || req.headers.get('sec-ch-viewport-width') || req.headers.get('sec-ch-width') || req.headers.get('width')) || 'N/A'
   const vh = Number(req.headers.get('sec-ch-viewport-height')) || 'N/A'
   const dpr = Number(req.headers.get('dpr') || req.headers.get('sec-ch-dpr')) || 'N/A'
@@ -64,7 +64,7 @@ const exportDefault = {
         AvailableTransforms
       }))
       .get('/detected_features', (req: RequestWithParams) => checkHeaders(req))
-      .get('/:webp/:vw/:vh/:dpr', (req: RequestWithParams) => printHeaders(req))
+      //.get('/:webp/:vw/:vh/:dpr', (req: RequestWithParams) => printHeaders(req))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
         resizerRouter.handle)
       .all('*', (req: Request) => {

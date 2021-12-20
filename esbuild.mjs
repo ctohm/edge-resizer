@@ -9,9 +9,9 @@ esbuild
     bundle: true,
     format:'cjs',
     outfile: 'dist/worker.js',
-    sourcemap: 'inline',
+  //  sourcemap: 'inline',
 
-    minify: mode === 'production',
+//    minify: mode === 'production',
     define:{
       TIMESTAMP:Date.now(),
       RELEASE:`"${COMMIT}"`
