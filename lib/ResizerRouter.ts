@@ -1,7 +1,7 @@
 import { Router, RouterOptions } from 'itty-router';
 import { json } from 'itty-router-extras'
 
-interface IWaitableObject {
+export interface IWaitableObject {
     waitUntil: (promise: Promise<any>) => void;
 }
 export type TImageParameters = {
@@ -30,12 +30,13 @@ export interface EnvWithBindings {
     ROUTE_PREFIX: string;
     RELEASE: string;
     TIMESTAMP?: number;
+    ASSETS?: KVNamespace;
     MAX_AGE?: string
 }
 
 function getFileName(url: URL): { fileName: string; extension: string } {
     const { pathname } = url,
-        lastPart = (decodeURIComponent(pathname || '').split('?')[0] || '').replace(/\/$/, '').split('/').pop()
+        lastPart = (decodeURIComponent(pathname || '').split('?')[0] || '').replace(/\/$/, '').split('/').pop() || ''
     const { groups } = /(?<fileName>([^/]+))(?<extension>(\.(apng|avif|gif|jpg|png|svg|webp|bmp|ico|tif|tiff|jpeg))?)/i.exec(lastPart) || { groups: { fileName: '', extension: '' } }
 
     return { fileName: groups?.fileName || '', extension: groups?.extension || '' };
@@ -123,18 +124,18 @@ export const FormatAliases: Record<keyof IOutputFormats, string> = {
     gif: 'output=gif',
     webp: 'output=webp',
 
-    auto: `check the accept header  for webp support and use it if affirmative`
+    auto: `output=webp (if supported)`
 }
 export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
     regex: string,
     title: string, docs?: string, example: string, section?: string, sectionLink?: string, note?: string
 }> = {
     w: {
-        regex: 'w=[0-9.-]+',
+        regex: '(?:width|w)=[0-9.-]+',
         title: 'Width', example: 'w=250', section: 'Resize', sectionLink: 'https://images.weserv.nl/docs/size.html', docs: 'https://images.weserv.nl/docs/size.html#width'
     },
     h: {
-        regex: 'h=[0-9.-]+',
+        regex: '(?:height|h)=[0-9.-]+',
         title: 'Height', example: 'h=150', docs: 'https://images.weserv.nl/docs/size.html#height'
     },
     we: {
@@ -167,7 +168,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Adaptative Filter', docs: 'https://images.weserv.nl/docs/format.html#adaptive-filter', example: 'af'
     },
     q: {
-        regex: 'q=[0-9.]+',
+        regex: '(?:q|quality)=[0-9.]+',
         title: 'Quality', docs: 'https://images.weserv.nl/docs/format.html#quality', example: 'q=80'
     },
     l: {
@@ -183,7 +184,7 @@ export const AvailableTransforms: Record<keyof IdefaultSearchParams, {
         title: 'Page', docs: 'https://images.weserv.nl/docs/format.html#page', example: 'page=1'
     },
     output: {
-        regex: 'output=(?:auto|json|png|jpg|gif|tiff|webp|jpeg)',
+        regex: '(?:output|format)=(?:auto|json|png|jpg|gif|tiff|webp|jpeg)',
         title: 'Output', docs: 'https://images.weserv.nl/docs/format.html#output', example: 'output=png'
     },
 
@@ -275,6 +276,7 @@ const deviceHints: Record<'vw' | 'vh' | 'dpr', { title: string, regex: string, n
 const transformKey = Object.keys(AvailableTransforms)
     .concat(
         Object.keys(FormatAliases),
+        Object.keys(AlignmentAliases),
         Object.keys(FitAliases),
         Object.keys(deviceHints),
         // these are accepted just for RC
@@ -385,7 +387,7 @@ export class ResizerRouter {
                 req.params.pathname = `${req.params.dummyhost}/${req.params.pathname}`
                 req.params.originhost = url.host
             }
-            if (['self', '0.0'].includes(req.params.originhost)) {
+            if (['self', '0.0'].includes(req.params.originhost) || req.params.originhost.length < 4) {
                 req.params.originhost = url.host
             }
             try {
@@ -424,7 +426,7 @@ export class ResizerRouter {
         params.transforms = {} as Record<string & keyof IdefaultSearchParams, string>;
 
         for (let [key, value] of pathSearchParams.entries()) {
-            key = key.replace('format', 'output').replace('width', 'w').replace('height', 'h')
+            key = key.replace('format', 'output').replace('width', 'w').replace('height', 'h').replace('quality', 'q')
             if (['http', 'https'].includes(key)) {
                 params.protocol = key;
             } else if (Object.keys(AvailableTransforms).includes(key)) {
@@ -433,6 +435,8 @@ export class ResizerRouter {
                 params.transforms.output = key;
             } else if (Object.keys(FitAliases).includes(key)) {
                 params.transforms.fit = key;
+            } else if (Object.keys(AlignmentAliases).includes(key)) {
+                params.transforms.a = key;
             } else {
                 params.discarded[key as string] = value
             }
@@ -515,9 +519,7 @@ async function computeWeserveRequest(
 
     if (accepts.includes('webp') && computedSearchParams.output === 'auto') {
         computedSearchParams.output = 'webp';
-        if (!computedSearchParams.q) {
-            computedSearchParams.q = '75'
-        }
+        //if (!computedSearchParams.q) {            computedSearchParams.q = '75'        }
     } else if (!['tiff', 'gif', 'png', 'jpg', 'jpeg', 'webp', 'json'].includes(computedSearchParams.output)) {
      /**
       *  Remove output parameter if it's not supported
