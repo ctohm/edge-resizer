@@ -2,7 +2,12 @@ import esbuild from 'esbuild'
 
 const mode = process.env.NODE_ENV || 'production';
 const RELEASE=process.env.RELEASE
-const ROUTE_PREFIX=process.env.ROUTE_PREFIX || "/"
+const ROUTE_PREFIX=process.env.ROUTE_PREFIX || '"/"'
+const define={
+  TIMESTAMP:Date.now(),
+  RELEASE:`"${RELEASE}"`
+  
+}
 console.log({ mode,RELEASE });
 esbuild
   .build({
@@ -12,10 +17,13 @@ esbuild
     sourcemap: 'inline',
 format:'cjs',
     minify: mode === 'production',
-    define:{
-      TIMESTAMP:Date.now(),
-      RELEASE:`"${RELEASE}"`,
-      ROUTE_PREFIX:`"${ROUTE_PREFIX}"`
-    }
+    define
+    
   }) 
-  .catch(() => process.exit(1));
+  .then(()=>{
+    console.log('built with',{define})
+  })
+  .catch((e) =>{
+    console.warn(e.message)
+     process.exit(1)
+  });

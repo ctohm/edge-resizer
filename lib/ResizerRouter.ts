@@ -30,7 +30,7 @@ export interface EnvWithBindings {
     ROUTE_PREFIX: string;
     RELEASE: string;
     TIMESTAMP?: number;
-    ASSETS: KVNamespace;
+    ASSETS?: KVNamespace;
     MAX_AGE?: string
 }
 

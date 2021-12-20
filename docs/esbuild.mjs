@@ -5,7 +5,8 @@ const RELEASE=process.env.RELEASE||process.env.CF_PAGES_COMMIT_SHA
 
 const define={
   TIMESTAMP:Date.now(),
-  RELEASE:`"${RELEASE}"`
+  RELEASE,
+  
 }
 esbuild
   .build({

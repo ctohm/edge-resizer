@@ -55,11 +55,14 @@ export default {
     // Replace 
     const mainRouter: ThrowableRouter<Request> = ThrowableRouter({ base: '', stack: true })
       .get('/favicon*', () => new Response(fallbackSvg()))
-      .get('/version', () => json({
-        worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
-        timestamp: env.TIMESTAMP, deployed_at: new Date(1000 * Number(env.TIMESTAMP)).toISOString(),
-        route_prefix: NORMALIZED_ROUTE_PREFIX
-      }))
+      .get('/version', () => () => {
+        console.log({ route: 'version' })
+        return json({
+          worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
+          timestamp: env.TIMESTAMP, deployed_at: new Date(1000 * Number(env.TIMESTAMP)).toISOString(),
+          route_prefix: NORMALIZED_ROUTE_PREFIX
+        })
+      })
       .get('/transforms', () => json({
         AvailableTransforms
       }))
