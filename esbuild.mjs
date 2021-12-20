@@ -7,6 +7,7 @@ esbuild
   .build({
     entryPoints: ['src/index.ts'],
     bundle: true,
+    format:'cjs',
     outfile: 'dist/worker.js',
     sourcemap: 'inline',
 
