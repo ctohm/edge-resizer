@@ -1,14 +1,14 @@
 <template>
-        <er-feature v-for="item in list" :key="item.key"  >
+        <div v-for="item in list" :key="item.key"  class="feature_detection">
+        <er-feature   >
         <h3 :id="item.key"><b>{{item.icon}}</b> {{ item.title }}</h3>
-        
+        </er-feature>
     
             <p>{{ item.description }}</p>
             <sub>See IETF descripcion for:
-            <a v-if="item.link" href="item.link">{{ item.title }}</a>
-            </sub>
-        
-    </er-feature>
+            <a v-if="item.link" href="item.link">{{ item.title }}</a></sub>
+        </div>
+    
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
@@ -49,21 +49,27 @@ const { keys } = defineProps<{
 const list = ref(keys.map(key => detectionKey[key]))
 </script>
 <style>
-.feature_detection >i {
+.feature_detection {
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    margin-top:2em;
+}
+.er-feature >i {
     display: flex;
     float:right;
     font-weight:bold;
     font-size:0.8em;
     
 }
-.feature_detection  h3 {
+.er-feature  h3 {
     font-size: 1.2em;
     float: right;
     flex-grow: 2;
     display: inline-flex;
     margin-top: 0;
 }
-.feature_detection  h3 b {
+.er-feature  h3 b {
     font-size:1.24em;
     font-weight:bold;
     margin-right:0.5em;

@@ -11,7 +11,7 @@ https://riff.one/img/designcue-unsplash.jpg
 
 The following parameters and header would yield a WebP encoded image.
 
-```
+```ts
 
 GET https://resizer.pictures/w=150_output=auto/riff.one/img/designcue-unsplash.jpg  
 Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
@@ -27,5 +27,5 @@ Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
 ## Client Hints
 
 Response headers will tell your browser we've enabled a few [Client Hints](https://developer.mozilla.org/en-US/docs/Glossary/Client_hints). When supported, its requests should include information about screen size or DPI. 
-![diagnosis](/detected_features)
+![diagnosis](https://resizer.pictures/detected_features)
 <feature-detections :keys="['vw','vh','dpr']" />

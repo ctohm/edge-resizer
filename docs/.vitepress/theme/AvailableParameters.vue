@@ -1,13 +1,7 @@
 <template>
-<h3>Alignment shorthands</h3>
-<aliases-table :aliases="alignments"/> 
-
-<h3>Fit shorthands</h3>
-<aliases-table :aliases="fits"/> 
-
 
     
-    <table>
+    <table v-if="transforms.length">
     <thead>
         <tr>
             <th>Parameter</th>
@@ -35,16 +29,40 @@
         </tr>
     </tbody>
 </table>
+<aliases-table :aliases="alignments"><er-feature   >
+        <h3 id="formats_shorthands">Alignment shorthands</h3>
+        </er-feature></aliases-table>
+
+
+<aliases-table :aliases="fits"><er-feature   >
+        <h3 id="formats_shorthands">Fit shorthands</h3>
+        
+        
+
+        </er-feature>
+        Every supported value for `fit` can also be passed in its shorthand form</aliases-table>
+
+<aliases-table :aliases="formats">
+        <er-feature   >
+        <h3 id="formats_shorthands">Format shorthands</h3>
+        </er-feature>
+</aliases-table>
+
 </template>
 <script setup lang="ts">
 import { ref,computed } from 'vue';
 
-import { AlignmentAliases,FitAliases ,AvailableTransforms} from 'edge-resizer/ResizerRouter.ts'
-
- const alignments=ref(Object.entries(AlignmentAliases).map(([alias,canonical])=>{
+import { AlignmentAliases,FitAliases ,AvailableTransforms,FormatAliases} from 'edge-resizer/ResizerRouter.ts'
+const { keys } = defineProps<{
+    keys: string[];
+}>();
+const formats=ref(Object.entries(FormatAliases).filter(()=> keys.includes('formats')).map(([alias,canonical])=>{
+    return {alias,canonical}
+}))
+ const alignments=ref(Object.entries(AlignmentAliases).filter(()=>   keys.includes('alignments')).map(([alias,canonical])=>{
     return {alias,canonical}
 })) 
-const fits=ref(Object.entries(FitAliases).map(([alias,canonical])=>{
+const fits=ref(Object.entries(FitAliases).filter(()=>   keys.includes('fits')).map(([alias,canonical])=>{
     return {alias,canonical}
 })) 
 const transforms=computed(()=>{
@@ -62,7 +80,7 @@ const transforms=computed(()=>{
         name,title,link,example:example||`${name}`,note
     })
     })
-    return tfArray
+    return tfArray.filter(()=>keys.includes('transforms'))
 })
 
 </script>

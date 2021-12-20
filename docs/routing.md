@@ -8,19 +8,22 @@ If you wanted to generate a 300x200 thumbnail, on the fly, you would request
 
 > **https://resizer.pictures/w=300_h=200/riff.one/designcue-unsplash.jpg**
 
-Edge Resizer parses that URL as
+(I'm using our hostname just for the example). Edge Resizer parses the pathname as:
 
 |`{transformations}` | `/{source hostname}` | `/{source pathname}`|
 |------|---------|  --- |
 | `w=300_h=200/` | `riff.one` | `/designcue-unsplash.jpg`|
 
+In this section we'll explain the logic and constraints that define if a request will be handled (and therefore if the underlying image will be proxied) or it will pass through unaltered.
+
 ### 1. Transformations are mandatory
 
-Edge resizer will only proxy those routes whose pathname matches the pattern of [available transformations](transformations.html). 
+Edge resizer will only proxy those routes whose pathname matches the [pattern of available transformations](parameters.html). 
 
 ::: tip
-If you don't want to apply any transformation, but still want Edge-Resizer handle the route (for example, for caching or to avoid mixed content) pass an underscore as dummy prefix:
-```html
+If you don't want to apply any transformation, but still want Edge-Resizer handle the route (for example, for caching or to avoid mixed content) pass an underscore as dummy transform:
+
+```erlang
 https://resizer.pictures/_/riff.one/img/dice.png
 ```
 ::: 
@@ -32,7 +35,7 @@ https://resizer.pictures/_/riff.one/img/dice.png
 ### 2. Using prefixes or namespaces
 
 
-Whatever comes *before* the transformations is not considered to compute the source image, so it's safe to deploy Edge Resizer on particular routes instead of `*`. Any of the following
+Whatever comes *before* the transformations segment is not considered to compute the source image, so it's safe to deploy Edge Resizer on particular routes instead of `*`. Any of the following
 would have Edge Resizer handle the request and yield the same thumbnail:
 
 > [*https://resizer.pictures*/w=300_h=200/*riff.one/designcue-unsplash.jpg*](https://resizer.pictures/w=300_h=200/riff.one/designcue-unsplash.jpg)
@@ -60,50 +63,32 @@ If the original image was in the same zone as the worker, eg:
 
 > https://resizer.pictures/images/cloudflare_workers.svg
 
-A thumbnail URL should normally contain the source hostname
- 
+Wouldn't it be nice if we could save us some keystrokes and avoid having to type the hostname twice as in
+
  > [*https://* resizer.pictures/*w=200_h=200*/resizer.pictures/*images/cloudflare_workers.svg*](https://resizer.pictures/w=200_h=200/resizer.pictures/images/cloudflare_workers.svg)
 
-Which would be parsed as
+Sure, you can. See [Worker and image in the same host](use_cases.html#worker-and-image-in-the-same-host)
 
-| zone | t. params | source host | source pathname |
-|-|-|-|-|
-| // resizer.pictures/ | *w=200_h=200* | /resizer.pictures | /images/cloudflare_workers.svg |
+---
 
+### 5. Alternative transformation separators
 
-The `source host` part needs to at least look like a domain. 
-
-**Option 1**. Skip the source hostname entirely and hope for the best
-
-The following URL yields the same result as the long one above. 
-
->   https://resizer.pictures/w=200/images/cloudflare_workers.svg
-
-Internally, the router cannot detect a valid source hostname in there, but its second best choice is taking `images` as a dummy source hostname and normalize it in the next step to compute the correct result.
-
-::: WARN
-There has to be something between the transformations and the filename 
- 
-However, this won't work if you try to proxy an image in the zone's root folder. There's simply not enough 
-
-> This one won't work. 
->   https://resizer.pictures/w=200/favicon.svg
-
-**Option 2**. Use `0.0` as dummy hostname:
-> 
-
- If you want to avoid passing a source host for the original image, 
-
-
-### Alternative transformation separators
-
-The transformation part of the URL you request through Edge-Resizer uses an underscore to separate parameters from each other.
-Though we don't aim to offer feature parity with Cloudflare Images, using commas instead of underscores will work too
-
+As mentioned, underscores are used as separators to compute which transformations were requested:
 
 ```html
-<img src="http://img.cdn4dd.com/cdn-cgi/image/w=300,format=auto/https://riff.one/designcue-unsplash.jpg">
+<img src="/w=300_h=250_fit=cover/https://riff.one/designcue-unsplash.jpg">
 ``` 
 
-<img src="https://resize.pictures/w=300,format=auto/riff.one/designcue-unsplash.jpg">
+However, the router will also accept commas as separators because... why not?
 
+```erlang
+/w=300,h=250,fit=cover/https://riff.one/designcue-unsplash.jpg
+``` 
+
+You would notice this format is somewhat similar to [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing/url-format)'s:
+
+```erlang
+/cdn-cgi/image/w=300,h=250,fit=cover/https://riff.one/designcue-unsplash.jpg
+``` 
+
+Well yes, this enables (to a very limited extent) switching back and forth between Edge-Resizer and Cloudflare Image Resizing. In the same line we support aliasing `w` as `width`, `h` as `height`,  `q` as `quality` and `output` as `format`. However, no further efforts are planned to extend this syntax compatibility, and it's not feasible to think about feature parity since even operations that  existing both in [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing/url-format) and images.weserv.nl, do often expect values from different sets, or have different meanings.

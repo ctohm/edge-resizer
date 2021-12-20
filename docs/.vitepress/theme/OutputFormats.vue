@@ -5,19 +5,16 @@
                 &lt;zone&gt;/w=150_</code><code class="boldcode">{{
                     item.transform
                 }}</code><code>/{{item.url}}</code>
-           
+           <short-hand>
             
-             <p class="use_the_shorthand">
-                <b>✔️</b>
-                 shorthand syntax
-                 </p>
+         
             
                 <code >
                 &lt;zone&gt;/w=150_</code><code class="boldcode">{{
                     item.format
                 }}</code><code>/{{item.url}}</code>
             
-           
+           </short-hand>
         </div>
         <div style="align-self: center">
             <img :src="item.image" />

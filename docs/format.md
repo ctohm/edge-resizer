@@ -24,7 +24,8 @@ Conversion from SVG can yield unexpected results when referencing non-standard f
 (See [🔗 weserve's docs about output](https://images.weserv.nl/docs/format.html#output))
 
 
-Using the `output` parameter, you can have the outcome transformed to `jpg`, `png`, `gif`,  and `webp` formats. `tiff` format is also supported, but it can't be displayed inline. 
+
+Using the `output` parameter, you can have the outcome transformed to `jpg`, `png`, `gif`,  and `webp` formats. `tiff` format is also supported, but it can't be displayed inline. [click to download the tiff output](https://resizer.pictures/tiff/riff.one/images/designcue-unsplash.jpg)
 
 When not specified, it defaults to the input format as long as it's among the former. Other formats that are valid inputs will gracefully fallback to supported output formats (mostly png and jpg tbh)
 
@@ -34,22 +35,11 @@ When not specified, it defaults to the input format as long as it's among the fo
 <output-formats :only-formats="[`jpg`, `png`, `gif`, `webp`]" image="https://riff.one/images/designcue-unsplash.jpg">
 </output-formats>
 
-You can output TIFF too. Clicking the following link will start downloading an image:
-
-https://resizer.pictures/tiff/riff.one/images/designcue-unsplash.jpg
-
-
-
-Internally, we attempt to compute the [filename](https://images.weserv.nl/docs/format.html#filename) parameter to match the request. When an output conversion is due, the filename will change accordingly.
-
-The `filename` parameter affects, for example, the name suggested when you rightclick the image and pick `save image as`. 
-
-```html
-https://resizer.pictures/w=150_output=gif/riff.one/images/designcue-unsplash.jpg
-```
-
-would suggest name `designcue-unsplash.gif`
-
+<er-feature class="info-block" >
+::: info The "filename" parameter
+Though we don't support the [filename](https://images.weserv.nl/docs/format.html#filename) parameter (you still can pass it as query param) we send the proper header so that "save as" on a given file offers its name instead of a generic "image.png". The extension is taken from the content type so it's consistent across format conversions. 
+:::
+</er-feature>
 
 
 
