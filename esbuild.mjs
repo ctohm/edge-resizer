@@ -1,7 +1,7 @@
 import esbuild from 'esbuild'
 
 const mode = process.env.NODE_ENV || 'production';
-const COMMIT=process.env.COMMIT
+const COMMIT=process.env.COMMIT||process.env.RELEASE
 console.log({ mode,COMMIT });
 esbuild
   .build({
@@ -12,7 +12,8 @@ esbuild
 
     minify: mode === 'production',
     define:{
-      TIMESTAMP:Date.now()
+      TIMESTAMP:Date.now(),
+      RELEASE:`"${COMMIT}"`
     }
   }) 
   .catch(() => process.exit(1));
