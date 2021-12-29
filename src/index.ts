@@ -60,13 +60,14 @@ const exportDefault = {
           headers = {} as Record<string, string>
         if (connectingIp) {
           headers["x-forwarded-for"] = connectingIp
-          resultJson['x-forwarded-for'] = connectingIp
+          headers["x-real-ip"] = connectingIp
+          resultJson = { ...headers }
         }
         return Promise.all([
-          fetch('https://ifconfig.me/ip', {
+          fetch('https://ifconfig.me/all.json', {
             headers
-          }).then(res => res.text()).then(ip => resultJson.ip = ip),
-          fetch('https://images.weserv.nl/quota').then(res => res.json()).then(quota => resultJson = { ...resultJson, ...quota }),
+          }).then(res => res.json()).then(ifconfig => resultJson.ifconfig = ifconfig),
+          fetch('https://images.weserv.nl/quota', { headers }).then(res => res.json()).then(quota => resultJson = { ...resultJson, ...quota }),
         ]).then(() => {
           resultJson = { ...resultJson, headers: Object.fromEntries(rq.headers) }
           return json(resultJson)
