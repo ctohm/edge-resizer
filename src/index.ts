@@ -54,6 +54,16 @@ const exportDefault = {
 
     // Replace 
     const mainRouter: ThrowableRouter<Request> = ThrowableRouter({ base: '', stack: true })
+      .get('/quota', () => {
+        let resultJson = {}
+        return Promise.all([
+          fetch('https://ifconfig.me/ip').then(res => res.text()).then(ip => resultJson.ip = ip),
+          fetch('https://images.weserv.nl/quota').then(res => res.json()).then(quota => resultJson = { ...resultJson, ...quota }),
+        ]).then(() => {
+          return json(resultJson)
+        })
+
+      })
       .get('/favicon*', () => new Response(fallbackSvg()))
       .get('/version', () => json({
         worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,

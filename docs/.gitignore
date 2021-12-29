@@ -1,0 +1,14 @@
+dist
+node_modules
+transpiled
+worker
+.vscode
+
+
+.env
+.mf
+wrangler.yaml*
+*.log
+
+*_holdings.csv
+riff.one

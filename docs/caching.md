@@ -12,7 +12,7 @@ editLink: true
 <br>
 Variations are generated on demand, at which point they are stored in Cloudflare's Edge Cache. <b>Ephemeral but long lived</b>, further requests will receive a cached response at blazing speed.
 </template>
-<template v-slot:second_paragraph>Populating the edge cache this way 
+<template v-slot:second_paragraph>Above caching logic does Populating the edge cache this way 
 
 </template>
 <template v-slot:table>
