@@ -54,12 +54,21 @@ const exportDefault = {
 
     // Replace 
     const mainRouter: ThrowableRouter<Request> = ThrowableRouter({ base: '', stack: true })
-      .get('/quota', () => {
-        let resultJson = {}
+      .get('/quota', (rq: Request) => {
+        let resultJson = {} as { [s: string]: string | number | Record<string, string> },
+          connectingIp = rq.headers.get('CF-Connecting-IP'),
+          headers = {} as Record<string, string>
+        if (connectingIp) {
+          headers["x-forwarded-for"] = connectingIp
+          resultJson['x-forwarded-for'] = connectingIp
+        }
         return Promise.all([
-          fetch('https://ifconfig.me/ip').then(res => res.text()).then(ip => resultJson.ip = ip),
+          fetch('https://ifconfig.me/ip', {
+            headers
+          }).then(res => res.text()).then(ip => resultJson.ip = ip),
           fetch('https://images.weserv.nl/quota').then(res => res.json()).then(quota => resultJson = { ...resultJson, ...quota }),
         ]).then(() => {
+          resultJson = { ...resultJson, headers: Object.fromEntries(rq.headers) }
           return json(resultJson)
         })
 
