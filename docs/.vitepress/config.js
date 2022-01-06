@@ -5,6 +5,12 @@ module.exports = {
     themeConfig: {
       repo:'ctohm/edge-resizer',
       docsDir:'docs',
+      algolia: {
+        appId: 'TASDH2AD23',
+
+        apiKey: 'a7358cc967a5588c214d16522cfd44fb',
+        indexName: 'resizer-pictures'
+      },
       sidebar: {
          
         '/': getGuideSidebar()
@@ -33,18 +39,6 @@ module.exports = {
           { text: '⛳ Use Cases', link: 'use_cases' },
           { text: '💥 Troubleshooting', link: 'troubleshooting' }
         ]
-     /* },
-      {
-        text: 'Advanced',
-        children: [
-          { text: 'Frontmatter', link: '/guide/frontmatter' },
-          { text: 'Theming', link: '/guide/theming' },
-          { text: 'API Reference', link: '/guide/api' },
-          {
-            text: 'Differences from Vuepress',
-            link: '/guide/differences-from-vuepress'
-          }
-        ]
-      }
-    ]*/
-  }
+    }
+
+    
