@@ -125,7 +125,10 @@ addEventListener('fetch', async (event: FetchEvent) => {
       MAX_AGE
     }
 
-  event.respondWith(exportDefault.fetch(request, env, event))
+  event.respondWith(exportDefault.fetch(request, env, event).catch(err => {
+    console.error(err)
+    return json({ message: err.message, stack: err.stack.split('\n') })
+  }))
 });
 
 
