@@ -83,7 +83,7 @@ const exportDefault = {
       .get('/transforms', () => json({
         AvailableTransforms
       }))
-      .get('/detected_features', (req: RequestWithParams) => checkHeaders(req))
+      .get('*detected_features*', (req: RequestWithParams) => checkHeaders(req))
       //.get('/:webp/:vw/:vh/:dpr', (req: RequestWithParams) => printHeaders(req))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
         resizerRouter.handle)
