@@ -4,18 +4,24 @@
 
 # What is Edge-Resizer ?
 
-Edge Resizer was conceived as a routing middleware offering tidy URLs to complex transformations.
+Nowadays APIs such as [https://images.weserv.nl/](https://images.weserv.nl/) are capable of dinamically generating variations of a given **source image address** according to parameters defined in the URL. e.g, given the original image, transparent 800x600 png
 
+```erlang
+https://riff.one/dice.png
+```
 
- translating **tidy, compact and self-contained URLs** to the (potentially) complex request needed to [dinamically generate variations](https://images.weserv.nl/) of a source image. E.g. a 256x192 thumbnail:
+Generating a variation such as a 384x128px thumbnail, right aligned, contain fitted, whitesmoke background, jpg format on  [https://images.weserv.nl/](https://images.weserv.nl/) would build up to a lenghty and complex URL:
 
-> **original img**: [*https://* **riff.one/designcue-unsplash.jpg**](https://riff.one/designcue-unsplash.jpg)
-> 
-> **thumbnail** : [*https://resizer.pictures/w=256_h=192/* **riff.one/designcue-unsplash.jpg**](https://resizer.pictures/w=256_h=192/riff.one/designcue-unsplash.jpg)
+```erlang
+https://images.weserv.nl/?a=right&bg=f5f5f5&fit=contain&h=128&output=jpg&url=ssl%3Ariff.one%2Fdice.png&w=384
+```
 
-| | 
-|-|
-|![](https://resizer.pictures/w=196_we_right_contain_jpg/riff.one/img/dice_128.png)|
+ **Edge Resizer** was created to relief you from the burden of this complexity providing **compact, tidy and self-contained URLs** that are resolved internally. Using Edge-Resizer, the above variation could be requested as 
+
+```erlang
+https://resizer.pictures/w=384_jpg_h=128_right_contain_bg=f5f5f5/riff.one/dice.png
+```
+
 
 
 These **long lived variations** are created through [**images.weserv.nl**](https://images.weserv.nl/)'s API only when (and if) they are first requested, having further requests answer from  [Cloudflare's Edge Cache](https://developers.cloudflare.com/workers/runtime-apis/cache) at blazing speeds. 
@@ -35,7 +41,6 @@ Without them, Edge Resizer would be pointless. Thank you guys, you're da real MV
 
 ----
 
- https://resizer.pictures/w=256_h=192/ riff.one/designcue-unsplash.jpg
 
 ### What does Edge Resizer bring to the table?
 
@@ -47,14 +52,12 @@ Without them, Edge Resizer would be pointless. Thank you guys, you're da real MV
 - :blush: ...*A cheap and amateurish version of [Cloudflare Image Resizing](https://developers.cloudflare.com/images/image-resizing)*
 
 
+Throughout the documentation, a ribbon like the one below will be used to distinguish a feature, parameter,default or shortcut 
 
-<div style="float:right;margin-right:-1em;">
+|||
+| - | - |
+| that is non-standard to images.weserve.nl.|![edge-resizer-feature](https://resizer.pictures/images/er-feature.png)|
 
-![edge-resizer-feature](https://resizer.pictures/images/er-feature.png)
-
-</div>
-
-Throughout the documentation, a ribbon like the one to the right will be used to distinguish a feature, parameter, default or shortcut that is non-standard to images.weserve.nl.
 
 ## Explore the Docs:
 

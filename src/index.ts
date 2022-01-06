@@ -83,7 +83,7 @@ const exportDefault = {
       .get('/transforms', () => json({
         AvailableTransforms
       }))
-      .get('*detected_features*', (req: RequestWithParams) => checkHeaders(req))
+      .get('/detected_features', (req: RequestWithParams) => checkHeaders(req))
       //.get('/:webp/:vw/:vh/:dpr', (req: RequestWithParams) => printHeaders(req))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
         resizerRouter.handle)
@@ -125,10 +125,7 @@ addEventListener('fetch', async (event: FetchEvent) => {
       MAX_AGE
     }
 
-  event.respondWith(exportDefault.fetch(request, env, event).catch(err => {
-    console.error(err)
-    return json({ message: err.message, stack: err.stack.split('\n') })
-  }))
+  event.respondWith(exportDefault.fetch(request, env, event))
 });
 
 

@@ -36,10 +36,10 @@ export interface EnvWithBindings {
 
 function getFileName(url: URL): { fileName: string; extension: string } {
     const { pathname } = url,
-        lastPart = (decodeURIComponent(pathname || '').split('?')[0] || '').replace(/\/$/, '').split('/').pop() || '',
-        regexResult = /(.*?)\.(apng|avif|gif|jpg|png|svg|webp|bmp|ico|tif|tiff|jpeg)$/i.exec(lastPart)
-    if (!regexResult || regexResult.length < 3) return { fileName: lastPart, extension: '' }
-    return { fileName: regexResult[1], extension: regexResult[2] }
+        lastPart = (decodeURIComponent(pathname || '').split('?')[0] || '').replace(/\/$/, '').split('/').pop() || ''
+    const { groups } = /(?<fileName>([^/]+))(?<extension>(\.(apng|avif|gif|jpg|png|svg|webp|bmp|ico|tif|tiff|jpeg))?)/i.exec(lastPart) || { groups: { fileName: '', extension: '' } }
+
+    return { fileName: groups?.fileName || '', extension: groups?.extension || '' };
 }
 
 
@@ -510,6 +510,7 @@ async function computeWeserveRequest(
     let { fileName, extension } = getFileName(url)
     let skipCache = url.searchParams.has('nocache')
 
+
     let urlParam = `${url.hostname}${url.pathname}`,
         weservUrl = new URL('https://images.weserv.nl/'),
         computedSearchParams = { ...otherDefaults, ...transforms }
@@ -533,10 +534,6 @@ async function computeWeserveRequest(
     if (computedSearchParams.output) {
         computedSearchParams.output = computedSearchParams.output.replace('jpeg', 'jpg')
     }
-
-    fileName = [fileName, computedSearchParams.output || extension].join('.')
-    //let renamedFilename = fileName.replace(new RegExp(`${extension}$`, 'i'), `${computedSearchParams.output}`);
-
 
 
 
@@ -566,7 +563,7 @@ async function computeWeserveRequest(
         ].join('?')
 
     }
-    debug({ fileName, extension, output: computedSearchParams.output, canonicalVariationURL })
+
     urlParam = decodeURIComponent(urlParam)
     weservUrl.searchParams.set('url', urlParam);
 
@@ -575,15 +572,18 @@ async function computeWeserveRequest(
          * If the variation isn't already in cache, we enter the `catch` block.
          */
         .catch((err: Error) => {
+
+
             debug({ errMessage: err.message, skipCache, fileName, extension, computedSearchParams, discarded_entries, canonicalVariationURL, protocol, fetchDest, urlParam })
-
-
             /**
              * Add some extra parameters to weserveUrl that don't interact with cache canonicalization
              */
             if (['https', 'ssl'].includes(protocol)) weservUrl.searchParams.set('url', `ssl:${urlParam}`);
-            // weservUrl.searchParams.set('filename', fileName);
-
+            weservUrl.searchParams.set('filename', fileName);
+            if (computedSearchParams.output && computedSearchParams.output !== extension) {
+                let renamedFilename = fileName.replace(`${extension}`, `${computedSearchParams.output}`);
+                weservUrl.searchParams.set('filename', renamedFilename);
+            }
             weservUrl.searchParams.set('maxage', maxage)
             weservUrl.searchParams.sort()
             if (skipCache) weservUrl.searchParams.set('maxage', '1d') // this is the bare minimum. Sorry about that.
@@ -653,7 +653,7 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context, debug:
     const canonicalVariationURL = imageRequest.headers.get('x-er-canonical-variation-url'),
         fileName = imageRequest.headers.get('fileName'),
         sourceUrl = imageRequest.headers.get('x-er-source-url'),
-        inputExtension = (imageRequest.headers.get('x-er-input-extension') || fileName?.split('.').pop() || '').replace(/^.+/, ''),
+        inputExtension = imageRequest.headers.get('x-er-input-extension') || fileName?.split('.').pop() || '',
         weserveUrlStr = imageRequest.url
 
     console.info({ canonicalVariationURL, weserveUrlStr, sourceUrl, fileName })
@@ -679,7 +679,7 @@ async function computeCachedResponse(imageRequest: Request, ctx: Context, debug:
     response.headers.set('x-er-weserve-url', weserveUrlStr);
 
     if (fileName) {
-        response.headers.set('Content-Disposition', `inline; filename = ${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension))}`.trim());
+        response.headers.set('Content-Disposition', `inline; filename = ${decodeURIComponent(fileName.replace(inputExtension, newExtension || inputExtension)).trim()} `);
     }
     let cacheRequest = canonicalVariationURL ? new Request(canonicalVariationURL) : imageRequest
     response.headers.set('link', `<${cacheRequest.url}>; rel = "canonical"`)
