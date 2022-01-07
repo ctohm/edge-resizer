@@ -18,7 +18,7 @@
     "docs:dev": "vitepress dev docs -p 3000",
     "docs:deploy": "yarn docs:build && cp -R docs/images docs/.vitepress/dist/images && cp docs/favicon.svg docs/.vitepress/dist/ && yarn pages",
     "pages": "gh-pages -d docs/.vitepress/dist",
-    "deploy": " export COMMIT=`git rev-parse --short HEAD`;yarn write_commit && wrangler    publish -c ./wrangler.develop.toml",
+    "deploy": " export COMMIT=`git rev-parse --short HEAD`;yarn write_commit && wrangler    publish -c ./wrangler.develop.toml ",
     "miniflare": "NODE_ENV=development miniflare  dist/worker.js -c ./wrangler.develop.toml -w  -d --wrangler-env=develop ",
     "format": "prettier --write '**/*.{ts,js,css,json,md}'",
     "eslint": "eslint --ext js --ext ts --ignore-path .eslintignore {src,test}/*.{js,ts}",

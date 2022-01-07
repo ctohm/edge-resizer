@@ -2,7 +2,7 @@
  "name": "edge-resizer",
  "version": "1.3.0",
  "description": "Clever routing to serve image variations using images.weserv.nl + cloudflare edge cache",
- "main": "ResizerRouter.cjs",
+ "main": "ResizerRouter.js",
  "module": "ResizerRouter.mjs",
  "types": "ResizerRouter.d.ts",
  "repository": {

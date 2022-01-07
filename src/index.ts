@@ -75,15 +75,19 @@ const exportDefault = {
 
       })
       .get('/favicon*', () => new Response(fallbackSvg()))
-      .get('/version', () => json({
-        worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
-        timestamp: env.TIMESTAMP,
-        route_prefix: NORMALIZED_ROUTE_PREFIX
-      }))
+      .get('/version', () => {
+        let deployedAt = env.TIMESTAMP ? new Date(env.TIMESTAMP).toISOString() : undefined
+        return json({
+          worker: '@ctohm/edge-resizer', debug: env.DEBUG, release: env.RELEASE, env: env.WORKER_ENV,
+          timestamp: env.TIMESTAMP,
+          deployedAt,
+          route_prefix: NORMALIZED_ROUTE_PREFIX
+        })
+      })
       .get('/transforms', () => json({
         AvailableTransforms
       }))
-      .get('/detected_features', (req: RequestWithParams) => checkHeaders(req))
+      .get('*detected_features*', (req: RequestWithParams) => checkHeaders(req))
       //.get('/:webp/:vw/:vh/:dpr', (req: RequestWithParams) => printHeaders(req))
       .get(`${NORMALIZED_ROUTE_PREFIX}/*`,
         resizerRouter.handle)
@@ -125,7 +129,10 @@ addEventListener('fetch', async (event: FetchEvent) => {
       MAX_AGE
     }
 
-  event.respondWith(exportDefault.fetch(request, env, event))
+  event.respondWith(exportDefault.fetch(request, env, event).catch(err => {
+    console.error(err)
+    return json({ message: err.message, stack: err.stack.split('\n') })
+  }))
 });
 
 

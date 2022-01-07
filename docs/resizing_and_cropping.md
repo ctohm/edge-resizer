@@ -1,6 +1,6 @@
 ## 🔳 Resize, Crop, Align
 
-Edge-Resizer was conceived as a thumbnail generation tool (more like, a middleware to harness the power of those tools)
+Edge-Resizer was conceived as a nice-url middleware to harness dinamically generated thumbnails. Pass w to request a specific width, 
 
 Pass w, h
 
@@ -34,7 +34,7 @@ In parallel to width, height and setting a specific DPR, you can use [vw](featur
 
  The following image, whose original dimensions were 200x150 is requested with dimensions 180x210.
 
-<adjustments-grid  class="fit" :aliasprefix="'fit='" :adjustments="{'w=200_h=150':'','fit=contain':'','fit=cover':'','fit=fill':'','fit=inside':'','fit=outside':''}" :default_width="180" :default_height="210" default_tx="" image="riff.one/dice_200.png"/>
+<adjustments-grid  class="fit" :aliasprefix="'fit='" :adjustments="{'fit=inside':'','fit=contain':'','fit=cover':'','fit=fill':'','fit=inside':'','fit=outside':''}" :default_width="180" :default_height="210" default_tx="" image="riff.one/dice_200.png"/>
 
 
 
