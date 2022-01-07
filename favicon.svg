@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   width="50.799995mm"
+   height="49.980392mm"
+   viewBox="0 0 179.99998 177.09587"
+    >
+   
+  <g
+     id="layer1"
+     transform="matrix(3.9211664,0,0,3.9211664,6182.6578,1395.6994)">
+    <rect
+       ry="2.5954537"
+       y="-353.15277"
+       x="-1573.9524"
+       height="39.58992"
+       width="40.330544"
+       id="rect4615"
+       style="opacity:0.857;fill:none;fill-opacity:1;stroke:#0063bb;stroke-width:2.71090789;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       rx="2.5954535"
+   />
+   
+    <text
+       id="text4684"
+       y="-341.6825"
+       x="-1553.8228"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.59814px;line-height:1.25;font-family:FreeSans;-inkscape-font-specification:'FreeSans Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#171e31;fill-opacity:1;stroke:none;stroke-width:0.398214;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         
+         x="-1553.8228"
+         y="-341.6825"
+         id="tspan6320"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.59814px;font-family:FreeSans;-inkscape-font-specification:'FreeSans Bold';text-align:center;text-anchor:middle;stroke-width:0.398214">CTOhm</tspan><tspan
+         
+         x="-1553.8228"
+         y="-329.68481"
+         id="tspan5498"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.59814px;font-family:FreeSans;-inkscape-font-specification:'FreeSans Bold';text-align:center;text-anchor:middle;stroke-width:0.398214">Edge</tspan><tspan
+         
+         x="-1553.8228"
+         y="-317.68713"
+         id="tspan7266"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.59814px;font-family:FreeSans;-inkscape-font-specification:'FreeSans Bold';text-align:center;text-anchor:middle;stroke-width:0.398214">Resizer</tspan></text>
+    </g>
+</svg>

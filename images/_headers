@@ -1,0 +1,11 @@
+/*
+  Access-Control-Allow-Origin: *
+  Accept-CH: Sec-CH-Viewport-Height, Sec-CH-Viewport-Width, Sec-CH-DPR, Sec-CH-Width, DPR, Viewport-Width, Width
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+  Vary: Sec-CH-Viewport-Height, Sec-CH-Viewport-Width, Sec-CH-DPR, Sec-CH-Width, DPR, Viewport-Width, Width, Accept
+  X-Content-Type-Options: nosniff
+  Access-Control-Expose-Headers: *
+  Access-Control-Allow-Headers: Content-Type,Range,Content-Range
+
+/csv/*
+  Cache-Control: no-cache no-store

@@ -1,0 +1,6 @@
+<svg width="300" height="200"
+  xmlns="http://www.w3.org/2000/svg">
+  <image href="dice_200.png" height="200"  stroke="#9cF" width="200"/>
+  <text x="50" y="50" fill="#003366" font-family="Helvetica" font-size="15px">cx=130_cw=180_cy=50_ch=210</text>
+  <rect x="10" y="10" width="280" height="180" stroke="#9cF" fill="none" ></rect>
+</svg>
